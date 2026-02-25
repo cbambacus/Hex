@@ -5,6 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Skill Recruiter</title>
 <style>
+  :root {
+    --stroke-width: 1.0px;
+  }
+
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
   body {
@@ -75,7 +79,7 @@
     left: 50%;
     transform: translateX(-50%);
     width: 160px;
-    height: 174px;
+    height: 185px; /* 160 × 2/√3 for regular hexagon */
   }
 
   /* ========== CONTENT LAYER (doesn't rotate) ========== */
@@ -85,7 +89,7 @@
     left: 50%;
     transform: translateX(-50%);
     width: 160px;
-    height: 174px;
+    height: 185px;
     pointer-events: none;
   }
 
@@ -94,13 +98,13 @@
     position: absolute;
     inset: 0;
     clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
-    background: rgba(255, 255, 255, 0.4);
+    background: #fff;
     transition: background 0.25s ease;
   }
 
   .hex-fill {
     position: absolute;
-    inset: 1.5px;
+    inset: var(--stroke-width);
     clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
     background: #000;
   }
@@ -132,10 +136,10 @@
   }
 
   .tile-icon svg {
-    width: 52px;
-    height: 52px;
-    stroke: rgba(255, 255, 255, 0.7);
-    stroke-width: 1;
+    width: 74px;
+    height: 74px;
+    stroke: #fff;
+    stroke-width: var(--stroke-width);
     transition: none;
   }
 
@@ -152,7 +156,7 @@
     align-items: center;
     justify-content: center;
     gap: 6px;
-    padding: 0 8px 0 28px;
+    padding: 0 16px 0 20px;
   }
 
   .mini-stat-row {
@@ -284,10 +288,10 @@
   /* ========== ACTIVITY DIAMONDS ========== */
   .tile-diamonds {
     position: absolute;
-    top: 46px;
-    right: 54px;
-    width: 44px;
-    height: 52px;
+    top: 26px;
+    right: 59px;
+    width: 53px;
+    height: 62px;
     z-index: 5;
     pointer-events: none;
   }
@@ -389,7 +393,7 @@
 
   .job-divider {
     border: none;
-    border-top: 2px solid #fff;
+    border-top: var(--stroke-width) solid #fff;
     margin: 24px 0 28px;
   }
 
@@ -433,18 +437,31 @@
 
   .action-icon {
     width: 40px;
-    height: 40px;
-    border: 1.5px solid rgba(255, 255, 255, 0.5);
-    border-radius: 50%;
+    height: 46px; /* 40 × 2/√3 for regular hexagon */
+    position: relative;
     display: flex;
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
-    transition: border-color 0.2s ease;
   }
 
-  .job-action:hover .action-icon {
-    border-color: #e535e5;
+  .action-hex-border {
+    position: absolute;
+    inset: 0;
+    clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+    background: #fff;
+    transition: background 0.2s ease;
+  }
+
+  .action-hex-fill {
+    position: absolute;
+    inset: var(--stroke-width);
+    clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+    background: #000;
+  }
+
+  .job-action:hover .action-hex-border {
+    background: #e535e5;
   }
 
   .action-icon svg {
@@ -452,7 +469,9 @@
     height: 18px;
     stroke: currentColor;
     fill: none;
-    stroke-width: 2;
+    stroke-width: var(--stroke-width);
+    position: relative;
+    z-index: 1;
   }
 
   /* ========== JOB CREATE SCREEN ========== */
@@ -491,7 +510,7 @@
     color: #fff;
     background: transparent;
     border: none;
-    border-bottom: 2px solid #fff;
+    border-bottom: none;
     outline: none;
     width: 100%;
     padding: 0 0 4px 0;
@@ -499,7 +518,8 @@
   }
 
   .job-title-input::placeholder {
-    color: rgba(255, 255, 255, 0.3);
+    color: #333;
+    font-style: italic;
   }
 
   .job-desc-input {
@@ -509,7 +529,7 @@
     line-height: 1.7;
     color: rgba(255, 255, 255, 0.85);
     background: transparent;
-    border: 2px solid #fff;
+    border: var(--stroke-width) solid #fff;
     border-radius: 0;
     outline: none;
     padding: 16px;
@@ -520,7 +540,8 @@
   }
 
   .job-desc-input::placeholder {
-    color: rgba(255, 255, 255, 0.3);
+    color: #333;
+    font-style: italic;
   }
 
   .form-row {
@@ -547,7 +568,7 @@
     font-size: 15px;
     color: #fff;
     background: transparent;
-    border: 2px solid #fff;
+    border: var(--stroke-width) solid #fff;
     outline: none;
     padding: 8px 12px;
     font-family: inherit;
@@ -555,7 +576,8 @@
   }
 
   .form-input::placeholder {
-    color: rgba(255, 255, 255, 0.3);
+    color: #333;
+    font-style: italic;
   }
 
   .form-input:focus,
@@ -567,7 +589,7 @@
     font-size: 15px;
     color: #fff;
     background: #000;
-    border: 2px solid #fff;
+    border: var(--stroke-width) solid #fff;
     outline: none;
     padding: 8px 32px 8px 12px;
     font-family: inherit;
@@ -576,7 +598,7 @@
     -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='rgba(255,255,255,0.5)' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='rgba(255,255,255,0.5)' stroke-width='1'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
     background-repeat: no-repeat;
     background-position: right 10px center;
   }
@@ -596,7 +618,7 @@
     font-size: 15px;
     color: #fff;
     background: transparent;
-    border: 2px solid #fff;
+    border: var(--stroke-width) solid #fff;
     outline: none;
     padding: 8px 12px;
     font-family: inherit;
@@ -631,7 +653,7 @@
       <div class="hex-fill"></div>
     </div>
     <div class="tile-content">
-      <div class="tile-icon"><svg viewBox="0 0 40 40" fill="none"><path d="M17 2 L23 2 L23 17 L38 17 L38 23 L23 23 L23 38 L17 38 L17 23 L2 23 L2 17 L17 17 Z"/></svg></div>
+      <div class="tile-icon"><svg viewBox="0 0 40 40" fill="none"><path d="M15.7 2 L24.3 2 L24.3 15.7 L38 15.7 L38 24.3 L24.3 24.3 L24.3 38 L15.7 38 L15.7 24.3 L2 24.3 L2 15.7 L15.7 15.7 Z"/></svg></div>
     </div>
     <div class="tile-label">New Job</div>
   </div>
@@ -1391,11 +1413,11 @@
     <p class="job-description" id="jobDescription"></p>
     <div class="job-actions">
       <div class="job-action">
-        <span class="action-icon"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"></polyline></svg></span>
+        <span class="action-icon"><span class="action-hex-border"></span><span class="action-hex-fill"></span><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"></polyline></svg></span>
         Find Candidates
       </div>
       <div class="job-action">
-        <span class="action-icon"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"></polyline></svg></span>
+        <span class="action-icon"><span class="action-hex-border"></span><span class="action-hex-fill"></span><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"></polyline></svg></span>
         Edit Job Target
       </div>
     </div>
@@ -1443,11 +1465,11 @@
     </div>
     <div class="job-actions" style="margin-top: 48px;">
       <div class="job-action" id="saveJobBtn">
-        <span class="action-icon"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"></polyline></svg></span>
+        <span class="action-icon"><span class="action-hex-border"></span><span class="action-hex-fill"></span><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"></polyline></svg></span>
         Save and Create Job Target
       </div>
       <div class="job-action" id="deleteJobBtn">
-        <span class="action-icon"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></span>
+        <span class="action-icon"><span class="action-hex-border"></span><span class="action-hex-fill"></span><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></span>
         Delete Job
       </div>
     </div>
@@ -1462,11 +1484,11 @@
     const diamonds = group.querySelectorAll('.diamond');
     const positions = [];
     diamonds.forEach((d, i) => {
-      const quadTop = i < 2 ? rand(0, 20) : rand(22, 42);
-      const quadRight = i % 2 === 0 ? rand(0, 16) : rand(18, 34);
-      const size = rand(7, 13);
-      const height = size * rand(1.2, 1.5);
-      const duration = rand(0.8, 1.2);
+      const quadTop = i < 2 ? rand(0, 24) : rand(26, 50);
+      const quadRight = i % 2 === 0 ? rand(0, 19) : rand(22, 41);
+      const size = rand(7, 17);
+      const height = size * 1.5; /* 2:3 width:height ratio */
+      const duration = rand(1.0, 1.5);
       const delay = rand(-2, 0);
 
       d.style.top = quadTop + 'px';
