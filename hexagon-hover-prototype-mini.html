@@ -345,14 +345,15 @@
   .job-header-row {
     display: flex;
     align-items: baseline;
-    gap: 20px;
+    position: relative;
   }
 
   .job-back {
+    position: absolute;
+    right: calc(100% + 20px);
     font-size: 28px;
     color: #fff;
     cursor: pointer;
-    flex-shrink: 0;
     line-height: 1;
     user-select: none;
     transition: color 0.2s ease;
