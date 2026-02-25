@@ -313,8 +313,8 @@
   /* ========== ACTIVITY DIAMONDS ========== */
   .tile-diamonds {
     position: absolute;
-    top: 36px;
-    right: 49px;
+    top: 51px;
+    right: 44px;
     width: 53px;
     height: 62px;
     z-index: 5;
@@ -599,7 +599,7 @@
 
   .job-desc-input {
     width: 100%;
-    min-height: 160px;
+    height: 300px;
     font-size: 16px;
     line-height: 1.7;
     color: rgba(255, 255, 255, 0.85);
@@ -612,6 +612,10 @@
     resize: vertical;
     margin-bottom: 32px;
     box-sizing: border-box;
+  }
+
+  .job-desc-input:focus {
+    border-color: #f0f;
   }
 
   .job-desc-input::placeholder {
@@ -660,7 +664,7 @@
 
   .form-input:focus,
   .form-select:focus {
-    border-color: rgba(255, 255, 255, 0.5);
+    border-color: #f0f;
   }
 
   .form-select {
@@ -707,7 +711,7 @@
   }
 
   .salary-field:focus {
-    border-color: rgba(255, 255, 255, 0.5);
+    border-color: #f0f;
   }
 
   .salary-field::placeholder {
@@ -1526,8 +1530,7 @@
       <span class="job-back" id="jobCreateBack">&#8592;</span>
       <input type="text" class="job-title-input" id="jobTitleInput" placeholder="Job Title">
     </div>
-    <hr class="job-divider">
-    <textarea class="job-desc-input" id="jobDescInput" placeholder="Enter Job Description..."></textarea>
+    <textarea class="job-desc-input" id="jobDescInput" placeholder="Enter Job Description..." style="margin-top: 24px;"></textarea>
     <div class="form-row">
       <div class="form-group">
         <span class="form-label">Salary</span>
