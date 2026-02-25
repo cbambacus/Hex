@@ -446,6 +446,164 @@
     fill: none;
     stroke-width: 2;
   }
+
+  /* ========== JOB CREATE SCREEN ========== */
+  .job-create {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: #000;
+    z-index: 50;
+    opacity: 0;
+    transform: scale(0.5);
+    pointer-events: none;
+    transition: opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1), transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow-y: auto;
+    padding-top: 64px;
+    transform-origin: center center;
+  }
+
+  .job-create.active {
+    opacity: 1;
+    transform: scale(1);
+    pointer-events: auto;
+  }
+
+  .job-create.zooming-out {
+    opacity: 0;
+    transform: scale(0.5);
+    pointer-events: none;
+  }
+
+  .job-title-input {
+    font-size: 32px;
+    font-weight: 400;
+    color: #fff;
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    outline: none;
+    width: 100%;
+    padding: 0 0 4px 0;
+    font-family: inherit;
+  }
+
+  .job-title-input::placeholder {
+    color: rgba(255, 255, 255, 0.3);
+  }
+
+  .job-desc-input {
+    width: 100%;
+    min-height: 160px;
+    font-size: 16px;
+    line-height: 1.7;
+    color: rgba(255, 255, 255, 0.85);
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 0;
+    outline: none;
+    padding: 16px;
+    font-family: inherit;
+    resize: vertical;
+    margin-bottom: 32px;
+    box-sizing: border-box;
+  }
+
+  .job-desc-input::placeholder {
+    color: rgba(255, 255, 255, 0.3);
+  }
+
+  .form-row {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+    margin-bottom: 20px;
+  }
+
+  .form-group {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .form-label {
+    font-size: 14px;
+    font-weight: 400;
+    color: rgba(255, 255, 255, 0.6);
+    white-space: nowrap;
+  }
+
+  .form-input {
+    font-size: 15px;
+    color: #fff;
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    outline: none;
+    padding: 8px 12px;
+    font-family: inherit;
+    border-radius: 0;
+  }
+
+  .form-input::placeholder {
+    color: rgba(255, 255, 255, 0.3);
+  }
+
+  .form-input:focus,
+  .form-select:focus {
+    border-color: rgba(255, 255, 255, 0.5);
+  }
+
+  .form-select {
+    font-size: 15px;
+    color: #fff;
+    background: #000;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    outline: none;
+    padding: 8px 32px 8px 12px;
+    font-family: inherit;
+    border-radius: 0;
+    cursor: pointer;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='rgba(255,255,255,0.5)' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+  }
+
+  .form-select option {
+    background: #111;
+    color: #fff;
+  }
+
+  .salary-inputs {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .salary-field {
+    font-size: 15px;
+    color: #fff;
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    outline: none;
+    padding: 8px 12px;
+    font-family: inherit;
+    border-radius: 0;
+    width: 100px;
+  }
+
+  .salary-field:focus {
+    border-color: rgba(255, 255, 255, 0.5);
+  }
+
+  .salary-to {
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.5);
+  }
 </style>
 </head>
 <body>
@@ -1236,6 +1394,58 @@
   </div>
 </div>
 
+<div class="job-create" id="jobCreate">
+  <div class="job-detail-inner">
+    <div class="job-header-row">
+      <span class="job-back" id="jobCreateBack">&#8592;</span>
+      <input type="text" class="job-title-input" id="jobTitleInput" placeholder="Job Title">
+    </div>
+    <hr class="job-divider">
+    <textarea class="job-desc-input" id="jobDescInput" placeholder="Enter Job Description..."></textarea>
+    <div class="form-row">
+      <div class="form-group">
+        <span class="form-label">Salary</span>
+        <div class="salary-inputs">
+          <input type="text" class="salary-field" id="salaryMin" placeholder="$100,000">
+          <span class="salary-to">to</span>
+          <input type="text" class="salary-field" id="salaryMax" placeholder="$110,000">
+        </div>
+      </div>
+      <div class="form-group">
+        <span class="form-label">Commute</span>
+        <select class="form-select" id="commuteSelect">
+          <option value="In Person">In Person</option>
+          <option value="Remote">Remote</option>
+          <option value="Hybrid">Hybrid</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <span class="form-label">Location</span>
+        <input type="text" class="form-input" id="locationInput" placeholder="Los Angeles, CA">
+      </div>
+      <div class="form-group">
+        <span class="form-label">Job Type</span>
+        <select class="form-select" id="jobTypeSelect">
+          <option value="Temp">Temp</option>
+          <option value="Perm">Perm</option>
+        </select>
+      </div>
+    </div>
+    <div class="job-actions" style="margin-top: 48px;">
+      <div class="job-action" id="saveJobBtn">
+        <span class="action-icon"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"></polyline></svg></span>
+        Save and Create Job Target
+      </div>
+      <div class="job-action" id="deleteJobBtn">
+        <span class="action-icon"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></span>
+        Delete Job
+      </div>
+    </div>
+  </div>
+</div>
+
 <script>
   // ========== DIAMOND RANDOMIZATION ==========
   function rand(min, max) { return min + Math.random() * (max - min); }
@@ -1448,6 +1658,20 @@
   const jobDescription = document.getElementById('jobDescription');
   const jobBack = document.getElementById('jobBack');
 
+  // Job create form elements
+  const jobCreate = document.getElementById('jobCreate');
+  const jobCreateBack = document.getElementById('jobCreateBack');
+  const jobTitleInput = document.getElementById('jobTitleInput');
+  const jobDescInput = document.getElementById('jobDescInput');
+  const salaryMin = document.getElementById('salaryMin');
+  const salaryMax = document.getElementById('salaryMax');
+  const commuteSelect = document.getElementById('commuteSelect');
+  const locationInput = document.getElementById('locationInput');
+  const jobTypeSelect = document.getElementById('jobTypeSelect');
+  const saveJobBtn = document.getElementById('saveJobBtn');
+  const deleteJobBtn = document.getElementById('deleteJobBtn');
+  const tileNew = document.querySelector('.tile-new');
+
   let savedScrollY = 0;
   let isAnimating = false;
 
@@ -1457,76 +1681,261 @@
     return label.innerHTML.replace(/<br\s*\/?>/gi, ' ').replace(/<[^>]*>/g, '').trim();
   }
 
+  // Build meta HTML, skipping empty fields
+  function buildMetaHTML(data) {
+    const lines = [];
+    if (data.department) lines.push(`<div>Department: ${data.department}</div>`);
+    if (data.location) lines.push(`<div>Location: ${data.location}</div>`);
+    if (data.level) lines.push(`<div>Level: ${data.level}</div>`);
+    if (data.salary) lines.push(`<div>Salary Range ${data.salary}</div>`);
+    return lines.join('\n');
+  }
+
+  // Shared function: open job detail from a tile
+  function openJobDetail(tile, e) {
+    if (isAnimating) return;
+    isAnimating = true;
+
+    const title = getTileTitle(tile);
+    const data = jobData[title];
+    if (!data) { isAnimating = false; return; }
+
+    // Populate job detail
+    jobTitle.textContent = title;
+    jobCount.textContent = data.count;
+    jobMeta.innerHTML = buildMetaHTML(data);
+    jobDescription.textContent = data.description;
+
+    // Calculate transform-origin from tile center relative to grid
+    const tileRect = tile.getBoundingClientRect();
+    const gridRect = grid.getBoundingClientRect();
+    const originX = (tileRect.left + tileRect.width / 2) - gridRect.left;
+    const originY = (tileRect.top + tileRect.height / 2) - gridRect.top;
+    grid.style.transformOrigin = `${originX}px ${originY}px`;
+
+    // Set job detail transform-origin to cursor position (viewport coords)
+    jobDetail.style.transformOrigin = `${e.clientX}px ${e.clientY}px`;
+
+    // Save scroll position
+    savedScrollY = window.scrollY;
+
+    // Start zoom-in
+    grid.classList.add('zooming-out');
+    jobDetail.classList.add('active');
+
+    grid.addEventListener('transitionend', function handler(ev) {
+      if (ev.propertyName !== 'opacity') return;
+      grid.removeEventListener('transitionend', handler);
+      grid.classList.add('zoomed');
+      window.scrollTo(0, 0);
+      isAnimating = false;
+    });
+  }
+
   // Click handler for active tiles
   document.querySelectorAll('.tile:not(.disabled):not(.tile-new)').forEach(tile => {
-    tile.addEventListener('click', (e) => {
-      if (isAnimating) return;
-      isAnimating = true;
-
-      const title = getTileTitle(tile);
-      const data = jobData[title];
-      if (!data) { isAnimating = false; return; }
-
-      // Populate job detail
-      jobTitle.textContent = title;
-      jobCount.textContent = data.count;
-      jobMeta.innerHTML = `
-        <div>Department: ${data.department}</div>
-        <div>Location: ${data.location}</div>
-        <div>Level: ${data.level}</div>
-        <div>Salary Range ${data.salary}</div>
-      `;
-      jobDescription.textContent = data.description;
-
-      // Calculate transform-origin from tile center relative to grid
-      const tileRect = tile.getBoundingClientRect();
-      const gridRect = grid.getBoundingClientRect();
-      const originX = (tileRect.left + tileRect.width / 2) - gridRect.left;
-      const originY = (tileRect.top + tileRect.height / 2) - gridRect.top;
-      grid.style.transformOrigin = `${originX}px ${originY}px`;
-
-      // Set job detail transform-origin to cursor position (viewport coords)
-      jobDetail.style.transformOrigin = `${e.clientX}px ${e.clientY}px`;
-
-      // Save scroll position
-      savedScrollY = window.scrollY;
-
-      // Start zoom-in
-      grid.classList.add('zooming-out');
-      jobDetail.classList.add('active');
-
-      grid.addEventListener('transitionend', function handler(e) {
-        if (e.propertyName !== 'opacity') return;
-        grid.removeEventListener('transitionend', handler);
-        grid.classList.add('zoomed');
-        window.scrollTo(0, 0);
-        isAnimating = false;
-      });
-    });
+    tile.addEventListener('click', (e) => openJobDetail(tile, e));
   });
 
-  // Back button handler
+  // Back button handler (job detail)
   jobBack.addEventListener('click', () => {
     if (isAnimating) return;
     isAnimating = true;
 
-    // Start zoom-out
     grid.classList.remove('zoomed');
     jobDetail.classList.add('zooming-out');
 
-    // Small delay to let visibility change take effect before animating
     requestAnimationFrame(() => {
       grid.classList.remove('zooming-out');
       jobDetail.classList.remove('active');
 
       window.scrollTo(0, savedScrollY);
 
-      grid.addEventListener('transitionend', function handler(e) {
-        if (e.propertyName !== 'opacity') return;
+      grid.addEventListener('transitionend', function handler(ev) {
+        if (ev.propertyName !== 'opacity') return;
         grid.removeEventListener('transitionend', handler);
         jobDetail.classList.remove('zooming-out');
         isAnimating = false;
       });
+    });
+  });
+
+  // ========== NEW JOB CREATE LOGIC ==========
+
+  // Click handler for + tile → zoom into create form
+  tileNew.addEventListener('click', (e) => {
+    if (isAnimating) return;
+    isAnimating = true;
+
+    // Reset form fields
+    jobTitleInput.value = '';
+    jobDescInput.value = '';
+    salaryMin.value = '';
+    salaryMax.value = '';
+    commuteSelect.selectedIndex = 0;
+    locationInput.value = '';
+    jobTypeSelect.selectedIndex = 0;
+
+    // Calculate transform-origin from tile center
+    const tileRect = tileNew.getBoundingClientRect();
+    const gridRect = grid.getBoundingClientRect();
+    const originX = (tileRect.left + tileRect.width / 2) - gridRect.left;
+    const originY = (tileRect.top + tileRect.height / 2) - gridRect.top;
+    grid.style.transformOrigin = `${originX}px ${originY}px`;
+
+    // Set create form transform-origin to cursor position
+    jobCreate.style.transformOrigin = `${e.clientX}px ${e.clientY}px`;
+
+    // Save scroll position
+    savedScrollY = window.scrollY;
+
+    // Start zoom-in
+    grid.classList.add('zooming-out');
+    jobCreate.classList.add('active');
+
+    grid.addEventListener('transitionend', function handler(ev) {
+      if (ev.propertyName !== 'opacity') return;
+      grid.removeEventListener('transitionend', handler);
+      grid.classList.add('zoomed');
+      window.scrollTo(0, 0);
+      isAnimating = false;
+      jobTitleInput.focus();
+    });
+  });
+
+  // Back button from create form
+  jobCreateBack.addEventListener('click', () => {
+    if (isAnimating) return;
+    isAnimating = true;
+
+    grid.classList.remove('zoomed');
+    jobCreate.classList.add('zooming-out');
+
+    requestAnimationFrame(() => {
+      grid.classList.remove('zooming-out');
+      jobCreate.classList.remove('active');
+
+      window.scrollTo(0, savedScrollY);
+
+      grid.addEventListener('transitionend', function handler(ev) {
+        if (ev.propertyName !== 'opacity') return;
+        grid.removeEventListener('transitionend', handler);
+        jobCreate.classList.remove('zooming-out');
+        isAnimating = false;
+      });
+    });
+  });
+
+  // Delete Job button → same as back (job not saved yet)
+  deleteJobBtn.addEventListener('click', () => {
+    jobCreateBack.click();
+  });
+
+  // Save and Create Job Target
+  saveJobBtn.addEventListener('click', () => {
+    const title = jobTitleInput.value.trim();
+    if (!title) {
+      jobTitleInput.style.borderBottomColor = '#e535e5';
+      setTimeout(() => { jobTitleInput.style.borderBottomColor = ''; }, 1000);
+      jobTitleInput.focus();
+      return;
+    }
+
+    // Build display values
+    const commute = commuteSelect.value;
+    const loc = locationInput.value.trim();
+    const displayLocation = loc
+      ? (commute ? `${loc} (${commute})` : loc)
+      : (commute || '');
+
+    const sMin = salaryMin.value.trim();
+    const sMax = salaryMax.value.trim();
+    let displaySalary = '';
+    if (sMin && sMax) {
+      displaySalary = `${sMin} \u2013 ${sMax}`;
+    } else if (sMin) {
+      displaySalary = `${sMin}+`;
+    } else if (sMax) {
+      displaySalary = `Up to ${sMax}`;
+    }
+
+    // Create jobData entry
+    const newJob = {
+      count: 0,
+      department: '',
+      location: displayLocation,
+      level: jobTypeSelect.value || '',
+      salary: displaySalary,
+      description: jobDescInput.value.trim()
+    };
+    jobData[title] = newJob;
+
+    // --- Create new tile DOM element ---
+    const newTile = document.createElement('div');
+    newTile.className = 'tile';
+
+    // Split long titles across two lines
+    let labelHTML = title;
+    if (title.length > 18) {
+      const words = title.split(' ');
+      const mid = Math.ceil(words.length / 2);
+      labelHTML = words.slice(0, mid).join(' ') + '<br>' + words.slice(mid).join(' ');
+    }
+
+    newTile.innerHTML = `
+      <div class="tile-shape">
+        <div class="hex-border"></div>
+        <div class="hex-fill"></div>
+      </div>
+      <div class="tile-content">
+        <span class="tile-number">0</span>
+        <div class="mini-stats">
+          <div class="mini-stat-row">
+            <span class="mini-stat-num">0</span>
+            <span class="mini-stat-divider"></span>
+            <span class="mini-stat-label">Candidates</span>
+          </div>
+          <div class="mini-stat-row">
+            <span class="mini-stat-num">0</span>
+            <span class="mini-stat-divider"></span>
+            <span class="mini-stat-label">Shortlist</span>
+          </div>
+          <div class="mini-stat-row">
+            <span class="mini-stat-num">0</span>
+            <span class="mini-stat-divider"></span>
+            <span class="mini-stat-label">Imported</span>
+          </div>
+        </div>
+      </div>
+      <div class="tile-label">${labelHTML}</div>
+    `;
+
+    // Insert after + tile (position 2 in grid)
+    tileNew.after(newTile);
+
+    // Attach click handler to new tile
+    newTile.addEventListener('click', (e) => openJobDetail(newTile, e));
+
+    // --- Snap from create form to job detail summary ---
+    jobTitle.textContent = title;
+    jobCount.textContent = '0';
+    jobMeta.innerHTML = buildMetaHTML(newJob);
+    jobDescription.textContent = newJob.description;
+
+    // Instant snap: disable transitions, swap panels
+    jobCreate.style.transition = 'none';
+    jobDetail.style.transition = 'none';
+
+    jobCreate.classList.remove('active');
+    jobDetail.classList.add('active');
+    jobDetail.style.transform = 'scale(1)';
+    jobDetail.style.opacity = '1';
+
+    // Force reflow then re-enable transitions
+    void jobDetail.offsetHeight;
+    requestAnimationFrame(() => {
+      jobCreate.style.transition = '';
+      jobDetail.style.transition = '';
     });
   });
 </script>
