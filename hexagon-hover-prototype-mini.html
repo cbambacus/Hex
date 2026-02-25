@@ -1,0 +1,1091 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Skill Recruiter</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #000;
+    min-height: 100vh;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    color: #fff;
+  }
+
+  /* ========== HEADER ========== */
+  .header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    padding: 20px 32px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: #000;
+    z-index: 100;
+  }
+
+  .header-dot {
+    width: 14px;
+    height: 14px;
+    background: #e535e5;
+    border-radius: 2px;
+  }
+
+  .header-title {
+    font-size: 20px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+  }
+
+  /* ========== GRID ========== */
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 0;
+    padding: 74px 40px 60px;
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+
+  /* ========== TILE CONTAINER ========== */
+  .tile {
+    position: relative;
+    width: 100%;
+    height: 280px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    cursor: pointer;
+  }
+
+  .tile:hover {
+    z-index: 10;
+  }
+
+  /* ========== SHAPE WRAPPER ========== */
+  .tile-shape {
+    position: absolute;
+    bottom: 56px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 160px;
+    height: 174px;
+  }
+
+  /* ========== CONTENT LAYER (doesn't rotate) ========== */
+  .tile-content {
+    position: absolute;
+    bottom: 56px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 160px;
+    height: 174px;
+    pointer-events: none;
+  }
+
+  /* ========== HEXAGON ========== */
+  .hex-border {
+    position: absolute;
+    inset: 0;
+    clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+    background: rgba(255, 255, 255, 0.4);
+    transition: background 0.25s ease;
+  }
+
+  .hex-fill {
+    position: absolute;
+    inset: 1.5px;
+    clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+    background: #000;
+  }
+
+  /* ========== NUMBER ========== */
+  .tile-number {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 52px;
+    font-weight: 300;
+    color: rgba(255, 255, 255, 0.85);
+    z-index: 2;
+    transition: opacity 0.15s ease;
+    pointer-events: none;
+  }
+
+  /* ========== "+" icon for New Rec tile ========== */
+  .tile-icon {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+    pointer-events: none;
+  }
+
+  .tile-icon svg {
+    width: 52px;
+    height: 52px;
+    stroke: rgba(255, 255, 255, 0.7);
+    stroke-width: 1;
+    transition: none;
+  }
+
+  /* ========== MINI STATS (in-hex hover content) ========== */
+  .mini-stats {
+    position: absolute;
+    inset: 0;
+    z-index: 3;
+    opacity: 0;
+    transition: opacity 0.15s ease;
+    pointer-events: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 0 28px 0 8px;
+  }
+
+  .mini-stat-row {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    width: 100%;
+  }
+
+  .mini-stat-num {
+    font-size: 18px;
+    font-weight: 600;
+    color: #e535e5;
+    width: 34px;
+    text-align: right;
+    flex-shrink: 0;
+  }
+
+  .mini-stat-divider {
+    width: 1px;
+    height: 16px;
+    background: #e535e5;
+    opacity: 0.5;
+    flex-shrink: 0;
+  }
+
+  .mini-stat-label {
+    font-size: 10px;
+    font-weight: 500;
+    color: #e535e5;
+    text-align: left;
+    line-height: 1.2;
+    white-space: nowrap;
+  }
+
+  /* ========== LABEL ========== */
+  .tile-label {
+    color: #fff;
+    font-size: 15px;
+    font-weight: 500;
+    text-align: center;
+    line-height: 1.35;
+    height: 2.7em; /* reserve 2 lines */
+  }
+
+  /* ========================================
+     HOVER — active tiles only (no morph, no expand)
+     ======================================== */
+
+  .tile:not(.disabled):not(.tile-new):hover .hex-border {
+    background: #e535e5;
+  }
+
+  .tile:not(.disabled):not(.tile-new):hover .tile-number {
+    opacity: 0;
+    transition: opacity 0.2s ease 0.05s;
+  }
+
+  .tile:not(.disabled):not(.tile-new):hover .tile-label {
+    color: #e535e5;
+  }
+
+  .tile:not(.disabled):not(.tile-new):hover .mini-stats {
+    opacity: 1;
+    transition: opacity 0.3s ease 0.15s;
+    pointer-events: auto;
+  }
+
+  /* ========== NEW REC — magenta highlight only, instant snap ========== */
+  .tile-new .hex-border {
+    transition: none;
+  }
+
+  .tile-new .tile-icon svg {
+    transition: none;
+  }
+
+  .tile-new:hover .hex-border {
+    background: #e535e5;
+  }
+
+  .tile-new:hover .tile-icon svg {
+    stroke: #e535e5;
+  }
+
+  /* ========== REVERSE (mouse-out) ========== */
+  .tile .hex-border {
+    transition: background 0.3s ease 0.1s;
+  }
+
+  .tile .tile-number {
+    transition: opacity 0.15s ease;
+  }
+
+  .tile .mini-stats {
+    transition: opacity 0.15s ease;
+  }
+
+  /* ========== DISABLED TILES ========== */
+  .tile.disabled {
+    cursor: default;
+  }
+
+  /* No stroke — border and fill are the same grey */
+  .tile.disabled .hex-border {
+    background: #1a1a1a;
+  }
+
+  .tile.disabled .hex-fill {
+    background: #1a1a1a;
+  }
+
+  .tile.disabled .tile-number {
+    color: #000;
+  }
+
+  .tile.disabled .tile-label {
+    color: rgba(255, 255, 255, 0.25);
+  }
+
+  /* ========== ACTIVITY DIAMONDS ========== */
+  .tile-diamonds {
+    position: absolute;
+    top: 46px;
+    right: 54px;
+    width: 44px;
+    height: 52px;
+    z-index: 5;
+    pointer-events: none;
+  }
+
+  .diamond {
+    position: absolute;
+    background: #e535e5;
+    clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+  }
+
+  @keyframes diamond-pulse {
+    0%, 100% { transform: scale(0.9); }
+    50% { transform: scale(1.1); }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-dot"></div>
+  <div class="header-title">Skill Recruiter</div>
+</div>
+
+<div class="grid">
+
+  <!-- Row 1 -->
+
+  <div class="tile tile-new">
+    <div class="tile-shape">
+      <div class="hex-border"></div>
+      <div class="hex-fill"></div>
+    </div>
+    <div class="tile-content">
+      <div class="tile-icon"><svg viewBox="0 0 40 40" fill="none"><path d="M17 2 L23 2 L23 17 L38 17 L38 23 L23 23 L23 38 L17 38 L17 23 L2 23 L2 17 L17 17 Z"/></svg></div>
+    </div>
+    <div class="tile-label">New Rec</div>
+  </div>
+
+  <div class="tile">
+    <div class="tile-shape">
+      <div class="hex-border"></div>
+      <div class="hex-fill"></div>
+    </div>
+    <div class="tile-content">
+      <span class="tile-number">0</span>
+      <div class="mini-stats">
+        <div class="mini-stat-row">
+          <span class="mini-stat-num">0</span>
+          <span class="mini-stat-divider"></span>
+          <span class="mini-stat-label">Candidates Found</span>
+        </div>
+        <div class="mini-stat-row">
+          <span class="mini-stat-num">0</span>
+          <span class="mini-stat-divider"></span>
+          <span class="mini-stat-label">Added to Shortlist</span>
+        </div>
+        <div class="mini-stat-row">
+          <span class="mini-stat-num">0</span>
+          <span class="mini-stat-divider"></span>
+          <span class="mini-stat-label">Sent to Workday</span>
+        </div>
+      </div>
+    </div>
+    <div class="tile-label">Senior Brand<br>Strategist</div>
+  </div>
+
+  <div class="tile">
+    <div class="tile-shape">
+      <div class="hex-border"></div>
+      <div class="hex-fill"></div>
+    </div>
+    <div class="tile-content">
+      <span class="tile-number">35</span>
+      <div class="mini-stats">
+        <div class="mini-stat-row">
+          <span class="mini-stat-num">35</span>
+          <span class="mini-stat-divider"></span>
+          <span class="mini-stat-label">Candidates Found</span>
+        </div>
+        <div class="mini-stat-row">
+          <span class="mini-stat-num">16</span>
+          <span class="mini-stat-divider"></span>
+          <span class="mini-stat-label">Added to Shortlist</span>
+        </div>
+        <div class="mini-stat-row">
+          <span class="mini-stat-num">6</span>
+          <span class="mini-stat-divider"></span>
+          <span class="mini-stat-label">Sent to Workday</span>
+        </div>
+      </div>
+    </div>
+    <div class="tile-label">Marketing Analytics<br>Manager</div>
+  </div>
+
+  <div class="tile">
+    <div class="tile-diamonds">
+      <div class="diamond diamond-1"></div>
+      <div class="diamond diamond-2"></div>
+      <div class="diamond diamond-3"></div>
+      <div class="diamond diamond-4"></div>
+    </div>
+    <div class="tile-shape">
+      <div class="hex-border"></div>
+      <div class="hex-fill"></div>
+    </div>
+    <div class="tile-content">
+      <span class="tile-number">22</span>
+      <div class="mini-stats">
+        <div class="mini-stat-row">
+          <span class="mini-stat-num">22</span>
+          <span class="mini-stat-divider"></span>
+          <span class="mini-stat-label">Candidates Found</span>
+        </div>
+        <div class="mini-stat-row">
+          <span class="mini-stat-num">8</span>
+          <span class="mini-stat-divider"></span>
+          <span class="mini-stat-label">Added to Shortlist</span>
+        </div>
+        <div class="mini-stat-row">
+          <span class="mini-stat-num">3</span>
+          <span class="mini-stat-divider"></span>
+          <span class="mini-stat-label">Sent to Workday</span>
+        </div>
+      </div>
+    </div>
+    <div class="tile-label">Dev Team Lead</div>
+  </div>
+
+  <div class="tile">
+    <div class="tile-diamonds">
+      <div class="diamond diamond-1"></div>
+      <div class="diamond diamond-2"></div>
+      <div class="diamond diamond-3"></div>
+      <div class="diamond diamond-4"></div>
+    </div>
+    <div class="tile-shape">
+      <div class="hex-border"></div>
+      <div class="hex-fill"></div>
+    </div>
+    <div class="tile-content">
+      <span class="tile-number">94</span>
+      <div class="mini-stats">
+        <div class="mini-stat-row">
+          <span class="mini-stat-num">94</span>
+          <span class="mini-stat-divider"></span>
+          <span class="mini-stat-label">Candidates Found</span>
+        </div>
+        <div class="mini-stat-row">
+          <span class="mini-stat-num">38</span>
+          <span class="mini-stat-divider"></span>
+          <span class="mini-stat-label">Added to Shortlist</span>
+        </div>
+        <div class="mini-stat-row">
+          <span class="mini-stat-num">12</span>
+          <span class="mini-stat-divider"></span>
+          <span class="mini-stat-label">Sent to Workday</span>
+        </div>
+      </div>
+    </div>
+    <div class="tile-label">Sr Product Manager</div>
+  </div>
+
+  <!-- Row 2 -->
+
+  <div class="tile">
+    <div class="tile-shape">
+      <div class="hex-border"></div>
+      <div class="hex-fill"></div>
+    </div>
+    <div class="tile-content">
+      <span class="tile-number">115</span>
+      <div class="mini-stats">
+        <div class="mini-stat-row">
+          <span class="mini-stat-num">115</span>
+          <span class="mini-stat-divider"></span>
+          <span class="mini-stat-label">Candidates Found</span>
+        </div>
+        <div class="mini-stat-row">
+          <span class="mini-stat-num">42</span>
+          <span class="mini-stat-divider"></span>
+          <span class="mini-stat-label">Added to Shortlist</span>
+        </div>
+        <div class="mini-stat-row">
+          <span class="mini-stat-num">11</span>
+          <span class="mini-stat-divider"></span>
+          <span class="mini-stat-label">Sent to Workday</span>
+        </div>
+      </div>
+    </div>
+    <div class="tile-label">VP, Corporate<br>Communications</div>
+  </div>
+
+  <div class="tile">
+    <div class="tile-diamonds">
+      <div class="diamond diamond-1"></div>
+      <div class="diamond diamond-2"></div>
+      <div class="diamond diamond-3"></div>
+      <div class="diamond diamond-4"></div>
+    </div>
+    <div class="tile-shape">
+      <div class="hex-border"></div>
+      <div class="hex-fill"></div>
+    </div>
+    <div class="tile-content">
+      <span class="tile-number">64</span>
+      <div class="mini-stats">
+        <div class="mini-stat-row">
+          <span class="mini-stat-num">64</span>
+          <span class="mini-stat-divider"></span>
+          <span class="mini-stat-label">Candidates Found</span>
+        </div>
+        <div class="mini-stat-row">
+          <span class="mini-stat-num">25</span>
+          <span class="mini-stat-divider"></span>
+          <span class="mini-stat-label">Added to Shortlist</span>
+        </div>
+        <div class="mini-stat-row">
+          <span class="mini-stat-num">8</span>
+          <span class="mini-stat-divider"></span>
+          <span class="mini-stat-label">Sent to Workday</span>
+        </div>
+      </div>
+    </div>
+    <div class="tile-label">UX Content Designer</div>
+  </div>
+
+  <div class="tile">
+    <div class="tile-shape">
+      <div class="hex-border"></div>
+      <div class="hex-fill"></div>
+    </div>
+    <div class="tile-content">
+      <span class="tile-number">48</span>
+      <div class="mini-stats">
+        <div class="mini-stat-row">
+          <span class="mini-stat-num">48</span>
+          <span class="mini-stat-divider"></span>
+          <span class="mini-stat-label">Candidates Found</span>
+        </div>
+        <div class="mini-stat-row">
+          <span class="mini-stat-num">20</span>
+          <span class="mini-stat-divider"></span>
+          <span class="mini-stat-label">Added to Shortlist</span>
+        </div>
+        <div class="mini-stat-row">
+          <span class="mini-stat-num">7</span>
+          <span class="mini-stat-divider"></span>
+          <span class="mini-stat-label">Sent to Workday</span>
+        </div>
+      </div>
+    </div>
+    <div class="tile-label">Staff Software<br>Engineer</div>
+  </div>
+
+  <div class="tile">
+    <div class="tile-shape">
+      <div class="hex-border"></div>
+      <div class="hex-fill"></div>
+    </div>
+    <div class="tile-content">
+      <span class="tile-number">17</span>
+      <div class="mini-stats">
+        <div class="mini-stat-row">
+          <span class="mini-stat-num">17</span>
+          <span class="mini-stat-divider"></span>
+          <span class="mini-stat-label">Candidates Found</span>
+        </div>
+        <div class="mini-stat-row">
+          <span class="mini-stat-num">5</span>
+          <span class="mini-stat-divider"></span>
+          <span class="mini-stat-label">Added to Shortlist</span>
+        </div>
+        <div class="mini-stat-row">
+          <span class="mini-stat-num">2</span>
+          <span class="mini-stat-divider"></span>
+          <span class="mini-stat-label">Sent to Workday</span>
+        </div>
+      </div>
+    </div>
+    <div class="tile-label">Head of People Ops</div>
+  </div>
+
+  <div class="tile">
+    <div class="tile-shape">
+      <div class="hex-border"></div>
+      <div class="hex-fill"></div>
+    </div>
+    <div class="tile-content">
+      <span class="tile-number">83</span>
+      <div class="mini-stats">
+        <div class="mini-stat-row">
+          <span class="mini-stat-num">83</span>
+          <span class="mini-stat-divider"></span>
+          <span class="mini-stat-label">Candidates Found</span>
+        </div>
+        <div class="mini-stat-row">
+          <span class="mini-stat-num">34</span>
+          <span class="mini-stat-divider"></span>
+          <span class="mini-stat-label">Added to Shortlist</span>
+        </div>
+        <div class="mini-stat-row">
+          <span class="mini-stat-num">9</span>
+          <span class="mini-stat-divider"></span>
+          <span class="mini-stat-label">Sent to Workday</span>
+        </div>
+      </div>
+    </div>
+    <div class="tile-label">Data Science Lead</div>
+  </div>
+
+  <!-- Row 3 -->
+
+  <div class="tile">
+    <div class="tile-shape">
+      <div class="hex-border"></div>
+      <div class="hex-fill"></div>
+    </div>
+    <div class="tile-content">
+      <span class="tile-number">29</span>
+      <div class="mini-stats">
+        <div class="mini-stat-row">
+          <span class="mini-stat-num">29</span>
+          <span class="mini-stat-divider"></span>
+          <span class="mini-stat-label">Candidates Found</span>
+        </div>
+        <div class="mini-stat-row">
+          <span class="mini-stat-num">11</span>
+          <span class="mini-stat-divider"></span>
+          <span class="mini-stat-label">Added to Shortlist</span>
+        </div>
+        <div class="mini-stat-row">
+          <span class="mini-stat-num">4</span>
+          <span class="mini-stat-divider"></span>
+          <span class="mini-stat-label">Sent to Workday</span>
+        </div>
+      </div>
+    </div>
+    <div class="tile-label">Growth Marketing<br>Manager</div>
+  </div>
+
+  <div class="tile">
+    <div class="tile-diamonds">
+      <div class="diamond diamond-1"></div>
+      <div class="diamond diamond-2"></div>
+      <div class="diamond diamond-3"></div>
+      <div class="diamond diamond-4"></div>
+    </div>
+    <div class="tile-shape">
+      <div class="hex-border"></div>
+      <div class="hex-fill"></div>
+    </div>
+    <div class="tile-content">
+      <span class="tile-number">41</span>
+      <div class="mini-stats">
+        <div class="mini-stat-row">
+          <span class="mini-stat-num">41</span>
+          <span class="mini-stat-divider"></span>
+          <span class="mini-stat-label">Candidates Found</span>
+        </div>
+        <div class="mini-stat-row">
+          <span class="mini-stat-num">15</span>
+          <span class="mini-stat-divider"></span>
+          <span class="mini-stat-label">Added to Shortlist</span>
+        </div>
+        <div class="mini-stat-row">
+          <span class="mini-stat-num">5</span>
+          <span class="mini-stat-divider"></span>
+          <span class="mini-stat-label">Sent to Workday</span>
+        </div>
+      </div>
+    </div>
+    <div class="tile-label">Principal Designer</div>
+  </div>
+
+  <div class="tile">
+    <div class="tile-shape">
+      <div class="hex-border"></div>
+      <div class="hex-fill"></div>
+    </div>
+    <div class="tile-content">
+      <span class="tile-number">156</span>
+      <div class="mini-stats">
+        <div class="mini-stat-row">
+          <span class="mini-stat-num">156</span>
+          <span class="mini-stat-divider"></span>
+          <span class="mini-stat-label">Candidates Found</span>
+        </div>
+        <div class="mini-stat-row">
+          <span class="mini-stat-num">58</span>
+          <span class="mini-stat-divider"></span>
+          <span class="mini-stat-label">Added to Shortlist</span>
+        </div>
+        <div class="mini-stat-row">
+          <span class="mini-stat-num">14</span>
+          <span class="mini-stat-divider"></span>
+          <span class="mini-stat-label">Sent to Workday</span>
+        </div>
+      </div>
+    </div>
+    <div class="tile-label">DevOps Engineer II</div>
+  </div>
+
+  <div class="tile">
+    <div class="tile-shape">
+      <div class="hex-border"></div>
+      <div class="hex-fill"></div>
+    </div>
+    <div class="tile-content">
+      <span class="tile-number">72</span>
+      <div class="mini-stats">
+        <div class="mini-stat-row">
+          <span class="mini-stat-num">72</span>
+          <span class="mini-stat-divider"></span>
+          <span class="mini-stat-label">Candidates Found</span>
+        </div>
+        <div class="mini-stat-row">
+          <span class="mini-stat-num">28</span>
+          <span class="mini-stat-divider"></span>
+          <span class="mini-stat-label">Added to Shortlist</span>
+        </div>
+        <div class="mini-stat-row">
+          <span class="mini-stat-num">9</span>
+          <span class="mini-stat-divider"></span>
+          <span class="mini-stat-label">Sent to Workday</span>
+        </div>
+      </div>
+    </div>
+    <div class="tile-label">Director of Sales</div>
+  </div>
+
+  <div class="tile">
+    <div class="tile-shape">
+      <div class="hex-border"></div>
+      <div class="hex-fill"></div>
+    </div>
+    <div class="tile-content">
+      <span class="tile-number">38</span>
+      <div class="mini-stats">
+        <div class="mini-stat-row">
+          <span class="mini-stat-num">38</span>
+          <span class="mini-stat-divider"></span>
+          <span class="mini-stat-label">Candidates Found</span>
+        </div>
+        <div class="mini-stat-row">
+          <span class="mini-stat-num">14</span>
+          <span class="mini-stat-divider"></span>
+          <span class="mini-stat-label">Added to Shortlist</span>
+        </div>
+        <div class="mini-stat-row">
+          <span class="mini-stat-num">5</span>
+          <span class="mini-stat-divider"></span>
+          <span class="mini-stat-label">Sent to Workday</span>
+        </div>
+      </div>
+    </div>
+    <div class="tile-label">Mobile Engineer (iOS)</div>
+  </div>
+
+  <!-- Row 4 -->
+
+  <div class="tile">
+    <div class="tile-shape">
+      <div class="hex-border"></div>
+      <div class="hex-fill"></div>
+    </div>
+    <div class="tile-content">
+      <span class="tile-number">19</span>
+      <div class="mini-stats">
+        <div class="mini-stat-row">
+          <span class="mini-stat-num">19</span>
+          <span class="mini-stat-divider"></span>
+          <span class="mini-stat-label">Candidates Found</span>
+        </div>
+        <div class="mini-stat-row">
+          <span class="mini-stat-num">7</span>
+          <span class="mini-stat-divider"></span>
+          <span class="mini-stat-label">Added to Shortlist</span>
+        </div>
+        <div class="mini-stat-row">
+          <span class="mini-stat-num">2</span>
+          <span class="mini-stat-divider"></span>
+          <span class="mini-stat-label">Sent to Workday</span>
+        </div>
+      </div>
+    </div>
+    <div class="tile-label">Content Strategy<br>Lead</div>
+  </div>
+
+  <div class="tile">
+    <div class="tile-shape">
+      <div class="hex-border"></div>
+      <div class="hex-fill"></div>
+    </div>
+    <div class="tile-content">
+      <span class="tile-number">8</span>
+      <div class="mini-stats">
+        <div class="mini-stat-row">
+          <span class="mini-stat-num">8</span>
+          <span class="mini-stat-divider"></span>
+          <span class="mini-stat-label">Candidates Found</span>
+        </div>
+        <div class="mini-stat-row">
+          <span class="mini-stat-num">3</span>
+          <span class="mini-stat-divider"></span>
+          <span class="mini-stat-label">Added to Shortlist</span>
+        </div>
+        <div class="mini-stat-row">
+          <span class="mini-stat-num">1</span>
+          <span class="mini-stat-divider"></span>
+          <span class="mini-stat-label">Sent to Workday</span>
+        </div>
+      </div>
+    </div>
+    <div class="tile-label">Security Architect</div>
+  </div>
+
+  <div class="tile">
+    <div class="tile-shape">
+      <div class="hex-border"></div>
+      <div class="hex-fill"></div>
+    </div>
+    <div class="tile-content">
+      <span class="tile-number">53</span>
+      <div class="mini-stats">
+        <div class="mini-stat-row">
+          <span class="mini-stat-num">53</span>
+          <span class="mini-stat-divider"></span>
+          <span class="mini-stat-label">Candidates Found</span>
+        </div>
+        <div class="mini-stat-row">
+          <span class="mini-stat-num">21</span>
+          <span class="mini-stat-divider"></span>
+          <span class="mini-stat-label">Added to Shortlist</span>
+        </div>
+        <div class="mini-stat-row">
+          <span class="mini-stat-num">6</span>
+          <span class="mini-stat-divider"></span>
+          <span class="mini-stat-label">Sent to Workday</span>
+        </div>
+      </div>
+    </div>
+    <div class="tile-label">Research Scientist</div>
+  </div>
+
+  <div class="tile">
+    <div class="tile-shape">
+      <div class="hex-border"></div>
+      <div class="hex-fill"></div>
+    </div>
+    <div class="tile-content">
+      <span class="tile-number">67</span>
+      <div class="mini-stats">
+        <div class="mini-stat-row">
+          <span class="mini-stat-num">67</span>
+          <span class="mini-stat-divider"></span>
+          <span class="mini-stat-label">Candidates Found</span>
+        </div>
+        <div class="mini-stat-row">
+          <span class="mini-stat-num">24</span>
+          <span class="mini-stat-divider"></span>
+          <span class="mini-stat-label">Added to Shortlist</span>
+        </div>
+        <div class="mini-stat-row">
+          <span class="mini-stat-num">7</span>
+          <span class="mini-stat-divider"></span>
+          <span class="mini-stat-label">Sent to Workday</span>
+        </div>
+      </div>
+    </div>
+    <div class="tile-label">Customer Success<br>Manager</div>
+  </div>
+
+  <div class="tile">
+    <div class="tile-diamonds">
+      <div class="diamond diamond-1"></div>
+      <div class="diamond diamond-2"></div>
+      <div class="diamond diamond-3"></div>
+      <div class="diamond diamond-4"></div>
+    </div>
+    <div class="tile-shape">
+      <div class="hex-border"></div>
+      <div class="hex-fill"></div>
+    </div>
+    <div class="tile-content">
+      <span class="tile-number">112</span>
+      <div class="mini-stats">
+        <div class="mini-stat-row">
+          <span class="mini-stat-num">112</span>
+          <span class="mini-stat-divider"></span>
+          <span class="mini-stat-label">Candidates Found</span>
+        </div>
+        <div class="mini-stat-row">
+          <span class="mini-stat-num">45</span>
+          <span class="mini-stat-divider"></span>
+          <span class="mini-stat-label">Added to Shortlist</span>
+        </div>
+        <div class="mini-stat-row">
+          <span class="mini-stat-num">13</span>
+          <span class="mini-stat-divider"></span>
+          <span class="mini-stat-label">Sent to Workday</span>
+        </div>
+      </div>
+    </div>
+    <div class="tile-label">Frontend Engineer III</div>
+  </div>
+
+  <!-- Row 5 -->
+
+  <div class="tile">
+    <div class="tile-diamonds">
+      <div class="diamond diamond-1"></div>
+      <div class="diamond diamond-2"></div>
+      <div class="diamond diamond-3"></div>
+      <div class="diamond diamond-4"></div>
+    </div>
+    <div class="tile-shape">
+      <div class="hex-border"></div>
+      <div class="hex-fill"></div>
+    </div>
+    <div class="tile-content">
+      <span class="tile-number">26</span>
+      <div class="mini-stats">
+        <div class="mini-stat-row">
+          <span class="mini-stat-num">26</span>
+          <span class="mini-stat-divider"></span>
+          <span class="mini-stat-label">Candidates Found</span>
+        </div>
+        <div class="mini-stat-row">
+          <span class="mini-stat-num">10</span>
+          <span class="mini-stat-divider"></span>
+          <span class="mini-stat-label">Added to Shortlist</span>
+        </div>
+        <div class="mini-stat-row">
+          <span class="mini-stat-num">3</span>
+          <span class="mini-stat-divider"></span>
+          <span class="mini-stat-label">Sent to Workday</span>
+        </div>
+      </div>
+    </div>
+    <div class="tile-label">Talent Acquisition<br>Lead</div>
+  </div>
+
+  <div class="tile">
+    <div class="tile-shape">
+      <div class="hex-border"></div>
+      <div class="hex-fill"></div>
+    </div>
+    <div class="tile-content">
+      <span class="tile-number">44</span>
+      <div class="mini-stats">
+        <div class="mini-stat-row">
+          <span class="mini-stat-num">44</span>
+          <span class="mini-stat-divider"></span>
+          <span class="mini-stat-label">Candidates Found</span>
+        </div>
+        <div class="mini-stat-row">
+          <span class="mini-stat-num">18</span>
+          <span class="mini-stat-divider"></span>
+          <span class="mini-stat-label">Added to Shortlist</span>
+        </div>
+        <div class="mini-stat-row">
+          <span class="mini-stat-num">5</span>
+          <span class="mini-stat-divider"></span>
+          <span class="mini-stat-label">Sent to Workday</span>
+        </div>
+      </div>
+    </div>
+    <div class="tile-label">Platform Engineer</div>
+  </div>
+
+  <div class="tile">
+    <div class="tile-shape">
+      <div class="hex-border"></div>
+      <div class="hex-fill"></div>
+    </div>
+    <div class="tile-content">
+      <span class="tile-number">31</span>
+      <div class="mini-stats">
+        <div class="mini-stat-row">
+          <span class="mini-stat-num">31</span>
+          <span class="mini-stat-divider"></span>
+          <span class="mini-stat-label">Candidates Found</span>
+        </div>
+        <div class="mini-stat-row">
+          <span class="mini-stat-num">12</span>
+          <span class="mini-stat-divider"></span>
+          <span class="mini-stat-label">Added to Shortlist</span>
+        </div>
+        <div class="mini-stat-row">
+          <span class="mini-stat-num">4</span>
+          <span class="mini-stat-divider"></span>
+          <span class="mini-stat-label">Sent to Workday</span>
+        </div>
+      </div>
+    </div>
+    <div class="tile-label">Business Analyst Sr</div>
+  </div>
+
+  <!-- Disabled tiles (last 7) -->
+
+  <div class="tile disabled">
+    <div class="tile-shape">
+      <div class="hex-border"></div>
+      <div class="hex-fill"></div>
+    </div>
+    <div class="tile-content">
+      <span class="tile-number">185</span>
+    </div>
+    <div class="tile-label">Graphic Designer I</div>
+  </div>
+
+  <div class="tile disabled">
+    <div class="tile-shape">
+      <div class="hex-border"></div>
+      <div class="hex-fill"></div>
+    </div>
+    <div class="tile-content">
+      <span class="tile-number">24</span>
+    </div>
+    <div class="tile-label">Graphic Designer I</div>
+  </div>
+
+  <!-- Row 6 (all disabled) -->
+
+  <div class="tile disabled">
+    <div class="tile-shape">
+      <div class="hex-border"></div>
+      <div class="hex-fill"></div>
+    </div>
+    <div class="tile-content">
+      <span class="tile-number">12</span>
+    </div>
+    <div class="tile-label">Junior Copywriter</div>
+  </div>
+
+  <div class="tile disabled">
+    <div class="tile-shape">
+      <div class="hex-border"></div>
+      <div class="hex-fill"></div>
+    </div>
+    <div class="tile-content">
+      <span class="tile-number">47</span>
+    </div>
+    <div class="tile-label">Data Analyst II</div>
+  </div>
+
+  <div class="tile disabled">
+    <div class="tile-shape">
+      <div class="hex-border"></div>
+      <div class="hex-fill"></div>
+    </div>
+    <div class="tile-content">
+      <span class="tile-number">33</span>
+    </div>
+    <div class="tile-label">Admin Assistant</div>
+  </div>
+
+  <div class="tile disabled">
+    <div class="tile-shape">
+      <div class="hex-border"></div>
+      <div class="hex-fill"></div>
+    </div>
+    <div class="tile-content">
+      <span class="tile-number">89</span>
+    </div>
+    <div class="tile-label">QA Tester I</div>
+  </div>
+
+  <div class="tile disabled">
+    <div class="tile-shape">
+      <div class="hex-border"></div>
+      <div class="hex-fill"></div>
+    </div>
+    <div class="tile-content">
+      <span class="tile-number">56</span>
+    </div>
+    <div class="tile-label">Office Coordinator</div>
+  </div>
+
+</div>
+
+
+<script>
+  // Randomize diamond positions, sizes, and timing per tile
+  function rand(min, max) { return min + Math.random() * (max - min); }
+
+  document.querySelectorAll('.tile-diamonds').forEach(group => {
+    const diamonds = group.querySelectorAll('.diamond');
+    // Generate 4 non-overlapping positions scattered across the container
+    const positions = [];
+    diamonds.forEach((d, i) => {
+      // Scatter across quadrants to avoid clumping
+      const quadTop = i < 2 ? rand(0, 20) : rand(22, 42);
+      const quadRight = i % 2 === 0 ? rand(0, 16) : rand(18, 34);
+      const size = rand(7, 13);
+      const height = size * rand(1.2, 1.5); // taller than wide
+      const duration = rand(1.8, 2.3);
+      const delay = rand(-2, 0); // random phase offset
+
+      d.style.top = quadTop + 'px';
+      d.style.right = quadRight + 'px';
+      d.style.width = size + 'px';
+      d.style.height = Math.round(height) + 'px';
+      d.style.animation = `diamond-pulse ${duration.toFixed(2)}s ease-in-out ${delay.toFixed(2)}s infinite`;
+    });
+  });
+</script>
+
+</body>
+</html>

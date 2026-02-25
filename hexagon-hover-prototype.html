@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Skill Recruiter</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #000;
+    min-height: 100vh;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    color: #fff;
+  }
+
+  /* ========== HEADER ========== */
+  .header {
+    padding: 20px 32px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .header-dot {
+    width: 14px;
+    height: 14px;
+    background: #e535e5;
+    border-radius: 2px;
+  }
+
+  .header-title {
+    font-size: 20px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+  }
+
+  /* ========== GRID ========== */
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 0;
+    padding: 30px 40px 60px;
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+
+  /* ========== TILE CONTAINER ========== */
+  .tile {
+    position: relative;
+    width: 100%;
+    height: 280px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    cursor: pointer;
+  }
+
+  .tile:hover {
+    z-index: 10;
+  }
+
+  /* ========== SHAPE WRAPPER ========== */
+  .tile-shape {
+    position: absolute;
+    bottom: 56px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 160px;
+    height: 174px;
+    transition: width 0.45s cubic-bezier(0.4, 0, 0.2, 1),
+                height 0.45s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* ========== HEXAGON ========== */
+  .hex-border {
+    position: absolute;
+    inset: 0;
+    clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+    background: rgba(255, 255, 255, 0.4);
+    transition: clip-path 0.45s cubic-bezier(0.4, 0, 0.2, 1),
+                background 0.25s ease;
+  }
+
+  .hex-fill {
+    position: absolute;
+    inset: 1.5px;
+    clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+    background: #000;
+    transition: clip-path 0.45s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* ========== NUMBER ========== */
+  .tile-number {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 52px;
+    font-weight: 300;
+    color: rgba(255, 255, 255, 0.85);
+    z-index: 2;
+    transition: opacity 0.15s ease;
+    pointer-events: none;
+  }
+
+  /* ========== "+" icon for New Rec tile ========== */
+  .tile-icon {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+    pointer-events: none;
+  }
+
+  .tile-icon svg {
+    width: 52px;
+    height: 52px;
+    stroke: rgba(255, 255, 255, 0.7);
+    stroke-width: 1;
+    transition: none;
+  }
+
+  /* ========== EXPANDED CARD CONTENT ========== */
+  .card-content {
+    position: absolute;
+    inset: 0;
+    padding: 12px 14px;
+    z-index: 3;
+    opacity: 0;
+    transition: opacity 0.15s ease;
+    pointer-events: none;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .card-content p {
+    color: #d4d4d4;
+    font-size: 12px;
+    line-height: 1.5;
+    font-style: italic;
+    margin-bottom: 10px;
+  }
+
+  .card-content .next-label {
+    color: #d4d4d4;
+    font-size: 12px;
+    font-style: italic;
+    margin-bottom: 4px;
+  }
+
+  .card-content ul {
+    list-style: none;
+    margin-bottom: 0;
+  }
+
+  .card-content ul li {
+    color: #d4d4d4;
+    font-size: 11.5px;
+    font-style: italic;
+    line-height: 1.5;
+    padding-left: 14px;
+    position: relative;
+  }
+
+  .card-content ul li::before {
+    content: '+';
+    position: absolute;
+    left: 0;
+    color: #d4d4d4;
+  }
+
+  /* ========== LABEL ========== */
+  .tile-label {
+    color: #fff;
+    font-size: 15px;
+    font-weight: 500;
+    text-align: center;
+    line-height: 1.35;
+    height: 2.7em; /* reserve 2 lines */
+  }
+
+  /* ========================================
+     HOVER — active tiles only
+     ======================================== */
+
+  .tile:not(.disabled):not(.tile-new):hover .hex-border {
+    background: #e535e5;
+    clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 100% 100%, 0% 100%, 0% 0%);
+  }
+
+  .tile:not(.disabled):not(.tile-new):hover .hex-fill {
+    clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 100% 100%, 0% 100%, 0% 0%);
+  }
+
+  .tile:not(.disabled):not(.tile-new):hover .tile-number {
+    opacity: 0;
+    transition: opacity 0.2s ease 0.1s;
+  }
+
+  .tile:not(.disabled):not(.tile-new):hover .tile-shape {
+    width: 220px;
+    height: 184px;
+  }
+
+  .tile:not(.disabled):not(.tile-new):hover .card-content {
+    opacity: 1;
+    transition: opacity 0.35s ease 0.35s;
+    pointer-events: auto;
+  }
+
+  /* ========== NEW REC — magenta highlight only, instant snap ========== */
+  .tile-new .hex-border {
+    transition: none;
+  }
+
+  .tile-new .tile-icon svg {
+    transition: none;
+  }
+
+  .tile-new:hover .hex-border {
+    background: #e535e5;
+  }
+
+  .tile-new:hover .tile-icon svg {
+    stroke: #e535e5;
+  }
+
+  /* ========== REVERSE (mouse-out) ========== */
+  .tile .hex-border {
+    transition: clip-path 0.35s cubic-bezier(0.4, 0, 0.2, 1) 0.05s,
+                background 0.3s ease 0.1s;
+  }
+
+  .tile .hex-fill {
+    transition: clip-path 0.35s cubic-bezier(0.4, 0, 0.2, 1) 0.05s;
+  }
+
+  .tile .tile-shape {
+    transition: width 0.35s cubic-bezier(0.4, 0, 0.2, 1) 0.05s,
+                height 0.35s cubic-bezier(0.4, 0, 0.2, 1) 0.05s;
+  }
+
+  .tile .tile-number {
+    transition: opacity 0.15s ease;
+  }
+
+  .tile .card-content {
+    transition: opacity 0.15s ease;
+  }
+
+  /* ========== DISABLED TILES ========== */
+  .tile.disabled {
+    cursor: default;
+  }
+
+  /* No stroke — border and fill are the same grey */
+  .tile.disabled .hex-border {
+    background: #1a1a1a;
+  }
+
+  .tile.disabled .hex-fill {
+    background: #1a1a1a;
+  }
+
+  .tile.disabled .tile-number {
+    color: #000;
+  }
+
+  .tile.disabled .tile-label {
+    color: rgba(255, 255, 255, 0.25);
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-dot"></div>
+  <div class="header-title">Skill Recruiter</div>
+</div>
+
+<div class="grid">
+
+  <!-- Row 1 -->
+
+  <div class="tile tile-new">
+    <div class="tile-shape">
+      <div class="hex-border"></div>
+      <div class="hex-fill"></div>
+      <div class="tile-icon"><svg viewBox="0 0 40 40" fill="none"><path d="M17 2 L23 2 L23 17 L38 17 L38 23 L23 23 L23 38 L17 38 L17 23 L2 23 L2 17 L17 17 Z"/></svg></div>
+    </div>
+    <div class="tile-label">New Rec</div>
+  </div>
+
+  <div class="tile">
+    <div class="tile-shape">
+      <div class="hex-border"></div>
+      <div class="hex-fill"></div>
+      <span class="tile-number">0</span>
+      <div class="card-content">
+        <p>No matches found yet for this role. The search is still in progress.</p>
+        <div class="next-label">Next steps:</div>
+        <ul>
+          <li>Wait for initial search results</li>
+          <li>Consider broadening search criteria</li>
+        </ul>
+      </div>
+    </div>
+    <div class="tile-label">Senior Brand<br>Strategist</div>
+  </div>
+
+  <div class="tile">
+    <div class="tile-shape">
+      <div class="hex-border"></div>
+      <div class="hex-fill"></div>
+      <span class="tile-number">35</span>
+      <div class="card-content">
+        <p>Found 35 matches for this role. Of those you have reviewed 20, and added 3 to the shortlist.</p>
+        <div class="next-label">Next steps:</div>
+        <ul>
+          <li>Review remaining 15 candidates</li>
+          <li>Fine tune job description and expand the search</li>
+        </ul>
+      </div>
+    </div>
+    <div class="tile-label">Marketing Analytics<br>Manager</div>
+  </div>
+
+  <div class="tile">
+    <div class="tile-shape">
+      <div class="hex-border"></div>
+      <div class="hex-fill"></div>
+      <span class="tile-number">22</span>
+      <div class="card-content">
+        <p>Found 22 matches for this role. Of those you have reviewed 10, and added 4 to the shortlist.</p>
+        <div class="next-label">Next steps:</div>
+        <ul>
+          <li>Review remaining 12 candidates</li>
+          <li>Schedule technical interviews</li>
+        </ul>
+      </div>
+    </div>
+    <div class="tile-label">Dev Team Lead</div>
+  </div>
+
+  <div class="tile">
+    <div class="tile-shape">
+      <div class="hex-border"></div>
+      <div class="hex-fill"></div>
+      <span class="tile-number">94</span>
+      <div class="card-content">
+        <p>Found 94 matches for this role. Of those you have reviewed 40, and added 7 to the shortlist.</p>
+        <div class="next-label">Next steps:</div>
+        <ul>
+          <li>Review remaining 54 candidates</li>
+          <li>Narrow criteria to improve match quality</li>
+        </ul>
+      </div>
+    </div>
+    <div class="tile-label">Sr Product Manager</div>
+  </div>
+
+  <!-- Row 2 -->
+
+  <div class="tile">
+    <div class="tile-shape">
+      <div class="hex-border"></div>
+      <div class="hex-fill"></div>
+      <span class="tile-number">115</span>
+      <div class="card-content">
+        <p>Found 115 matches for this role. Of those you have reviewed 60, and added 8 to the shortlist.</p>
+        <div class="next-label">Next steps:</div>
+        <ul>
+          <li>Review remaining 55 candidates</li>
+          <li>Tighten filters to reduce volume</li>
+        </ul>
+      </div>
+    </div>
+    <div class="tile-label">VP, Corporate<br>Communications</div>
+  </div>
+
+  <div class="tile">
+    <div class="tile-shape">
+      <div class="hex-border"></div>
+      <div class="hex-fill"></div>
+      <span class="tile-number">64</span>
+      <div class="card-content">
+        <p>Found 64 matches for this role. Of those you have reviewed 25, and added 5 to the shortlist.</p>
+        <div class="next-label">Next steps:</div>
+        <ul>
+          <li>Review remaining 39 candidates</li>
+          <li>Share shortlist with hiring manager</li>
+        </ul>
+      </div>
+    </div>
+    <div class="tile-label">UX Content Designer</div>
+  </div>
+
+  <div class="tile">
+    <div class="tile-shape">
+      <div class="hex-border"></div>
+      <div class="hex-fill"></div>
+      <span class="tile-number">48</span>
+      <div class="card-content">
+        <p>Found 48 matches for this role. Of those you have reviewed 30, and added 6 to the shortlist.</p>
+        <div class="next-label">Next steps:</div>
+        <ul>
+          <li>Review remaining 18 candidates</li>
+          <li>Coordinate with engineering hiring panel</li>
+        </ul>
+      </div>
+    </div>
+    <div class="tile-label">Staff Software<br>Engineer</div>
+  </div>
+
+  <div class="tile">
+    <div class="tile-shape">
+      <div class="hex-border"></div>
+      <div class="hex-fill"></div>
+      <span class="tile-number">17</span>
+      <div class="card-content">
+        <p>Found 17 matches for this role. Of those you have reviewed 12, and added 2 to the shortlist.</p>
+        <div class="next-label">Next steps:</div>
+        <ul>
+          <li>Review remaining 5 candidates</li>
+          <li>Expand location radius for more results</li>
+        </ul>
+      </div>
+    </div>
+    <div class="tile-label">Head of People Ops</div>
+  </div>
+
+  <div class="tile">
+    <div class="tile-shape">
+      <div class="hex-border"></div>
+      <div class="hex-fill"></div>
+      <span class="tile-number">83</span>
+      <div class="card-content">
+        <p>Found 83 matches for this role. Of those you have reviewed 45, and added 9 to the shortlist.</p>
+        <div class="next-label">Next steps:</div>
+        <ul>
+          <li>Review remaining 38 candidates</li>
+          <li>Send shortlist to department head</li>
+        </ul>
+      </div>
+    </div>
+    <div class="tile-label">Data Science Lead</div>
+  </div>
+
+  <!-- Row 3 -->
+
+  <div class="tile">
+    <div class="tile-shape">
+      <div class="hex-border"></div>
+      <div class="hex-fill"></div>
+      <span class="tile-number">29</span>
+      <div class="card-content">
+        <p>Found 29 matches for this role. Of those you have reviewed 15, and added 3 to the shortlist.</p>
+        <div class="next-label">Next steps:</div>
+        <ul>
+          <li>Review remaining 14 candidates</li>
+          <li>Align with CMO on ideal profile</li>
+        </ul>
+      </div>
+    </div>
+    <div class="tile-label">Growth Marketing<br>Manager</div>
+  </div>
+
+  <div class="tile">
+    <div class="tile-shape">
+      <div class="hex-border"></div>
+      <div class="hex-fill"></div>
+      <span class="tile-number">41</span>
+      <div class="card-content">
+        <p>Found 41 matches for this role. Of those you have reviewed 20, and added 4 to the shortlist.</p>
+        <div class="next-label">Next steps:</div>
+        <ul>
+          <li>Review remaining 21 candidates</li>
+          <li>Request portfolio samples from top picks</li>
+        </ul>
+      </div>
+    </div>
+    <div class="tile-label">Principal Designer</div>
+  </div>
+
+  <div class="tile">
+    <div class="tile-shape">
+      <div class="hex-border"></div>
+      <div class="hex-fill"></div>
+      <span class="tile-number">156</span>
+      <div class="card-content">
+        <p>Found 156 matches for this role. Of those you have reviewed 70, and added 11 to the shortlist.</p>
+        <div class="next-label">Next steps:</div>
+        <ul>
+          <li>Review remaining 86 candidates</li>
+          <li>Add certification filters to narrow pool</li>
+        </ul>
+      </div>
+    </div>
+    <div class="tile-label">DevOps Engineer II</div>
+  </div>
+
+  <div class="tile">
+    <div class="tile-shape">
+      <div class="hex-border"></div>
+      <div class="hex-fill"></div>
+      <span class="tile-number">72</span>
+      <div class="card-content">
+        <p>Found 72 matches for this role. Of those you have reviewed 35, and added 5 to the shortlist.</p>
+        <div class="next-label">Next steps:</div>
+        <ul>
+          <li>Review remaining 37 candidates</li>
+          <li>Schedule intro calls with top 5</li>
+        </ul>
+      </div>
+    </div>
+    <div class="tile-label">Director of Sales</div>
+  </div>
+
+  <div class="tile">
+    <div class="tile-shape">
+      <div class="hex-border"></div>
+      <div class="hex-fill"></div>
+      <span class="tile-number">38</span>
+      <div class="card-content">
+        <p>Found 38 matches for this role. Of those you have reviewed 22, and added 3 to the shortlist.</p>
+        <div class="next-label">Next steps:</div>
+        <ul>
+          <li>Review remaining 16 candidates</li>
+          <li>Add Swift experience as requirement</li>
+        </ul>
+      </div>
+    </div>
+    <div class="tile-label">Mobile Engineer (iOS)</div>
+  </div>
+
+  <!-- Row 4 -->
+
+  <div class="tile">
+    <div class="tile-shape">
+      <div class="hex-border"></div>
+      <div class="hex-fill"></div>
+      <span class="tile-number">19</span>
+      <div class="card-content">
+        <p>Found 19 matches for this role. Of those you have reviewed 14, and added 2 to the shortlist.</p>
+        <div class="next-label">Next steps:</div>
+        <ul>
+          <li>Review remaining 5 candidates</li>
+          <li>Broaden to include editorial backgrounds</li>
+        </ul>
+      </div>
+    </div>
+    <div class="tile-label">Content Strategy<br>Lead</div>
+  </div>
+
+  <div class="tile">
+    <div class="tile-shape">
+      <div class="hex-border"></div>
+      <div class="hex-fill"></div>
+      <span class="tile-number">8</span>
+      <div class="card-content">
+        <p>Found 8 matches for this role. Of those you have reviewed 8, and added 1 to the shortlist.</p>
+        <div class="next-label">Next steps:</div>
+        <ul>
+          <li>All candidates reviewed</li>
+          <li>Expand search to adjacent skill sets</li>
+        </ul>
+      </div>
+    </div>
+    <div class="tile-label">Security Architect</div>
+  </div>
+
+  <div class="tile">
+    <div class="tile-shape">
+      <div class="hex-border"></div>
+      <div class="hex-fill"></div>
+      <span class="tile-number">53</span>
+      <div class="card-content">
+        <p>Found 53 matches for this role. Of those you have reviewed 28, and added 6 to the shortlist.</p>
+        <div class="next-label">Next steps:</div>
+        <ul>
+          <li>Review remaining 25 candidates</li>
+          <li>Verify publication history for top picks</li>
+        </ul>
+      </div>
+    </div>
+    <div class="tile-label">Research Scientist</div>
+  </div>
+
+  <div class="tile">
+    <div class="tile-shape">
+      <div class="hex-border"></div>
+      <div class="hex-fill"></div>
+      <span class="tile-number">67</span>
+      <div class="card-content">
+        <p>Found 67 matches for this role. Of those you have reviewed 40, and added 7 to the shortlist.</p>
+        <div class="next-label">Next steps:</div>
+        <ul>
+          <li>Review remaining 27 candidates</li>
+          <li>Prioritize SaaS experience</li>
+        </ul>
+      </div>
+    </div>
+    <div class="tile-label">Customer Success<br>Manager</div>
+  </div>
+
+  <div class="tile">
+    <div class="tile-shape">
+      <div class="hex-border"></div>
+      <div class="hex-fill"></div>
+      <span class="tile-number">112</span>
+      <div class="card-content">
+        <p>Found 112 matches for this role. Of those you have reviewed 50, and added 10 to the shortlist.</p>
+        <div class="next-label">Next steps:</div>
+        <ul>
+          <li>Review remaining 62 candidates</li>
+          <li>Filter for React and TypeScript expertise</li>
+        </ul>
+      </div>
+    </div>
+    <div class="tile-label">Frontend Engineer III</div>
+  </div>
+
+  <!-- Row 5 -->
+
+  <div class="tile">
+    <div class="tile-shape">
+      <div class="hex-border"></div>
+      <div class="hex-fill"></div>
+      <span class="tile-number">26</span>
+      <div class="card-content">
+        <p>Found 26 matches for this role. Of those you have reviewed 18, and added 3 to the shortlist.</p>
+        <div class="next-label">Next steps:</div>
+        <ul>
+          <li>Review remaining 8 candidates</li>
+          <li>Coordinate with HR on offer packages</li>
+        </ul>
+      </div>
+    </div>
+    <div class="tile-label">Talent Acquisition<br>Lead</div>
+  </div>
+
+  <div class="tile">
+    <div class="tile-shape">
+      <div class="hex-border"></div>
+      <div class="hex-fill"></div>
+      <span class="tile-number">44</span>
+      <div class="card-content">
+        <p>Found 44 matches for this role. Of those you have reviewed 20, and added 4 to the shortlist.</p>
+        <div class="next-label">Next steps:</div>
+        <ul>
+          <li>Review remaining 24 candidates</li>
+          <li>Add Kubernetes experience filter</li>
+        </ul>
+      </div>
+    </div>
+    <div class="tile-label">Platform Engineer</div>
+  </div>
+
+  <div class="tile">
+    <div class="tile-shape">
+      <div class="hex-border"></div>
+      <div class="hex-fill"></div>
+      <span class="tile-number">31</span>
+      <div class="card-content">
+        <p>Found 31 matches for this role. Of those you have reviewed 16, and added 2 to the shortlist.</p>
+        <div class="next-label">Next steps:</div>
+        <ul>
+          <li>Review remaining 15 candidates</li>
+          <li>Confirm domain expertise requirements</li>
+        </ul>
+      </div>
+    </div>
+    <div class="tile-label">Business Analyst Sr</div>
+  </div>
+
+  <!-- Disabled tiles (last 7) -->
+
+  <div class="tile disabled">
+    <div class="tile-shape">
+      <div class="hex-border"></div>
+      <div class="hex-fill"></div>
+      <span class="tile-number">185</span>
+    </div>
+    <div class="tile-label">Graphic Designer I</div>
+  </div>
+
+  <div class="tile disabled">
+    <div class="tile-shape">
+      <div class="hex-border"></div>
+      <div class="hex-fill"></div>
+      <span class="tile-number">24</span>
+    </div>
+    <div class="tile-label">Graphic Designer I</div>
+  </div>
+
+  <!-- Row 6 (all disabled) -->
+
+  <div class="tile disabled">
+    <div class="tile-shape">
+      <div class="hex-border"></div>
+      <div class="hex-fill"></div>
+      <span class="tile-number">12</span>
+    </div>
+    <div class="tile-label">Junior Copywriter</div>
+  </div>
+
+  <div class="tile disabled">
+    <div class="tile-shape">
+      <div class="hex-border"></div>
+      <div class="hex-fill"></div>
+      <span class="tile-number">47</span>
+    </div>
+    <div class="tile-label">Data Analyst II</div>
+  </div>
+
+  <div class="tile disabled">
+    <div class="tile-shape">
+      <div class="hex-border"></div>
+      <div class="hex-fill"></div>
+      <span class="tile-number">33</span>
+    </div>
+    <div class="tile-label">Admin Assistant</div>
+  </div>
+
+  <div class="tile disabled">
+    <div class="tile-shape">
+      <div class="hex-border"></div>
+      <div class="hex-fill"></div>
+      <span class="tile-number">89</span>
+    </div>
+    <div class="tile-label">QA Tester I</div>
+  </div>
+
+  <div class="tile disabled">
+    <div class="tile-shape">
+      <div class="hex-border"></div>
+      <div class="hex-fill"></div>
+      <span class="tile-number">56</span>
+    </div>
+    <div class="tile-label">Office Coordinator</div>
+  </div>
+
+</div>
+
+</body>
+</html>
