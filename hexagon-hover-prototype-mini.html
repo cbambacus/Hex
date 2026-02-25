@@ -1448,10 +1448,10 @@
   let savedScrollY = 0;
   let isAnimating = false;
 
-  // Get clean title text from tile label (strip <br> tags)
+  // Get clean title text from tile label (convert <br> to space)
   function getTileTitle(tile) {
     const label = tile.querySelector('.tile-label');
-    return label.textContent.trim();
+    return label.innerHTML.replace(/<br\s*\/?>/gi, ' ').replace(/<[^>]*>/g, '').trim();
   }
 
   // Click handler for active tiles
