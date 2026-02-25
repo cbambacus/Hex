@@ -1844,12 +1844,16 @@
     grid.classList.add('zooming-out');
     jobDetail.classList.add('active');
 
+    const hasDiamonds = !!tile.querySelector('.tile-diamonds');
+
     grid.addEventListener('transitionend', function handler(ev) {
       if (ev.propertyName !== 'opacity') return;
       grid.removeEventListener('transitionend', handler);
       grid.classList.add('zoomed');
       window.scrollTo(0, 0);
       isAnimating = false;
+      // Auto-open search console for tiles with active searches
+      if (hasDiamonds) findCandidatesBtn.click();
     });
   }
 
