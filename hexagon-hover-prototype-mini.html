@@ -537,7 +537,7 @@
     height: 22px;
     stroke: currentColor;
     fill: none;
-    stroke-width: var(--stroke-width);
+    stroke-width: 2px;
     vector-effect: non-scaling-stroke;
     position: relative;
     z-index: 1;
@@ -622,7 +622,7 @@
   .form-row {
     display: flex;
     align-items: center;
-    gap: 32px;
+    gap: 62px;
     margin-bottom: 20px;
   }
 
@@ -635,8 +635,10 @@
   .form-label {
     font-size: 14px;
     font-weight: 400;
-    color: rgba(255, 255, 255, 0.6);
+    color: #fff;
     white-space: nowrap;
+    width: 60px;
+    flex-shrink: 0;
   }
 
   .form-input {
@@ -648,6 +650,7 @@
     padding: 8px 12px;
     font-family: inherit;
     border-radius: 0;
+    width: 220px;
   }
 
   .form-input::placeholder {
@@ -673,7 +676,7 @@
     -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='rgba(255,255,255,0.5)' stroke-width='1'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='2.5'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
     background-repeat: no-repeat;
     background-position: right 10px center;
   }
@@ -687,6 +690,7 @@
     display: flex;
     align-items: center;
     gap: 8px;
+    width: 220px;
   }
 
   .salary-field {
@@ -698,11 +702,17 @@
     padding: 8px 12px;
     font-family: inherit;
     border-radius: 0;
-    width: 100px;
+    flex: 1;
+    min-width: 0;
   }
 
   .salary-field:focus {
     border-color: rgba(255, 255, 255, 0.5);
+  }
+
+  .salary-field::placeholder {
+    color: #333;
+    font-style: italic;
   }
 
   .salary-to {
