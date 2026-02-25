@@ -317,11 +317,12 @@
     background: #000;
     z-index: 50;
     opacity: 0;
-    transform: scale(0.3);
+    transform: scale(0.5);
     pointer-events: none;
     transition: opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1), transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
     overflow-y: auto;
     padding-top: 64px;
+    transform-origin: center center;
   }
 
   .job-detail.active {
@@ -1457,7 +1458,7 @@
 
   // Click handler for active tiles
   document.querySelectorAll('.tile:not(.disabled):not(.tile-new)').forEach(tile => {
-    tile.addEventListener('click', () => {
+    tile.addEventListener('click', (e) => {
       if (isAnimating) return;
       isAnimating = true;
 
@@ -1482,6 +1483,9 @@
       const originX = (tileRect.left + tileRect.width / 2) - gridRect.left;
       const originY = (tileRect.top + tileRect.height / 2) - gridRect.top;
       grid.style.transformOrigin = `${originX}px ${originY}px`;
+
+      // Set job detail transform-origin to cursor position (viewport coords)
+      jobDetail.style.transformOrigin = `${e.clientX}px ${e.clientY}px`;
 
       // Save scroll position
       savedScrollY = window.scrollY;
