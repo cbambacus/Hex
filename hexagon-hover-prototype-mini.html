@@ -530,8 +530,8 @@
   }
 
   .action-icon svg {
-    width: 18px;
-    height: 18px;
+    width: 22px;
+    height: 22px;
     stroke: currentColor;
     fill: none;
     stroke-width: var(--stroke-width);
@@ -712,7 +712,7 @@
 
 <div class="header">
   <div class="header-dot"></div>
-  <div class="header-title">Skill Recruiter</div>
+  <div class="header-title" id="headerLogo" style="cursor: pointer;">Skill Recruiter</div>
 </div>
 
 <div class="grid">
@@ -2133,6 +2133,54 @@
     requestAnimationFrame(() => {
       jobCreate.style.transition = '';
       jobDetail.style.transition = '';
+    });
+  });
+  // ========== CANDIDATE COUNT TICK-UP ==========
+  const diamondTiles = document.querySelectorAll('.tile-diamonds');
+  const activeTiles = [];
+  diamondTiles.forEach(group => {
+    const tile = group.closest('.tile');
+    const numberEl = tile.querySelector('.tile-number');
+    const candidateStat = tile.querySelector('.mini-stat-num');
+    const defaultCount = parseInt(numberEl.textContent, 10);
+    activeTiles.push({ tile, numberEl, candidateStat, defaultCount, current: defaultCount });
+  });
+
+  function animateCount(pick, bump) {
+    const start = pick.current;
+    const target = start + bump;
+    pick.current = target;
+    const title = getTileTitle(pick.tile);
+    if (jobData[title]) jobData[title].count = target;
+    const duration = 1500;
+    const startTime = performance.now();
+    function step(now) {
+      const t = Math.min((now - startTime) / duration, 1);
+      // Ease-out (starts fast, slows down): 1 - (1-t)^3
+      const eased = 1 - Math.pow(1 - t, 3);
+      const display = Math.round(start + bump * eased);
+      pick.numberEl.textContent = display;
+      if (pick.candidateStat) pick.candidateStat.textContent = display;
+      if (t < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }
+
+  const tickInterval = setInterval(() => {
+    if (Math.random() < 0.5) return; // coin flip
+    const pick = activeTiles[Math.floor(Math.random() * activeTiles.length)];
+    const bump = Math.floor(Math.random() * 20) + 1;
+    animateCount(pick, bump);
+  }, 3000);
+
+  // Logo click resets counts to defaults
+  document.getElementById('headerLogo').addEventListener('click', () => {
+    activeTiles.forEach(t => {
+      t.current = t.defaultCount;
+      t.numberEl.textContent = t.defaultCount;
+      if (t.candidateStat) t.candidateStat.textContent = t.defaultCount;
+      const title = getTileTitle(t.tile);
+      if (jobData[title]) jobData[title].count = t.defaultCount;
     });
   });
 </script>
