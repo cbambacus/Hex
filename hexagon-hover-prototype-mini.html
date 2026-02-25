@@ -49,6 +49,7 @@
     padding: 74px 40px 60px;
     max-width: 1400px;
     margin: 0 auto;
+    transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   /* ========== TILE CONTAINER ========== */
@@ -292,6 +293,155 @@
   @keyframes diamond-pulse {
     0%, 100% { transform: scale(0.9); }
     50% { transform: scale(1.1); }
+  }
+
+  /* ========== ZOOM TRANSITION ========== */
+  .grid.zooming-out {
+    transform: scale(8);
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .grid.zoomed {
+    visibility: hidden;
+    pointer-events: none;
+  }
+
+  /* ========== JOB DETAIL SCREEN ========== */
+  .job-detail {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: #000;
+    z-index: 50;
+    opacity: 0;
+    transform: scale(0.3);
+    pointer-events: none;
+    transition: opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1), transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow-y: auto;
+    padding-top: 64px;
+  }
+
+  .job-detail.active {
+    opacity: 1;
+    transform: scale(1);
+    pointer-events: auto;
+  }
+
+  .job-detail.zooming-out {
+    opacity: 0;
+    transform: scale(2);
+    pointer-events: none;
+  }
+
+  .job-detail-inner {
+    max-width: 700px;
+    margin: 0 auto;
+    padding: 60px 40px 80px;
+  }
+
+  .job-header-row {
+    display: flex;
+    align-items: baseline;
+    gap: 20px;
+  }
+
+  .job-back {
+    font-size: 28px;
+    color: #fff;
+    cursor: pointer;
+    flex-shrink: 0;
+    line-height: 1;
+    user-select: none;
+    transition: color 0.2s ease;
+  }
+
+  .job-back:hover {
+    color: #e535e5;
+  }
+
+  .job-title {
+    font-size: 32px;
+    font-weight: 400;
+    color: #fff;
+    flex: 1;
+  }
+
+  .job-count {
+    font-size: 36px;
+    font-weight: 300;
+    color: #fff;
+    flex-shrink: 0;
+  }
+
+  .job-divider {
+    border: none;
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+    margin: 24px 0 28px;
+  }
+
+  .job-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    font-size: 15px;
+    font-weight: 400;
+    color: rgba(255, 255, 255, 0.85);
+    margin-bottom: 32px;
+  }
+
+  .job-description {
+    font-size: 16px;
+    line-height: 1.7;
+    color: rgba(255, 255, 255, 0.75);
+    margin-bottom: 48px;
+  }
+
+  .job-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .job-action {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    font-size: 20px;
+    font-weight: 400;
+    color: #fff;
+    cursor: pointer;
+    transition: color 0.2s ease;
+  }
+
+  .job-action:hover {
+    color: #e535e5;
+  }
+
+  .action-icon {
+    width: 40px;
+    height: 40px;
+    border: 1.5px solid rgba(255, 255, 255, 0.5);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: border-color 0.2s ease;
+  }
+
+  .job-action:hover .action-icon {
+    border-color: #e535e5;
+  }
+
+  .action-icon svg {
+    width: 18px;
+    height: 18px;
+    stroke: currentColor;
+    fill: none;
+    stroke-width: 2;
   }
 </style>
 </head>
@@ -1060,29 +1210,317 @@
 
 </div>
 
+<div class="job-detail" id="jobDetail">
+  <div class="job-detail-inner">
+    <div class="job-header-row">
+      <span class="job-back" id="jobBack">&#8592;</span>
+      <h1 class="job-title" id="jobTitle"></h1>
+      <span class="job-count" id="jobCount"></span>
+    </div>
+    <hr class="job-divider">
+    <div class="job-meta" id="jobMeta"></div>
+    <p class="job-description" id="jobDescription"></p>
+    <div class="job-actions">
+      <div class="job-action">
+        <span class="action-icon"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"></polyline></svg></span>
+        Find Candidates
+      </div>
+      <div class="job-action">
+        <span class="action-icon"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"></polyline></svg></span>
+        Edit Job Target
+      </div>
+    </div>
+  </div>
+</div>
 
 <script>
-  // Randomize diamond positions, sizes, and timing per tile
+  // ========== DIAMOND RANDOMIZATION ==========
   function rand(min, max) { return min + Math.random() * (max - min); }
 
   document.querySelectorAll('.tile-diamonds').forEach(group => {
     const diamonds = group.querySelectorAll('.diamond');
-    // Generate 4 non-overlapping positions scattered across the container
     const positions = [];
     diamonds.forEach((d, i) => {
-      // Scatter across quadrants to avoid clumping
       const quadTop = i < 2 ? rand(0, 20) : rand(22, 42);
       const quadRight = i % 2 === 0 ? rand(0, 16) : rand(18, 34);
       const size = rand(7, 13);
-      const height = size * rand(1.2, 1.5); // taller than wide
+      const height = size * rand(1.2, 1.5);
       const duration = rand(0.8, 1.2);
-      const delay = rand(-2, 0); // random phase offset
+      const delay = rand(-2, 0);
 
       d.style.top = quadTop + 'px';
       d.style.right = quadRight + 'px';
       d.style.width = size + 'px';
       d.style.height = Math.round(height) + 'px';
       d.style.animation = `diamond-pulse ${duration.toFixed(2)}s ease-in-out ${delay.toFixed(2)}s infinite`;
+    });
+  });
+
+  // ========== JOB DATA (22 unique entries) ==========
+  const jobData = {
+    'Senior Brand Strategist': {
+      count: 0,
+      department: 'Global Brand',
+      location: 'New York, NY (Hybrid)',
+      level: 'Senior Manager',
+      salary: '$130k \u2013 150k',
+      description: 'The Senior Brand Strategist leads global brand positioning and long-term strategy across markets. This person will define brand architecture and messaging frameworks, translate research into actionable creative briefs, and guide annual planning in partnership with internal teams and agencies. The ideal candidate brings 8+ years of brand strategy experience in multi-market or global environments, strong executive presentation skills, and a proven ability to shape compelling narratives that drive business growth.'
+    },
+    'Marketing Analytics Manager': {
+      count: 35,
+      department: 'Marketing Operations',
+      location: 'Chicago, IL (Hybrid)',
+      level: 'Manager',
+      salary: '$115k \u2013 135k',
+      description: 'The Marketing Analytics Manager owns the measurement framework across all digital and offline marketing channels. You will build dashboards, design attribution models, and translate campaign performance data into strategic recommendations for leadership. This role requires strong SQL skills, experience with tools like Tableau or Looker, and 5+ years in a marketing analytics function. The ideal candidate is both deeply technical and a clear communicator who can influence non-technical stakeholders.'
+    },
+    'Dev Team Lead': {
+      count: 22,
+      department: 'Engineering',
+      location: 'Austin, TX (On-site)',
+      level: 'Lead',
+      salary: '$155k \u2013 180k',
+      description: 'The Dev Team Lead manages a squad of 6\u20138 engineers building our core platform services. You will own sprint planning, code review standards, and architectural decisions while remaining hands-on with the codebase. We are looking for someone with 7+ years of software development experience, at least 2 years in a leadership role, and deep expertise in distributed systems. Strong mentorship skills and a track record of shipping high-quality software on schedule are essential.'
+    },
+    'Sr Product Manager': {
+      count: 94,
+      department: 'Product',
+      location: 'San Francisco, CA (Hybrid)',
+      level: 'Senior',
+      salary: '$145k \u2013 170k',
+      description: 'The Sr Product Manager drives the product roadmap for our enterprise SaaS platform, balancing customer needs with business goals and technical feasibility. You will conduct user research, define requirements, and work closely with engineering and design to deliver features that delight users. This role requires 6+ years of product management experience, strong analytical skills, and excellent cross-functional collaboration. Experience with B2B SaaS products and agile methodologies is strongly preferred.'
+    },
+    'VP, Corporate Communications': {
+      count: 115,
+      department: 'Corporate Affairs',
+      location: 'New York, NY (On-site)',
+      level: 'Vice President',
+      salary: '$185k \u2013 220k',
+      description: 'The VP of Corporate Communications shapes and protects the company\'s public narrative across media, investor relations, and internal channels. You will lead a team of communications professionals, manage crisis response protocols, and develop executive thought leadership programs. The ideal candidate has 12+ years of experience in corporate communications or public relations, a strong media network, and exceptional writing and presentation skills. Experience in technology or financial services is preferred.'
+    },
+    'UX Content Designer': {
+      count: 64,
+      department: 'Design',
+      location: 'Remote (US)',
+      level: 'Mid-Senior',
+      salary: '$100k \u2013 120k',
+      description: 'The UX Content Designer crafts clear, concise microcopy and content strategy for our product interfaces. You will partner with UX designers and researchers to ensure every touchpoint communicates effectively, from onboarding flows to error messages. This role requires 4+ years of UX writing or content design experience, a portfolio demonstrating user-centered writing, and familiarity with design tools like Figma. A background in linguistics, journalism, or technical writing is a plus.'
+    },
+    'Staff Software Engineer': {
+      count: 48,
+      department: 'Engineering',
+      location: 'Seattle, WA (Hybrid)',
+      level: 'Staff',
+      salary: '$180k \u2013 210k',
+      description: 'The Staff Software Engineer serves as a technical leader across multiple engineering teams, driving architecture decisions and establishing best practices for our cloud-native platform. You will design scalable systems, mentor senior engineers, and contribute to our most complex technical challenges. We require 10+ years of professional software engineering experience, deep expertise in Go or Java, and extensive experience with cloud infrastructure (AWS or GCP). A track record of leading large-scale system designs is essential.'
+    },
+    'Head of People Ops': {
+      count: 17,
+      department: 'People & Culture',
+      location: 'Denver, CO (Hybrid)',
+      level: 'Director',
+      salary: '$140k \u2013 165k',
+      description: 'The Head of People Ops oversees all HR operations including benefits administration, compliance, HRIS management, and employee lifecycle programs. You will build scalable people processes for a rapidly growing organization and lead a team of HR coordinators. This role requires 8+ years of HR operations experience, deep knowledge of employment law across multiple states, and experience with Workday or similar HRIS platforms. Strong project management skills and a data-driven approach to people decisions are essential.'
+    },
+    'Data Science Lead': {
+      count: 83,
+      department: 'Data & Analytics',
+      location: 'Boston, MA (Hybrid)',
+      level: 'Lead',
+      salary: '$160k \u2013 190k',
+      description: 'The Data Science Lead manages a team of data scientists and ML engineers building predictive models that power core product features. You will define the data science roadmap, establish modeling best practices, and collaborate with product and engineering to deploy models at scale. This role requires 7+ years of experience in data science, proficiency in Python and SQL, and hands-on experience with ML frameworks like TensorFlow or PyTorch. A PhD or Master\'s degree in a quantitative field is preferred.'
+    },
+    'Growth Marketing Manager': {
+      count: 29,
+      department: 'Marketing',
+      location: 'Los Angeles, CA (Remote)',
+      level: 'Manager',
+      salary: '$110k \u2013 130k',
+      description: 'The Growth Marketing Manager owns user acquisition and retention funnels across paid and organic channels. You will design and execute experiments, optimize conversion rates, and scale campaigns that drive measurable revenue growth. This role requires 5+ years of growth or performance marketing experience, strong analytical skills, and proficiency with tools like Google Analytics, Mixpanel, and paid media platforms. Experience in SaaS or marketplace businesses and a test-and-learn mindset are highly valued.'
+    },
+    'Principal Designer': {
+      count: 41,
+      department: 'Design',
+      location: 'San Francisco, CA (Hybrid)',
+      level: 'Principal',
+      salary: '$165k \u2013 195k',
+      description: 'The Principal Designer sets the creative vision and design standards for the entire product suite. You will lead design critiques, define our design system, and mentor designers at all levels. This individual contributor role requires 10+ years of product design experience, a world-class portfolio, and the ability to influence product strategy at the executive level. Deep expertise in interaction design, visual systems, and user research methods is essential.'
+    },
+    'DevOps Engineer II': {
+      count: 156,
+      department: 'Infrastructure',
+      location: 'Remote (US)',
+      level: 'Mid-Level',
+      salary: '$120k \u2013 145k',
+      description: 'The DevOps Engineer II builds and maintains CI/CD pipelines, container orchestration, and cloud infrastructure that supports our engineering teams. You will automate deployments, improve system reliability, and implement monitoring and alerting solutions. This role requires 3+ years of DevOps or SRE experience, strong skills in Kubernetes and Terraform, and experience with AWS or GCP. Familiarity with GitOps workflows and infrastructure-as-code principles is expected.'
+    },
+    'Director of Sales': {
+      count: 72,
+      department: 'Revenue',
+      location: 'New York, NY (On-site)',
+      level: 'Director',
+      salary: '$160k \u2013 200k + commission',
+      description: 'The Director of Sales leads a team of enterprise account executives and owns the full sales cycle from prospecting to close. You will build and refine the sales playbook, forecast quarterly revenue, and develop strategic account plans for Fortune 500 targets. This role requires 8+ years of B2B SaaS sales experience, at least 3 years in sales leadership, and a consistent track record of exceeding quota. Experience selling to C-suite buyers and navigating complex procurement processes is essential.'
+    },
+    'Mobile Engineer (iOS)': {
+      count: 38,
+      department: 'Engineering',
+      location: 'Austin, TX (Hybrid)',
+      level: 'Senior',
+      salary: '$140k \u2013 165k',
+      description: 'The Mobile Engineer (iOS) builds and ships features for our flagship iOS application used by millions of users. You will work in Swift, collaborate with designers on pixel-perfect UI implementations, and optimize app performance and reliability. This role requires 5+ years of iOS development experience, deep knowledge of UIKit and SwiftUI, and experience with CI/CD for mobile. Familiarity with reactive programming patterns and a passion for crafting exceptional mobile experiences are strongly preferred.'
+    },
+    'Content Strategy Lead': {
+      count: 19,
+      department: 'Marketing',
+      location: 'Portland, OR (Remote)',
+      level: 'Lead',
+      salary: '$105k \u2013 125k',
+      description: 'The Content Strategy Lead defines and executes the content roadmap across blog, email, social, and thought leadership channels. You will develop editorial calendars, manage freelance writers, and measure content performance against business KPIs. This role requires 6+ years of content strategy or content marketing experience, excellent editorial judgment, and strong SEO knowledge. Experience building content programs from the ground up and a portfolio of published work are essential.'
+    },
+    'Security Architect': {
+      count: 8,
+      department: 'Information Security',
+      location: 'Washington, DC (Hybrid)',
+      level: 'Senior',
+      salary: '$170k \u2013 200k',
+      description: 'The Security Architect designs and implements the security architecture across our cloud infrastructure, application layer, and data platforms. You will conduct threat modeling, define security standards, and lead incident response planning. This role requires 8+ years of information security experience, deep expertise in cloud security (AWS/GCP), and relevant certifications (CISSP, CCSP, or equivalent). Experience with zero-trust architectures and compliance frameworks like SOC 2 and FedRAMP is strongly preferred.'
+    },
+    'Research Scientist': {
+      count: 53,
+      department: 'R&D',
+      location: 'Cambridge, MA (On-site)',
+      level: 'Senior',
+      salary: '$150k \u2013 180k',
+      description: 'The Research Scientist conducts applied research in natural language processing and machine learning to develop novel algorithms for our core product. You will publish papers, prototype new approaches, and collaborate with engineering teams to productionize research findings. This role requires a PhD in Computer Science, Machine Learning, or a related field, a strong publication record, and hands-on programming skills in Python. Experience with large language models and transformer architectures is highly valued.'
+    },
+    'Customer Success Manager': {
+      count: 67,
+      department: 'Customer Experience',
+      location: 'Chicago, IL (Hybrid)',
+      level: 'Manager',
+      salary: '$95k \u2013 115k',
+      description: 'The Customer Success Manager owns a portfolio of enterprise accounts and drives adoption, retention, and expansion revenue. You will build deep relationships with customer stakeholders, conduct quarterly business reviews, and proactively identify upsell opportunities. This role requires 4+ years of customer success or account management experience in B2B SaaS, excellent communication skills, and a data-driven approach to account health. Experience with customer success platforms like Gainsight or Totango is preferred.'
+    },
+    'Frontend Engineer III': {
+      count: 112,
+      department: 'Engineering',
+      location: 'Remote (US)',
+      level: 'Senior',
+      salary: '$145k \u2013 170k',
+      description: 'The Frontend Engineer III builds performant, accessible web interfaces using React and TypeScript. You will own major feature areas, contribute to our component library, and drive frontend architecture decisions. This role requires 5+ years of frontend development experience, deep expertise in React and modern JavaScript, and a strong eye for UI quality. Experience with design systems, performance optimization, and accessibility standards (WCAG) is essential.'
+    },
+    'Talent Acquisition Lead': {
+      count: 26,
+      department: 'People & Culture',
+      location: 'Denver, CO (Hybrid)',
+      level: 'Lead',
+      salary: '$110k \u2013 130k',
+      description: 'The Talent Acquisition Lead manages a team of recruiters and owns the end-to-end hiring strategy for engineering, product, and design roles. You will optimize sourcing channels, build employer branding initiatives, and partner with hiring managers to raise the bar on talent quality. This role requires 6+ years of recruiting experience in tech, at least 2 years leading a TA team, and expertise with ATS platforms. A data-driven approach to pipeline management and a passion for diversity hiring are essential.'
+    },
+    'Platform Engineer': {
+      count: 44,
+      department: 'Engineering',
+      location: 'Seattle, WA (Hybrid)',
+      level: 'Senior',
+      salary: '$150k \u2013 175k',
+      description: 'The Platform Engineer designs and builds the internal developer platform that accelerates engineering productivity across the organization. You will create self-service tooling, manage shared infrastructure components, and define platform APIs and abstractions. This role requires 6+ years of software engineering experience, strong skills in Go or Python, and deep expertise with Kubernetes and cloud-native technologies. Experience building internal platforms and a passion for developer experience are highly valued.'
+    },
+    'Business Analyst Sr': {
+      count: 31,
+      department: 'Strategy & Operations',
+      location: 'Atlanta, GA (Hybrid)',
+      level: 'Senior',
+      salary: '$95k \u2013 115k',
+      description: 'The Senior Business Analyst partners with cross-functional teams to translate business requirements into technical specifications and process improvements. You will conduct data analysis, build financial models, and present findings to senior leadership. This role requires 5+ years of business analysis experience, advanced Excel and SQL skills, and excellent communication abilities. Experience with BI tools like Tableau or Power BI and familiarity with agile project management methodologies are preferred.'
+    }
+  };
+
+  // ========== ZOOM TRANSITION LOGIC ==========
+  const grid = document.querySelector('.grid');
+  const jobDetail = document.getElementById('jobDetail');
+  const jobTitle = document.getElementById('jobTitle');
+  const jobCount = document.getElementById('jobCount');
+  const jobMeta = document.getElementById('jobMeta');
+  const jobDescription = document.getElementById('jobDescription');
+  const jobBack = document.getElementById('jobBack');
+
+  let savedScrollY = 0;
+  let isAnimating = false;
+
+  // Get clean title text from tile label (strip <br> tags)
+  function getTileTitle(tile) {
+    const label = tile.querySelector('.tile-label');
+    return label.textContent.trim();
+  }
+
+  // Click handler for active tiles
+  document.querySelectorAll('.tile:not(.disabled):not(.tile-new)').forEach(tile => {
+    tile.addEventListener('click', () => {
+      if (isAnimating) return;
+      isAnimating = true;
+
+      const title = getTileTitle(tile);
+      const data = jobData[title];
+      if (!data) { isAnimating = false; return; }
+
+      // Populate job detail
+      jobTitle.textContent = title;
+      jobCount.textContent = data.count;
+      jobMeta.innerHTML = `
+        <div>Department: ${data.department}</div>
+        <div>Location: ${data.location}</div>
+        <div>Level: ${data.level}</div>
+        <div>Salary Range ${data.salary}</div>
+      `;
+      jobDescription.textContent = data.description;
+
+      // Calculate transform-origin from tile center relative to grid
+      const tileRect = tile.getBoundingClientRect();
+      const gridRect = grid.getBoundingClientRect();
+      const originX = (tileRect.left + tileRect.width / 2) - gridRect.left;
+      const originY = (tileRect.top + tileRect.height / 2) - gridRect.top;
+      grid.style.transformOrigin = `${originX}px ${originY}px`;
+
+      // Save scroll position
+      savedScrollY = window.scrollY;
+
+      // Start zoom-in
+      grid.classList.add('zooming-out');
+      jobDetail.classList.add('active');
+
+      grid.addEventListener('transitionend', function handler(e) {
+        if (e.propertyName !== 'opacity') return;
+        grid.removeEventListener('transitionend', handler);
+        grid.classList.add('zoomed');
+        window.scrollTo(0, 0);
+        isAnimating = false;
+      });
+    });
+  });
+
+  // Back button handler
+  jobBack.addEventListener('click', () => {
+    if (isAnimating) return;
+    isAnimating = true;
+
+    // Start zoom-out
+    grid.classList.remove('zoomed');
+    jobDetail.classList.add('zooming-out');
+
+    // Small delay to let visibility change take effect before animating
+    requestAnimationFrame(() => {
+      grid.classList.remove('zooming-out');
+      jobDetail.classList.remove('active');
+
+      window.scrollTo(0, savedScrollY);
+
+      grid.addEventListener('transitionend', function handler(e) {
+        if (e.propertyName !== 'opacity') return;
+        grid.removeEventListener('transitionend', handler);
+        jobDetail.classList.remove('zooming-out');
+        isAnimating = false;
+      });
     });
   });
 </script>
