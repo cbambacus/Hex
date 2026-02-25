@@ -1563,24 +1563,41 @@
   // ========== DIAMOND RANDOMIZATION ==========
   function rand(min, max) { return min + Math.random() * (max - min); }
 
-  document.querySelectorAll('.tile-diamonds').forEach(group => {
-    const diamonds = group.querySelectorAll('.diamond');
-    const positions = [];
-    diamonds.forEach((d, i) => {
+  function randomizeDiamonds(group) {
+    group.querySelectorAll('.diamond').forEach((d, i) => {
       const quadTop = i < 2 ? rand(0, 24) : rand(26, 50);
       const quadRight = i % 2 === 0 ? rand(0, 19) : rand(22, 41);
       const size = rand(7, 17);
-      const height = size * 1.5; /* 2:3 width:height ratio */
+      const height = size * 1.5;
       const duration = rand(1.0, 1.5);
       const delay = rand(-2, 0);
-
       d.style.top = quadTop + 'px';
       d.style.right = quadRight + 'px';
       d.style.width = size + 'px';
       d.style.height = Math.round(height) + 'px';
       d.style.animation = `diamond-pulse ${duration.toFixed(2)}s ease-in-out ${delay.toFixed(2)}s infinite`;
     });
-  });
+  }
+
+  function addDiamondsToTile(tile) {
+    if (tile.querySelector('.tile-diamonds')) return; // already has diamonds
+    const group = document.createElement('div');
+    group.className = 'tile-diamonds';
+    for (let i = 0; i < 4; i++) {
+      const d = document.createElement('div');
+      d.className = 'diamond diamond-' + (i + 1);
+      group.appendChild(d);
+    }
+    tile.insertBefore(group, tile.firstChild);
+    randomizeDiamonds(group);
+    // Register in tick-up system
+    const numberEl = tile.querySelector('.tile-number');
+    const candidateStat = tile.querySelector('.mini-stat-num');
+    const currentCount = parseInt(numberEl.textContent, 10);
+    activeTiles.push({ tile, numberEl, candidateStat, defaultCount: currentCount, current: currentCount });
+  }
+
+  document.querySelectorAll('.tile-diamonds').forEach(group => randomizeDiamonds(group));
 
   // ========== JOB DATA (22 unique entries) ==========
   const jobData = {
@@ -1778,6 +1795,7 @@
   const reviewCandidatesBtn = document.getElementById('reviewCandidatesBtn');
   const modifySearchBtn = document.getElementById('modifySearchBtn');
   let searchInterval = null;
+  let searchTimeout = null;
 
   // Job create form elements
   const jobCreate = document.getElementById('jobCreate');
@@ -1795,6 +1813,7 @@
 
   let savedScrollY = 0;
   let isAnimating = false;
+  let currentTile = null;
 
   // Get clean title text from tile label (convert <br> to space)
   function getTileTitle(tile) {
@@ -1817,6 +1836,7 @@
     if (isAnimating) return;
     isAnimating = true;
 
+    currentTile = tile;
     const title = getTileTitle(tile);
     const data = jobData[title];
     if (!data) { isAnimating = false; return; }
@@ -1865,6 +1885,7 @@
   // Reset search console to default state
   function resetSearchConsole() {
     if (searchInterval) { clearInterval(searchInterval); searchInterval = null; }
+    if (searchTimeout) { clearTimeout(searchTimeout); searchTimeout = null; }
     searchConsole.classList.remove('open');
     searchConsole.style.display = 'none';
     searchConsole.innerHTML = '';
@@ -1901,6 +1922,9 @@
 
   // ========== SEARCH CONSOLE LOGIC ==========
   findCandidatesBtn.addEventListener('click', () => {
+    // Put current tile into searching state
+    if (currentTile) addDiamondsToTile(currentTile);
+
     const title = jobTitle.textContent;
     const lines = [
       'Creating search strategy.',
@@ -1919,8 +1943,11 @@
     jobDetailActions.style.display = 'none';
     searchActions.style.display = 'flex';
 
-    // Show console and slide down
+    // Reset console state fully before starting
+    searchConsole.classList.remove('open');
+    searchConsole.style.display = 'none';
     searchConsole.innerHTML = '<span class="search-cursor"></span>';
+    // Show console and slide down
     searchConsole.style.display = 'block';
     searchConsole.offsetHeight;
     searchConsole.classList.add('open');
@@ -1951,7 +1978,7 @@
           searchInterval = null;
           lineIndex++;
           if (lineIndex < lines.length) {
-            setTimeout(typeLine, 5000);
+            searchTimeout = setTimeout(typeLine, 5000);
           }
         }
       }, 35);
