@@ -221,12 +221,16 @@
     pointer-events: auto;
   }
 
-  /* ========== NEW REC — magenta highlight only, instant snap ========== */
+  /* ========== NEW JOB — magenta highlight only, instant snap ========== */
   .tile-new .hex-border {
     transition: none;
   }
 
   .tile-new .tile-icon svg {
+    transition: none;
+  }
+
+  .tile-new .tile-label {
     transition: none;
   }
 
@@ -236,6 +240,10 @@
 
   .tile-new:hover .tile-icon svg {
     stroke: #e535e5;
+  }
+
+  .tile-new:hover .tile-label {
+    color: #e535e5;
   }
 
   /* ========== REVERSE (mouse-out) ========== */
@@ -381,7 +389,7 @@
 
   .job-divider {
     border: none;
-    border-top: 1px solid rgba(255, 255, 255, 0.2);
+    border-top: 2px solid #fff;
     margin: 24px 0 28px;
   }
 
@@ -483,7 +491,7 @@
     color: #fff;
     background: transparent;
     border: none;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    border-bottom: 2px solid #fff;
     outline: none;
     width: 100%;
     padding: 0 0 4px 0;
@@ -501,7 +509,7 @@
     line-height: 1.7;
     color: rgba(255, 255, 255, 0.85);
     background: transparent;
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    border: 2px solid #fff;
     border-radius: 0;
     outline: none;
     padding: 16px;
@@ -539,7 +547,7 @@
     font-size: 15px;
     color: #fff;
     background: transparent;
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    border: 2px solid #fff;
     outline: none;
     padding: 8px 12px;
     font-family: inherit;
@@ -559,7 +567,7 @@
     font-size: 15px;
     color: #fff;
     background: #000;
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    border: 2px solid #fff;
     outline: none;
     padding: 8px 32px 8px 12px;
     font-family: inherit;
@@ -588,7 +596,7 @@
     font-size: 15px;
     color: #fff;
     background: transparent;
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    border: 2px solid #fff;
     outline: none;
     padding: 8px 12px;
     font-family: inherit;
@@ -625,7 +633,7 @@
     <div class="tile-content">
       <div class="tile-icon"><svg viewBox="0 0 40 40" fill="none"><path d="M17 2 L23 2 L23 17 L38 17 L38 23 L23 23 L23 38 L17 38 L17 23 L2 23 L2 17 L17 17 Z"/></svg></div>
     </div>
-    <div class="tile-label">New Rec</div>
+    <div class="tile-label">New Job</div>
   </div>
 
   <div class="tile">
@@ -1928,10 +1936,8 @@
 
     jobCreate.classList.remove('active');
     jobDetail.classList.add('active');
-    jobDetail.style.transform = 'scale(1)';
-    jobDetail.style.opacity = '1';
 
-    // Force reflow then re-enable transitions
+    // Force reflow then re-enable transitions and clear inline overrides
     void jobDetail.offsetHeight;
     requestAnimationFrame(() => {
       jobCreate.style.transition = '';
