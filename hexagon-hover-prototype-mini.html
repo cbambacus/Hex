@@ -1566,11 +1566,11 @@
     <div class="job-actions" style="margin-top: 48px;">
       <div class="job-action" id="saveJobBtn">
         <span class="action-icon"><span class="action-hex-border"></span><span class="action-hex-fill"></span><svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="13 6 19 12 13 18"></polyline></svg></span>
-        Save and Create Job Target
+        Create Job Target
       </div>
       <div class="job-action" id="deleteJobBtn">
         <span class="action-icon"><span class="action-hex-border"></span><span class="action-hex-fill"></span><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></span>
-        Delete Job
+        Cancel
       </div>
     </div>
   </div>
@@ -2073,12 +2073,12 @@
     });
   });
 
-  // Delete Job button → same as back (job not saved yet)
+  // Cancel button → same as back (job not saved yet)
   deleteJobBtn.addEventListener('click', () => {
     jobCreateBack.click();
   });
 
-  // Save and Create Job Target
+  // Create Job Target
   saveJobBtn.addEventListener('click', () => {
     const title = jobTitleInput.value.trim();
     if (!title) {
