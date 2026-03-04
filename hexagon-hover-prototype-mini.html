@@ -6,15 +6,15 @@
 <title>Skill Recruiter</title>
 <style>
   @font-face {
-    font-family: 'Inter';
-    src: url('Fonts/Inter-VariableFont_opsz,wght.ttf') format('truetype');
+    font-family: 'IBM Plex Sans';
+    src: url('Fonts/IBMPlexSans-VariableFont_wdth,wght.ttf') format('truetype');
     font-weight: 100 900;
     font-style: normal;
   }
 
   @font-face {
-    font-family: 'Inter';
-    src: url('Fonts/Inter-Italic-VariableFont_opsz,wght.ttf') format('truetype');
+    font-family: 'IBM Plex Sans';
+    src: url('Fonts/IBMPlexSans-Italic-VariableFont_wdth,wght.ttf') format('truetype');
     font-weight: 100 900;
     font-style: italic;
   }
@@ -23,6 +23,13 @@
     font-family: 'IBM Plex Mono';
     src: url('Fonts/IBMPlexMono-Medium.ttf') format('truetype');
     font-weight: 500;
+    font-style: normal;
+  }
+
+  @font-face {
+    font-family: 'Skill Sans';
+    src: url('Fonts/SkillSans-Regular.otf') format('opentype');
+    font-weight: 400;
     font-style: normal;
   }
 
@@ -35,7 +42,7 @@
   body {
     background: #000;
     min-height: 100vh;
-    font-family: 'Inter', sans-serif;
+    font-family: 'IBM Plex Sans', sans-serif;
     color: #fff;
   }
 
@@ -58,15 +65,16 @@
   }
 
   .header-dot {
-    width: 10px;
-    height: 15px;
+    width: 12px;
+    height: 18px;
     background: #f0f;
     clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
   }
 
   .header-title {
-    font-size: 20px;
-    font-weight: 600;
+    font-family: 'Skill Sans', 'IBM Plex Sans', sans-serif;
+    font-size: 24px;
+    font-weight: 400;
     letter-spacing: 0.5px;
   }
 
@@ -140,7 +148,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    font-family: 'Inter', sans-serif;
+    font-family: 'IBM Plex Sans', sans-serif;
     font-size: 52px;
     font-weight: 300;
     color: rgba(255, 255, 255, 0.85);
@@ -192,7 +200,7 @@
   }
 
   .mini-stat-num {
-    font-family: 'Inter', sans-serif;
+    font-family: 'IBM Plex Sans', sans-serif;
     font-size: 23px;
     font-weight: 300;
     color: #f0f;
@@ -403,9 +411,9 @@
   }
 
   .job-title {
-    font-family: 'Inter', sans-serif;
+    font-family: 'Skill Sans', 'IBM Plex Sans', sans-serif;
     font-size: 32px;
-    font-weight: 300;
+    font-weight: 400;
     color: #fff;
     flex: 1;
   }
@@ -415,6 +423,13 @@
     font-weight: 300;
     color: #fff;
     flex-shrink: 0;
+  }
+
+  .job-req-id {
+    font-size: 15px;
+    font-weight: 400;
+    color: rgba(255, 255, 255, 0.55);
+    margin-top: 8px;
   }
 
   .job-divider {
@@ -594,18 +609,16 @@
   }
 
   .job-title-input {
-    font-family: 'Inter', sans-serif;
+    font-family: 'Skill Sans', 'IBM Plex Sans', sans-serif;
     font-size: 32px;
-    font-weight: 300;
+    font-weight: 400;
     color: #fff;
     background: transparent;
-    border: none;
-    border-bottom: none;
+    border: var(--stroke-width) solid #fff;
     outline: none;
     width: 100%;
-    padding: 4px 0 4px 0;
+    padding: 4px 12px;
     margin-top: 2px;
-    font-family: inherit;
   }
 
   .job-title-input::placeholder {
@@ -699,6 +712,7 @@
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='2.5'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
     background-repeat: no-repeat;
     background-position: right 10px center;
+    width: 220px;
   }
 
   .form-select option {
@@ -1557,10 +1571,11 @@
 <div class="job-detail" id="jobDetail">
   <div class="job-detail-inner">
     <div class="job-header-row">
-      <span class="job-back" id="jobBack">&#8592;</span>
+      <span class="job-back" id="jobBack">&lt;</span>
       <h1 class="job-title" id="jobTitle"></h1>
       <span class="job-count" id="jobCount"></span>
     </div>
+    <div class="job-req-id" id="jobReqId"></div>
     <hr class="job-divider">
     <p class="job-description" id="jobDescription"></p>
     <div class="job-meta" id="jobMeta"></div>
@@ -1587,15 +1602,27 @@
     </div>
     <div id="jobEditForm" style="display:none">
       <input type="text" class="job-title-input" id="editJobTitleInput" placeholder="Job Title">
+      <div class="form-row" style="margin-top: 16px;">
+        <div class="form-group">
+          <span class="form-label">Req ID</span>
+          <input type="text" class="form-input" id="editReqIdInput" placeholder="Req ID">
+        </div>
+        <div class="form-group"></div>
+      </div>
       <textarea class="job-desc-input" id="editJobDescInput" placeholder="Enter Job Description..." style="margin-top: 24px;"></textarea>
       <div class="form-row">
         <div class="form-group">
-          <span class="form-label">Salary</span>
-          <div class="salary-inputs">
-            <input type="text" class="salary-field" id="editSalaryMin" placeholder="$100,000">
-            <span class="salary-to">to</span>
-            <input type="text" class="salary-field" id="editSalaryMax" placeholder="$110,000">
-          </div>
+          <span class="form-label">Country</span>
+          <select class="form-select" id="editCountryInput">
+            <option value="United States" selected>United States</option>
+            <option value="Canada">Canada</option>
+            <option value="United Kingdom">United Kingdom</option>
+            <option value="Germany">Germany</option>
+            <option value="France">France</option>
+            <option value="Australia">Australia</option>
+            <option value="Japan">Japan</option>
+            <option value="India">India</option>
+          </select>
         </div>
         <div class="form-group">
           <div class="radio-group">
@@ -1619,13 +1646,36 @@
       </div>
       <div class="form-row">
         <div class="form-group">
+          <span class="form-label">Currency</span>
+          <select class="form-select" id="editCurrencyInput">
+            <option value="USD" selected>USD</option>
+            <option value="CAD">CAD</option>
+            <option value="GBP">GBP</option>
+            <option value="EUR">EUR</option>
+            <option value="AUD">AUD</option>
+            <option value="JPY">JPY</option>
+            <option value="INR">INR</option>
+          </select>
+        </div>
+        <div class="form-group"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <span class="form-label">Salary</span>
+          <div class="salary-inputs">
+            <input type="text" class="salary-field" id="editSalaryMin" placeholder="$100,000">
+            <span class="salary-to">to</span>
+            <input type="text" class="salary-field" id="editSalaryMax" placeholder="$110,000">
+          </div>
+        </div>
+        <div class="form-group"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
           <span class="form-label">Link</span>
           <input type="text" class="form-input" id="editJobLinkInput" placeholder="Job Posting Link">
         </div>
-        <div class="form-group">
-          <span class="form-label">Req ID</span>
-          <input type="text" class="form-input" id="editReqIdInput" placeholder="Req ID" style="width: calc(100% - 25px)">
-        </div>
+        <div class="form-group"></div>
       </div>
       <div class="job-actions" style="margin-top: 48px;">
         <div class="job-action" id="saveEditBtn">
@@ -1644,18 +1694,30 @@
 <div class="job-create" id="jobCreate">
   <div class="job-detail-inner">
     <div class="job-header-row">
-      <span class="job-back" id="jobCreateBack">&#8592;</span>
+      <span class="job-back" id="jobCreateBack">&lt;</span>
       <input type="text" class="job-title-input" id="jobTitleInput" placeholder="Job Title">
+    </div>
+    <div class="form-row" style="margin-top: 16px;">
+      <div class="form-group">
+        <span class="form-label">Req ID</span>
+        <input type="text" class="form-input" id="reqIdInput" placeholder="Req ID">
+      </div>
+      <div class="form-group"></div>
     </div>
     <textarea class="job-desc-input" id="jobDescInput" placeholder="Enter Job Description..." style="margin-top: 24px;"></textarea>
     <div class="form-row">
       <div class="form-group">
-        <span class="form-label">Salary</span>
-        <div class="salary-inputs">
-          <input type="text" class="salary-field" id="salaryMin" placeholder="$100,000">
-          <span class="salary-to">to</span>
-          <input type="text" class="salary-field" id="salaryMax" placeholder="$110,000">
-        </div>
+        <span class="form-label">Country</span>
+        <select class="form-select" id="countryInput">
+          <option value="United States" selected>United States</option>
+          <option value="Canada">Canada</option>
+          <option value="United Kingdom">United Kingdom</option>
+          <option value="Germany">Germany</option>
+          <option value="France">France</option>
+          <option value="Australia">Australia</option>
+          <option value="Japan">Japan</option>
+          <option value="India">India</option>
+        </select>
       </div>
       <div class="form-group">
         <div class="radio-group" id="commuteRadios">
@@ -1679,13 +1741,36 @@
     </div>
     <div class="form-row">
       <div class="form-group">
+        <span class="form-label">Currency</span>
+        <select class="form-select" id="currencyInput">
+          <option value="USD" selected>USD</option>
+          <option value="CAD">CAD</option>
+          <option value="GBP">GBP</option>
+          <option value="EUR">EUR</option>
+          <option value="AUD">AUD</option>
+          <option value="JPY">JPY</option>
+          <option value="INR">INR</option>
+        </select>
+      </div>
+      <div class="form-group"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <span class="form-label">Salary</span>
+        <div class="salary-inputs">
+          <input type="text" class="salary-field" id="salaryMin" placeholder="$100,000">
+          <span class="salary-to">to</span>
+          <input type="text" class="salary-field" id="salaryMax" placeholder="$110,000">
+        </div>
+      </div>
+      <div class="form-group"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
         <span class="form-label">Link</span>
         <input type="text" class="form-input" id="jobLinkInput" placeholder="Job Posting Link">
       </div>
-      <div class="form-group">
-        <span class="form-label">Req ID</span>
-        <input type="text" class="form-input" id="reqIdInput" placeholder="Req ID" style="width: calc(100% - 25px)">
-      </div>
+      <div class="form-group"></div>
     </div>
     <div class="job-actions" style="margin-top: 48px;">
       <div class="job-action" id="saveJobBtn">
@@ -1745,220 +1830,264 @@
     'Senior Brand Strategist': {
       count: 0,
       location: 'New York, NY',
+      country: 'United States',
       commute: 'Hybrid',
       jobType: 'Perm',
       jobLink: 'https://careers.example.com/brand-strategist-4821',
       reqId: 'MKT-2026-0041',
+      currency: 'USD',
       salary: '$130k \u2013 150k',
       description: 'The Senior Brand Strategist leads global brand positioning and long-term strategy across markets. This person will define brand architecture and messaging frameworks, translate research into actionable creative briefs, and guide annual planning in partnership with internal teams and agencies. The ideal candidate brings 8+ years of brand strategy experience in multi-market or global environments, strong executive presentation skills, and a proven ability to shape compelling narratives that drive business growth.'
     },
     'Marketing Analytics Manager': {
       count: 35,
       location: 'Chicago, IL',
+      country: 'United States',
       commute: 'Hybrid',
       jobType: 'Perm',
       jobLink: 'https://careers.example.com/mktg-analytics-mgr-3392',
       reqId: 'MKT-2026-0038',
+      currency: 'USD',
       salary: '$115k \u2013 135k',
       description: 'The Marketing Analytics Manager owns the measurement framework across all digital and offline marketing channels. You will build dashboards, design attribution models, and translate campaign performance data into strategic recommendations for leadership. This role requires strong SQL skills, experience with tools like Tableau or Looker, and 5+ years in a marketing analytics function. The ideal candidate is both deeply technical and a clear communicator who can influence non-technical stakeholders.'
     },
     'Dev Team Lead': {
       count: 22,
       location: 'Austin, TX',
+      country: 'United States',
       commute: 'On Site',
       jobType: 'Perm',
       jobLink: 'https://careers.example.com/dev-team-lead-5107',
       reqId: 'ENG-2026-0115',
+      currency: 'USD',
       salary: '$155k \u2013 180k',
       description: 'The Dev Team Lead manages a squad of 6\u20138 engineers building our core platform services. You will own sprint planning, code review standards, and architectural decisions while remaining hands-on with the codebase. We are looking for someone with 7+ years of software development experience, at least 2 years in a leadership role, and deep expertise in distributed systems. Strong mentorship skills and a track record of shipping high-quality software on schedule are essential.'
     },
     'Sr Product Manager': {
       count: 94,
       location: 'San Francisco, CA',
+      country: 'United States',
       commute: 'Hybrid',
       jobType: 'Perm',
       jobLink: 'https://careers.example.com/sr-product-mgr-4490',
       reqId: 'PRD-2026-0072',
+      currency: 'USD',
       salary: '$145k \u2013 170k',
       description: 'The Sr Product Manager drives the product roadmap for our enterprise SaaS platform, balancing customer needs with business goals and technical feasibility. You will conduct user research, define requirements, and work closely with engineering and design to deliver features that delight users. This role requires 6+ years of product management experience, strong analytical skills, and excellent cross-functional collaboration. Experience with B2B SaaS products and agile methodologies is strongly preferred.'
     },
     'VP, Corporate Communications': {
       count: 115,
       location: 'New York, NY',
+      country: 'United States',
       commute: 'On Site',
       jobType: 'Perm',
       jobLink: 'https://careers.example.com/vp-corp-comms-2785',
       reqId: 'COM-2026-0009',
+      currency: 'USD',
       salary: '$185k \u2013 220k',
       description: 'The VP of Corporate Communications shapes and protects the company\'s public narrative across media, investor relations, and internal channels. You will lead a team of communications professionals, manage crisis response protocols, and develop executive thought leadership programs. The ideal candidate has 12+ years of experience in corporate communications or public relations, a strong media network, and exceptional writing and presentation skills. Experience in technology or financial services is preferred.'
     },
     'UX Content Designer': {
       count: 64,
       location: 'Remote (US)',
+      country: 'United States',
       commute: 'Remote',
       jobType: 'Perm',
       jobLink: 'https://careers.example.com/ux-content-designer-6013',
       reqId: 'DES-2026-0027',
+      currency: 'USD',
       salary: '$100k \u2013 120k',
       description: 'The UX Content Designer crafts clear, concise microcopy and content strategy for our product interfaces. You will partner with UX designers and researchers to ensure every touchpoint communicates effectively, from onboarding flows to error messages. This role requires 4+ years of UX writing or content design experience, a portfolio demonstrating user-centered writing, and familiarity with design tools like Figma. A background in linguistics, journalism, or technical writing is a plus.'
     },
     'Staff Software Engineer': {
       count: 48,
       location: 'Seattle, WA',
+      country: 'United States',
       commute: 'Hybrid',
       jobType: 'Perm',
       jobLink: 'https://careers.example.com/staff-swe-5280',
       reqId: 'ENG-2026-0118',
+      currency: 'USD',
       salary: '$180k \u2013 210k',
       description: 'The Staff Software Engineer serves as a technical leader across multiple engineering teams, driving architecture decisions and establishing best practices for our cloud-native platform. You will design scalable systems, mentor senior engineers, and contribute to our most complex technical challenges. We require 10+ years of professional software engineering experience, deep expertise in Go or Java, and extensive experience with cloud infrastructure (AWS or GCP). A track record of leading large-scale system designs is essential.'
     },
     'Head of People Ops': {
       count: 17,
       location: 'Denver, CO',
+      country: 'United States',
       commute: 'Hybrid',
       jobType: 'Perm',
       jobLink: 'https://careers.example.com/head-people-ops-3841',
       reqId: 'HR-2026-0006',
+      currency: 'USD',
       salary: '$140k \u2013 165k',
       description: 'The Head of People Ops oversees all HR operations including benefits administration, compliance, HRIS management, and employee lifecycle programs. You will build scalable people processes for a rapidly growing organization and lead a team of HR coordinators. This role requires 8+ years of HR operations experience, deep knowledge of employment law across multiple states, and experience with Workday or similar HRIS platforms. Strong project management skills and a data-driven approach to people decisions are essential.'
     },
     'Data Science Lead': {
       count: 83,
       location: 'Boston, MA',
+      country: 'United States',
       commute: 'Hybrid',
       jobType: 'Perm',
       jobLink: 'https://careers.example.com/data-science-lead-4917',
       reqId: 'DAT-2026-0033',
+      currency: 'USD',
       salary: '$160k \u2013 190k',
       description: 'The Data Science Lead manages a team of data scientists and ML engineers building predictive models that power core product features. You will define the data science roadmap, establish modeling best practices, and collaborate with product and engineering to deploy models at scale. This role requires 7+ years of experience in data science, proficiency in Python and SQL, and hands-on experience with ML frameworks like TensorFlow or PyTorch. A PhD or Master\'s degree in a quantitative field is preferred.'
     },
     'Growth Marketing Manager': {
       count: 29,
       location: 'Los Angeles, CA',
+      country: 'United States',
       commute: 'Remote',
       jobType: 'Temp',
       jobLink: 'https://careers.example.com/growth-mktg-mgr-5544',
       reqId: 'MKT-2026-0045',
+      currency: 'USD',
       salary: '$110k \u2013 130k',
       description: 'The Growth Marketing Manager owns user acquisition and retention funnels across paid and organic channels. You will design and execute experiments, optimize conversion rates, and scale campaigns that drive measurable revenue growth. This role requires 5+ years of growth or performance marketing experience, strong analytical skills, and proficiency with tools like Google Analytics, Mixpanel, and paid media platforms. Experience in SaaS or marketplace businesses and a test-and-learn mindset are highly valued.'
     },
     'Principal Designer': {
       count: 41,
       location: 'San Francisco, CA',
+      country: 'United States',
       commute: 'Hybrid',
       jobType: 'Perm',
       jobLink: 'https://careers.example.com/principal-designer-3190',
       reqId: 'DES-2026-0031',
+      currency: 'USD',
       salary: '$165k \u2013 195k',
       description: 'The Principal Designer sets the creative vision and design standards for the entire product suite. You will lead design critiques, define our design system, and mentor designers at all levels. This individual contributor role requires 10+ years of product design experience, a world-class portfolio, and the ability to influence product strategy at the executive level. Deep expertise in interaction design, visual systems, and user research methods is essential.'
     },
     'DevOps Engineer II': {
       count: 156,
       location: 'Remote (US)',
+      country: 'United States',
       commute: 'Remote',
       jobType: 'Perm',
       jobLink: 'https://careers.example.com/devops-eng-ii-7201',
       reqId: 'ENG-2026-0122',
+      currency: 'USD',
       salary: '$120k \u2013 145k',
       description: 'The DevOps Engineer II builds and maintains CI/CD pipelines, container orchestration, and cloud infrastructure that supports our engineering teams. You will automate deployments, improve system reliability, and implement monitoring and alerting solutions. This role requires 3+ years of DevOps or SRE experience, strong skills in Kubernetes and Terraform, and experience with AWS or GCP. Familiarity with GitOps workflows and infrastructure-as-code principles is expected.'
     },
     'Director of Sales': {
       count: 72,
       location: 'New York, NY',
+      country: 'United States',
       commute: 'On Site',
       jobType: 'Perm',
       jobLink: 'https://careers.example.com/dir-sales-1847',
       reqId: 'SAL-2026-0014',
+      currency: 'USD',
       salary: '$160k \u2013 200k + commission',
       description: 'The Director of Sales leads a team of enterprise account executives and owns the full sales cycle from prospecting to close. You will build and refine the sales playbook, forecast quarterly revenue, and develop strategic account plans for Fortune 500 targets. This role requires 8+ years of B2B SaaS sales experience, at least 3 years in sales leadership, and a consistent track record of exceeding quota. Experience selling to C-suite buyers and navigating complex procurement processes is essential.'
     },
     'Mobile Engineer (iOS)': {
       count: 38,
       location: 'Austin, TX',
+      country: 'United States',
       commute: 'Hybrid',
       jobType: 'Perm',
       jobLink: 'https://careers.example.com/mobile-eng-ios-6330',
       reqId: 'ENG-2026-0125',
+      currency: 'USD',
       salary: '$140k \u2013 165k',
       description: 'The Mobile Engineer (iOS) builds and ships features for our flagship iOS application used by millions of users. You will work in Swift, collaborate with designers on pixel-perfect UI implementations, and optimize app performance and reliability. This role requires 5+ years of iOS development experience, deep knowledge of UIKit and SwiftUI, and experience with CI/CD for mobile. Familiarity with reactive programming patterns and a passion for crafting exceptional mobile experiences are strongly preferred.'
     },
     'Content Strategy Lead': {
       count: 19,
       location: 'Portland, OR',
+      country: 'United States',
       commute: 'Remote',
       jobType: 'Temp',
       jobLink: 'https://careers.example.com/content-strategy-lead-4102',
       reqId: 'MKT-2026-0049',
+      currency: 'USD',
       salary: '$105k \u2013 125k',
       description: 'The Content Strategy Lead defines and executes the content roadmap across blog, email, social, and thought leadership channels. You will develop editorial calendars, manage freelance writers, and measure content performance against business KPIs. This role requires 6+ years of content strategy or content marketing experience, excellent editorial judgment, and strong SEO knowledge. Experience building content programs from the ground up and a portfolio of published work are essential.'
     },
     'Security Architect': {
       count: 8,
       location: 'Washington, DC',
+      country: 'United States',
       commute: 'Hybrid',
       jobType: 'Perm',
       jobLink: 'https://careers.example.com/security-architect-2950',
       reqId: 'SEC-2026-0003',
+      currency: 'USD',
       salary: '$170k \u2013 200k',
       description: 'The Security Architect designs and implements the security architecture across our cloud infrastructure, application layer, and data platforms. You will conduct threat modeling, define security standards, and lead incident response planning. This role requires 8+ years of information security experience, deep expertise in cloud security (AWS/GCP), and relevant certifications (CISSP, CCSP, or equivalent). Experience with zero-trust architectures and compliance frameworks like SOC 2 and FedRAMP is strongly preferred.'
     },
     'Research Scientist': {
       count: 53,
       location: 'Cambridge, MA',
+      country: 'United States',
       commute: 'On Site',
       jobType: 'Perm',
       jobLink: 'https://careers.example.com/research-scientist-5712',
       reqId: 'RND-2026-0018',
+      currency: 'USD',
       salary: '$150k \u2013 180k',
       description: 'The Research Scientist conducts applied research in natural language processing and machine learning to develop novel algorithms for our core product. You will publish papers, prototype new approaches, and collaborate with engineering teams to productionize research findings. This role requires a PhD in Computer Science, Machine Learning, or a related field, a strong publication record, and hands-on programming skills in Python. Experience with large language models and transformer architectures is highly valued.'
     },
     'Customer Success Manager': {
       count: 67,
       location: 'Chicago, IL',
+      country: 'United States',
       commute: 'Hybrid',
       jobType: 'Perm',
       jobLink: 'https://careers.example.com/csm-3678',
       reqId: 'CX-2026-0021',
+      currency: 'USD',
       salary: '$95k \u2013 115k',
       description: 'The Customer Success Manager owns a portfolio of enterprise accounts and drives adoption, retention, and expansion revenue. You will build deep relationships with customer stakeholders, conduct quarterly business reviews, and proactively identify upsell opportunities. This role requires 4+ years of customer success or account management experience in B2B SaaS, excellent communication skills, and a data-driven approach to account health. Experience with customer success platforms like Gainsight or Totango is preferred.'
     },
     'Frontend Engineer III': {
       count: 112,
       location: 'Remote (US)',
+      country: 'United States',
       commute: 'Remote',
       jobType: 'Perm',
       jobLink: 'https://careers.example.com/frontend-eng-iii-8104',
       reqId: 'ENG-2026-0130',
+      currency: 'USD',
       salary: '$145k \u2013 170k',
       description: 'The Frontend Engineer III builds performant, accessible web interfaces using React and TypeScript. You will own major feature areas, contribute to our component library, and drive frontend architecture decisions. This role requires 5+ years of frontend development experience, deep expertise in React and modern JavaScript, and a strong eye for UI quality. Experience with design systems, performance optimization, and accessibility standards (WCAG) is essential.'
     },
     'Talent Acquisition Lead': {
       count: 26,
       location: 'Denver, CO',
+      country: 'United States',
       commute: 'Hybrid',
       jobType: 'Perm',
       jobLink: 'https://careers.example.com/ta-lead-4455',
       reqId: 'HR-2026-0011',
+      currency: 'USD',
       salary: '$110k \u2013 130k',
       description: 'The Talent Acquisition Lead manages a team of recruiters and owns the end-to-end hiring strategy for engineering, product, and design roles. You will optimize sourcing channels, build employer branding initiatives, and partner with hiring managers to raise the bar on talent quality. This role requires 6+ years of recruiting experience in tech, at least 2 years leading a TA team, and expertise with ATS platforms. A data-driven approach to pipeline management and a passion for diversity hiring are essential.'
     },
     'Platform Engineer': {
       count: 44,
       location: 'Seattle, WA',
+      country: 'United States',
       commute: 'Hybrid',
       jobType: 'Perm',
       jobLink: 'https://careers.example.com/platform-eng-5890',
       reqId: 'ENG-2026-0134',
+      currency: 'USD',
       salary: '$150k \u2013 175k',
       description: 'The Platform Engineer designs and builds the internal developer platform that accelerates engineering productivity across the organization. You will create self-service tooling, manage shared infrastructure components, and define platform APIs and abstractions. This role requires 6+ years of software engineering experience, strong skills in Go or Python, and deep expertise with Kubernetes and cloud-native technologies. Experience building internal platforms and a passion for developer experience are highly valued.'
     },
     'Business Analyst Sr': {
       count: 31,
       location: 'Atlanta, GA',
+      country: 'United States',
       commute: 'Hybrid',
       jobType: 'Perm',
       jobLink: 'https://careers.example.com/biz-analyst-sr-2310',
       reqId: 'OPS-2026-0008',
+      currency: 'USD',
       salary: '$95k \u2013 115k',
       description: 'The Senior Business Analyst partners with cross-functional teams to translate business requirements into technical specifications and process improvements. You will conduct data analysis, build financial models, and present findings to senior leadership. This role requires 5+ years of business analysis experience, advanced Excel and SQL skills, and excellent communication abilities. Experience with BI tools like Tableau or Power BI and familiarity with agile project management methodologies are preferred.'
     }
@@ -2026,12 +2155,13 @@
   function buildMetaHTML(data) {
     let left = '';
     let right = '';
-    if (data.salary) left += `<div>Salary: ${data.salary}</div>`;
+    if (data.country) left += `<div>Country: ${data.country}</div>`;
     if (data.commute) right += `<div>${data.commute}</div>`;
     if (data.location) left += `<div>Location: ${data.location}</div>`;
     if (data.jobType) right += `<div>${data.jobType}</div>`;
+    if (data.currency) left += `<div>Currency: ${data.currency}</div>`;
+    if (data.salary) left += `<div>Salary: ${data.salary}</div>`;
     if (data.jobLink) left += `<div><a href="${data.jobLink}" target="_blank" class="posting-link">View Posting</a></div>`;
-    if (data.reqId) right += `<div>${data.reqId}</div>`;
     return `<div class="meta-col">${left}</div><div class="meta-col">${right}</div>`;
   }
 
@@ -2048,6 +2178,7 @@
     // Populate job detail
     jobTitle.textContent = title;
     jobCount.textContent = data.count;
+    document.getElementById('jobReqId').textContent = data.reqId || '';
     jobMeta.innerHTML = buildMetaHTML(data);
     jobDescription.textContent = data.description;
 
@@ -2211,7 +2342,9 @@
     salaryMin.value = '';
     salaryMax.value = '';
     commuteRadios[0].checked = true;
+    document.getElementById('countryInput').value = 'United States';
     locationInput.value = '';
+    document.getElementById('currencyInput').value = 'USD';
     jobLinkInput.value = '';
     reqIdInput.value = '';
     jobTypeRadios[0].checked = true;
@@ -2298,7 +2431,9 @@
     // Create jobData entry
     const newJob = {
       count: 0,
+      country: document.getElementById('countryInput').value,
       location: loc,
+      currency: document.getElementById('currencyInput').value,
       commute: commute,
       jobType: document.querySelector('input[name="jobType"]:checked').value || '',
       salary: displaySalary,
@@ -2382,6 +2517,7 @@
     jobDescription.style.display = 'none';
     jobMeta.style.display = 'none';
     document.querySelector('#jobDetail .job-divider').style.display = 'none';
+    document.getElementById('jobReqId').style.display = 'none';
     document.getElementById('jobDetailActions').style.display = 'none';
     document.getElementById('searchActions').style.display = 'none';
     document.getElementById('searchConsole').style.display = 'none';
@@ -2395,6 +2531,7 @@
     jobDescription.style.display = '';
     jobMeta.style.display = '';
     document.querySelector('#jobDetail .job-divider').style.display = '';
+    document.getElementById('jobReqId').style.display = '';
     document.getElementById('jobDetailActions').style.display = '';
   }
 
@@ -2409,6 +2546,8 @@
     editLocationInput.value = data.location || '';
     editJobLinkInput.value = data.jobLink || '';
     editReqIdInput.value = data.reqId || '';
+    document.getElementById('editCountryInput').value = data.country || 'United States';
+    document.getElementById('editCurrencyInput').value = data.currency || 'USD';
 
     // Parse salary
     const salaryStr = data.salary || '';
@@ -2463,7 +2602,9 @@
     // Update jobData
     const updatedJob = {
       count: jobData[editingTitle].count,
+      country: document.getElementById('editCountryInput').value,
       location: editLocationInput.value.trim(),
+      currency: document.getElementById('editCurrencyInput').value,
       commute: commute,
       jobType: jobType,
       salary: displaySalary,
