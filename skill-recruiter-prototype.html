@@ -92,7 +92,7 @@
     background: transparent;
     border: none;
     padding: 6px 16px;
-    border-radius: 4px;
+    border-radius: 0;
     cursor: pointer;
     transition: color 0.2s ease, background 0.2s ease;
   }
@@ -103,9 +103,38 @@
   }
 
   .header-nav-btn.active {
-    color: #fff;
-    background: rgba(255, 255, 255, 0.12);
+    color: #000;
+    background: #f0f;
     font-weight: 500;
+  }
+
+  /* ========== STARFIELD ========== */
+  .starfield {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 0;
+    overflow: hidden;
+  }
+
+  .star {
+    position: absolute;
+    background: #fff;
+    opacity: 0.2;
+    clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+  }
+
+  @keyframes drift-right {
+    from { transform: translateX(0); }
+    to { transform: translateX(60px); }
+  }
+
+  @keyframes drift-left {
+    from { transform: translateX(0); }
+    to { transform: translateX(-60px); }
   }
 
   /* ========== GRID ========== */
@@ -219,7 +248,7 @@
     align-items: center;
     justify-content: center;
     gap: 6px;
-    padding: 0 16px 0 20px;
+    padding: 0 16px 32px 20px;
   }
 
   .mini-stat-row {
@@ -256,17 +285,21 @@
   }
 
   .mini-stat-cta-spacer {
-    height: 10px;
+    display: none;
   }
 
   .mini-stat-cta {
-    display: inline-flex;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    display: flex;
     align-items: center;
-    gap: 6px;
+    justify-content: center;
     background: #f0f;
     color: #000;
-    border-radius: 4px;
-    padding: 5px 12px;
+    border-radius: 0 0 10px 10px;
+    padding: 8px 12px;
     font-size: 13px;
     font-weight: 500;
     line-height: 1.2;
@@ -308,7 +341,7 @@
 
   .tile:not(.disabled):not(.tile-new):hover .tile-number {
     opacity: 0;
-    transition: opacity 0.2s ease 0.05s;
+    transition: none;
   }
 
   .tile:not(.disabled):not(.tile-new):hover .tile-label {
@@ -317,7 +350,7 @@
 
   .tile:not(.disabled):not(.tile-new):hover .mini-stats {
     opacity: 1;
-    transition: opacity 0.3s ease 0.15s;
+    transition: none;
     pointer-events: auto;
   }
 
@@ -352,11 +385,11 @@
   }
 
   .tile .tile-number {
-    transition: opacity 0.15s ease;
+    transition: none;
   }
 
   .tile .mini-stats {
-    transition: opacity 0.15s ease;
+    transition: none;
   }
 
   /* ========== DISABLED TILES ========== */
@@ -867,6 +900,8 @@
 </head>
 <body>
 
+<div class="starfield" id="starfield"></div>
+
 <div class="header">
   <div class="header-dot"></div>
   <div class="header-title" id="headerLogo" style="cursor: pointer;">Skill Recruiter</div>
@@ -911,7 +946,7 @@
           <span class="mini-stat-label">Shortlist</span>
         </div>
         <div class="mini-stat-cta-spacer"></div>
-        <div class="mini-stat-cta"><span class="mini-stat-cta-arrow">&rarr;</span><span class="mini-stat-cta-divider"></span><span class="mini-stat-cta-label">Find Candidates</span></div>
+        <div class="mini-stat-cta">&rarr;&nbsp; <span class="mini-stat-cta-label">Find Candidates</span></div>
       </div>
     </div>
     <div class="tile-label">Senior Brand<br>Strategist</div>
@@ -936,7 +971,7 @@
           <span class="mini-stat-label">Shortlist</span>
         </div>
         <div class="mini-stat-cta-spacer"></div>
-        <div class="mini-stat-cta"><span class="mini-stat-cta-arrow">&rarr;</span><span class="mini-stat-cta-divider"></span><span class="mini-stat-cta-label">Review Candidates</span></div>
+        <div class="mini-stat-cta">&rarr;&nbsp; <span class="mini-stat-cta-label">Review Candidates</span></div>
       </div>
     </div>
     <div class="tile-label">Marketing Analytics<br>Manager</div>
@@ -967,7 +1002,7 @@
           <span class="mini-stat-label">Shortlist</span>
         </div>
         <div class="mini-stat-cta-spacer"></div>
-        <div class="mini-stat-cta"><span class="mini-stat-cta-arrow">&rarr;</span><span class="mini-stat-cta-divider"></span><span class="mini-stat-cta-label">Review Candidates</span></div>
+        <div class="mini-stat-cta">&rarr;&nbsp; <span class="mini-stat-cta-label">Review Candidates</span></div>
       </div>
     </div>
     <div class="tile-label">Dev Team Lead</div>
@@ -998,7 +1033,7 @@
           <span class="mini-stat-label">Shortlist</span>
         </div>
         <div class="mini-stat-cta-spacer"></div>
-        <div class="mini-stat-cta"><span class="mini-stat-cta-arrow">&rarr;</span><span class="mini-stat-cta-divider"></span><span class="mini-stat-cta-label">Find More Candidates</span></div>
+        <div class="mini-stat-cta">&rarr;&nbsp; <span class="mini-stat-cta-label">Find More Candidates</span></div>
       </div>
     </div>
     <div class="tile-label">Sr Product Manager</div>
@@ -1025,7 +1060,7 @@
           <span class="mini-stat-label">Shortlist</span>
         </div>
         <div class="mini-stat-cta-spacer"></div>
-        <div class="mini-stat-cta"><span class="mini-stat-cta-arrow">&rarr;</span><span class="mini-stat-cta-divider"></span><span class="mini-stat-cta-label">Review Candidates</span></div>
+        <div class="mini-stat-cta">&rarr;&nbsp; <span class="mini-stat-cta-label">Review Candidates</span></div>
       </div>
     </div>
     <div class="tile-label">VP, Corporate<br>Communications</div>
@@ -1056,7 +1091,7 @@
           <span class="mini-stat-label">Shortlist</span>
         </div>
         <div class="mini-stat-cta-spacer"></div>
-        <div class="mini-stat-cta"><span class="mini-stat-cta-arrow">&rarr;</span><span class="mini-stat-cta-divider"></span><span class="mini-stat-cta-label">Review Candidates</span></div>
+        <div class="mini-stat-cta">&rarr;&nbsp; <span class="mini-stat-cta-label">Review Candidates</span></div>
       </div>
     </div>
     <div class="tile-label">UX Content Designer</div>
@@ -1081,7 +1116,7 @@
           <span class="mini-stat-label">Shortlist</span>
         </div>
         <div class="mini-stat-cta-spacer"></div>
-        <div class="mini-stat-cta"><span class="mini-stat-cta-arrow">&rarr;</span><span class="mini-stat-cta-divider"></span><span class="mini-stat-cta-label">Review Candidates</span></div>
+        <div class="mini-stat-cta">&rarr;&nbsp; <span class="mini-stat-cta-label">Review Candidates</span></div>
       </div>
     </div>
     <div class="tile-label">Staff Software<br>Engineer</div>
@@ -1106,7 +1141,7 @@
           <span class="mini-stat-label">Shortlist</span>
         </div>
         <div class="mini-stat-cta-spacer"></div>
-        <div class="mini-stat-cta"><span class="mini-stat-cta-arrow">&rarr;</span><span class="mini-stat-cta-divider"></span><span class="mini-stat-cta-label">Review Candidates</span></div>
+        <div class="mini-stat-cta">&rarr;&nbsp; <span class="mini-stat-cta-label">Review Candidates</span></div>
       </div>
     </div>
     <div class="tile-label">Head of People Ops</div>
@@ -1131,7 +1166,7 @@
           <span class="mini-stat-label">Shortlist</span>
         </div>
         <div class="mini-stat-cta-spacer"></div>
-        <div class="mini-stat-cta"><span class="mini-stat-cta-arrow">&rarr;</span><span class="mini-stat-cta-divider"></span><span class="mini-stat-cta-label">Review Candidates</span></div>
+        <div class="mini-stat-cta">&rarr;&nbsp; <span class="mini-stat-cta-label">Review Candidates</span></div>
       </div>
     </div>
     <div class="tile-label">Data Science Lead</div>
@@ -1158,7 +1193,7 @@
           <span class="mini-stat-label">Shortlist</span>
         </div>
         <div class="mini-stat-cta-spacer"></div>
-        <div class="mini-stat-cta"><span class="mini-stat-cta-arrow">&rarr;</span><span class="mini-stat-cta-divider"></span><span class="mini-stat-cta-label">Find More Candidates</span></div>
+        <div class="mini-stat-cta">&rarr;&nbsp; <span class="mini-stat-cta-label">Find More Candidates</span></div>
       </div>
     </div>
     <div class="tile-label">Growth Marketing<br>Manager</div>
@@ -1189,7 +1224,7 @@
           <span class="mini-stat-label">Shortlist</span>
         </div>
         <div class="mini-stat-cta-spacer"></div>
-        <div class="mini-stat-cta"><span class="mini-stat-cta-arrow">&rarr;</span><span class="mini-stat-cta-divider"></span><span class="mini-stat-cta-label">Review Candidates</span></div>
+        <div class="mini-stat-cta">&rarr;&nbsp; <span class="mini-stat-cta-label">Review Candidates</span></div>
       </div>
     </div>
     <div class="tile-label">Principal Designer</div>
@@ -1214,7 +1249,7 @@
           <span class="mini-stat-label">Shortlist</span>
         </div>
         <div class="mini-stat-cta-spacer"></div>
-        <div class="mini-stat-cta"><span class="mini-stat-cta-arrow">&rarr;</span><span class="mini-stat-cta-divider"></span><span class="mini-stat-cta-label">Review Candidates</span></div>
+        <div class="mini-stat-cta">&rarr;&nbsp; <span class="mini-stat-cta-label">Review Candidates</span></div>
       </div>
     </div>
     <div class="tile-label">DevOps Engineer II</div>
@@ -1239,7 +1274,7 @@
           <span class="mini-stat-label">Shortlist</span>
         </div>
         <div class="mini-stat-cta-spacer"></div>
-        <div class="mini-stat-cta"><span class="mini-stat-cta-arrow">&rarr;</span><span class="mini-stat-cta-divider"></span><span class="mini-stat-cta-label">Review Candidates</span></div>
+        <div class="mini-stat-cta">&rarr;&nbsp; <span class="mini-stat-cta-label">Review Candidates</span></div>
       </div>
     </div>
     <div class="tile-label">Director of Sales</div>
@@ -1264,7 +1299,7 @@
           <span class="mini-stat-label">Shortlist</span>
         </div>
         <div class="mini-stat-cta-spacer"></div>
-        <div class="mini-stat-cta"><span class="mini-stat-cta-arrow">&rarr;</span><span class="mini-stat-cta-divider"></span><span class="mini-stat-cta-label">Review Candidates</span></div>
+        <div class="mini-stat-cta">&rarr;&nbsp; <span class="mini-stat-cta-label">Review Candidates</span></div>
       </div>
     </div>
     <div class="tile-label">Mobile Engineer (iOS)</div>
@@ -1291,7 +1326,7 @@
           <span class="mini-stat-label">Shortlist</span>
         </div>
         <div class="mini-stat-cta-spacer"></div>
-        <div class="mini-stat-cta"><span class="mini-stat-cta-arrow">&rarr;</span><span class="mini-stat-cta-divider"></span><span class="mini-stat-cta-label">Review Candidates</span></div>
+        <div class="mini-stat-cta">&rarr;&nbsp; <span class="mini-stat-cta-label">Review Candidates</span></div>
       </div>
     </div>
     <div class="tile-label">Content Strategy<br>Lead</div>
@@ -1316,7 +1351,7 @@
           <span class="mini-stat-label">Shortlist</span>
         </div>
         <div class="mini-stat-cta-spacer"></div>
-        <div class="mini-stat-cta"><span class="mini-stat-cta-arrow">&rarr;</span><span class="mini-stat-cta-divider"></span><span class="mini-stat-cta-label">Review Candidates</span></div>
+        <div class="mini-stat-cta">&rarr;&nbsp; <span class="mini-stat-cta-label">Review Candidates</span></div>
       </div>
     </div>
     <div class="tile-label">Security Architect</div>
@@ -1341,7 +1376,7 @@
           <span class="mini-stat-label">Shortlist</span>
         </div>
         <div class="mini-stat-cta-spacer"></div>
-        <div class="mini-stat-cta"><span class="mini-stat-cta-arrow">&rarr;</span><span class="mini-stat-cta-divider"></span><span class="mini-stat-cta-label">Review Candidates</span></div>
+        <div class="mini-stat-cta">&rarr;&nbsp; <span class="mini-stat-cta-label">Review Candidates</span></div>
       </div>
     </div>
     <div class="tile-label">Research Scientist</div>
@@ -1366,7 +1401,7 @@
           <span class="mini-stat-label">Shortlist</span>
         </div>
         <div class="mini-stat-cta-spacer"></div>
-        <div class="mini-stat-cta"><span class="mini-stat-cta-arrow">&rarr;</span><span class="mini-stat-cta-divider"></span><span class="mini-stat-cta-label">Find More Candidates</span></div>
+        <div class="mini-stat-cta">&rarr;&nbsp; <span class="mini-stat-cta-label">Find More Candidates</span></div>
       </div>
     </div>
     <div class="tile-label">Customer Success<br>Manager</div>
@@ -1397,7 +1432,7 @@
           <span class="mini-stat-label">Shortlist</span>
         </div>
         <div class="mini-stat-cta-spacer"></div>
-        <div class="mini-stat-cta"><span class="mini-stat-cta-arrow">&rarr;</span><span class="mini-stat-cta-divider"></span><span class="mini-stat-cta-label">Review Candidates</span></div>
+        <div class="mini-stat-cta">&rarr;&nbsp; <span class="mini-stat-cta-label">Review Candidates</span></div>
       </div>
     </div>
     <div class="tile-label">Frontend Engineer III</div>
@@ -1430,7 +1465,7 @@
           <span class="mini-stat-label">Shortlist</span>
         </div>
         <div class="mini-stat-cta-spacer"></div>
-        <div class="mini-stat-cta"><span class="mini-stat-cta-arrow">&rarr;</span><span class="mini-stat-cta-divider"></span><span class="mini-stat-cta-label">Find More Candidates</span></div>
+        <div class="mini-stat-cta">&rarr;&nbsp; <span class="mini-stat-cta-label">Find More Candidates</span></div>
       </div>
     </div>
     <div class="tile-label">Talent Acquisition<br>Lead</div>
@@ -1455,7 +1490,7 @@
           <span class="mini-stat-label">Shortlist</span>
         </div>
         <div class="mini-stat-cta-spacer"></div>
-        <div class="mini-stat-cta"><span class="mini-stat-cta-arrow">&rarr;</span><span class="mini-stat-cta-divider"></span><span class="mini-stat-cta-label">Find More Candidates</span></div>
+        <div class="mini-stat-cta">&rarr;&nbsp; <span class="mini-stat-cta-label">Find More Candidates</span></div>
       </div>
     </div>
     <div class="tile-label">Platform Engineer</div>
@@ -1480,7 +1515,7 @@
           <span class="mini-stat-label">Shortlist</span>
         </div>
         <div class="mini-stat-cta-spacer"></div>
-        <div class="mini-stat-cta"><span class="mini-stat-cta-arrow">&rarr;</span><span class="mini-stat-cta-divider"></span><span class="mini-stat-cta-label">Review Candidates</span></div>
+        <div class="mini-stat-cta">&rarr;&nbsp; <span class="mini-stat-cta-label">Review Candidates</span></div>
       </div>
     </div>
     <div class="tile-label">Business Analyst Sr</div>
@@ -1529,7 +1564,7 @@
         </div>
         <div class="form-group"></div>
       </div>
-      <textarea class="job-desc-input" id="editJobDescInput" placeholder="Enter Job Description..." style="margin-top: 24px;"></textarea>
+      <textarea class="job-desc-input" id="editJobDescInput" placeholder="Enter Job Description..."></textarea>
       <div class="form-row">
         <div class="form-group">
           <span class="form-label">Country</span>
@@ -1623,7 +1658,7 @@
       </div>
       <div class="form-group"></div>
     </div>
-    <textarea class="job-desc-input" id="jobDescInput" placeholder="Enter Job Description..." style="margin-top: 24px;"></textarea>
+    <textarea class="job-desc-input" id="jobDescInput" placeholder="Enter Job Description..."></textarea>
     <div class="form-row">
       <div class="form-group">
         <span class="form-label">Country</span>
@@ -2399,7 +2434,7 @@
             <span class="mini-stat-label">Shortlist</span>
           </div>
         <div class="mini-stat-cta-spacer"></div>
-        <div class="mini-stat-cta"><span class="mini-stat-cta-arrow">&rarr;</span><span class="mini-stat-cta-divider"></span><span class="mini-stat-cta-label">Find Candidates</span></div>
+        <div class="mini-stat-cta">&rarr;&nbsp; <span class="mini-stat-cta-label">Find Candidates</span></div>
         </div>
       </div>
       <div class="tile-label">${labelHTML}</div>
@@ -2612,6 +2647,26 @@
       if (jobData[title]) jobData[title].count = t.defaultCount;
     });
   });
+
+  // ========== STARFIELD ==========
+  (function() {
+    const field = document.getElementById('starfield');
+    const count = 150;
+    for (let i = 0; i < count; i++) {
+      const star = document.createElement('div');
+      star.className = 'star';
+      const size = 2 + Math.random() * 5;
+      star.style.width = size + 'px';
+      star.style.height = size * 1.5 + 'px';
+      star.style.left = Math.random() * 100 + '%';
+      star.style.top = Math.random() * 100 + '%';
+      star.style.opacity = 0.1 + Math.random() * 0.3;
+      const direction = Math.random() > 0.5 ? 'drift-right' : 'drift-left';
+      const duration = 20 + Math.random() * 40;
+      star.style.animation = direction + ' ' + duration + 's ease-in-out infinite alternate';
+      field.appendChild(star);
+    }
+  })();
 </script>
 
 </body>
