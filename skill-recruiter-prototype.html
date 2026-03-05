@@ -546,23 +546,8 @@
 
   .job-divider {
     border: none;
-    display: flex;
-    gap: 40px;
+    border-top: var(--stroke-width) solid #fff;
     margin: 24px 0 28px;
-  }
-
-  .job-divider::before {
-    content: '';
-    width: 680px;
-    flex-shrink: 0;
-    border-top: var(--stroke-width) solid #fff;
-  }
-
-  .job-divider::after {
-    content: '';
-    width: 280px;
-    flex-shrink: 0;
-    border-top: var(--stroke-width) solid #fff;
   }
 
   .job-body-cols {
@@ -616,6 +601,8 @@
     line-height: 1.7;
     color: rgba(255, 255, 255, 0.65);
     margin-bottom: 16px;
+    max-height: 400px;
+    overflow-y: auto;
   }
 
   .job-description strong {
@@ -691,7 +678,7 @@
   }
 
   .job-action {
-    display: flex;
+    display: inline-flex;
     align-items: center;
     gap: 10px;
     font-size: 15px;
@@ -1004,7 +991,8 @@
 
   .job-desc-input {
     width: 100%;
-    height: 300px;
+    max-height: 400px;
+    overflow-y: auto;
     font-size: 16px;
     line-height: 1.7;
     color: rgba(255, 255, 255, 0.85);
@@ -1014,8 +1002,6 @@
     outline: none;
     padding: 16px;
     font-family: inherit;
-    resize: vertical;
-    margin-bottom: 32px;
     box-sizing: border-box;
   }
 
@@ -1023,9 +1009,55 @@
     border-color: #f0f;
   }
 
-  .job-desc-input::placeholder {
+  .job-desc-input:empty::before {
+    content: attr(data-placeholder);
     color: #888;
     font-style: italic;
+  }
+
+  .job-desc-input strong {
+    color: rgba(255, 255, 255, 0.85);
+    font-weight: 500;
+    display: block;
+    margin-top: 20px;
+    margin-bottom: 4px;
+  }
+
+  .job-desc-input strong:first-child {
+    margin-top: 0;
+  }
+
+  .job-desc-input ul {
+    list-style: disc;
+    padding-left: 20px;
+    margin: 0;
+  }
+
+  .job-desc-input li {
+    margin-bottom: 2px;
+  }
+
+  .form-cols {
+    display: flex;
+    gap: 0;
+  }
+
+  .form-col-left {
+    width: 480px;
+    flex-shrink: 0;
+  }
+
+  .form-col-right {
+    flex: 1;
+    min-width: 0;
+    padding-left: 40px;
+  }
+
+  .form-group-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 20px;
   }
 
   .form-row {
@@ -1048,7 +1080,6 @@
     font-weight: 400;
     color: rgba(255, 255, 255, 0.85);
     white-space: nowrap;
-    width: 60px;
     flex-shrink: 0;
   }
 
@@ -1102,7 +1133,8 @@
 
   .radio-group {
     display: flex;
-    gap: 16px;
+    flex-direction: column;
+    gap: 8px;
   }
 
   .radio-option {
@@ -1690,88 +1722,82 @@
     </div>
     <div id="jobEditForm" style="display:none">
       <input type="text" class="job-title-input" id="editJobTitleInput" placeholder="Job Title" autocomplete="off">
-      <div class="form-row" style="margin-top: 16px;">
-        <div class="form-group">
-          <span class="form-label">Req ID</span>
-          <input type="text" class="form-input" id="editReqIdInput" placeholder="Req ID">
+      <hr class="job-divider" style="margin-top: 16px;">
+      <div class="form-cols">
+        <div class="form-col-left">
+          <div class="job-desc-input" id="editJobDescInput" contenteditable="true" data-placeholder="Enter Job Description..."></div>
         </div>
-        <div class="form-group"></div>
-      </div>
-      <div class="form-row">
-        <div class="form-group">
-          <span class="form-label">Link</span>
-          <input type="text" class="form-input" id="editJobLinkInput" placeholder="Job Posting Link">
-        </div>
-      </div>
-      <textarea class="job-desc-input" id="editJobDescInput" placeholder="Enter Job Description..."></textarea>
-      <div class="form-row">
-        <div class="form-group">
-          <span class="form-label">Country</span>
-          <select class="form-select" id="editCountryInput">
-            <option value="United States" selected>United States</option>
-            <option value="Canada">Canada</option>
-            <option value="United Kingdom">United Kingdom</option>
-            <option value="Germany">Germany</option>
-            <option value="France">France</option>
-            <option value="Australia">Australia</option>
-            <option value="Japan">Japan</option>
-            <option value="India">India</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <div class="radio-group">
-            <label class="radio-option"><input type="radio" name="editCommute" value="On Site" checked><span>On Site</span></label>
-            <label class="radio-option"><input type="radio" name="editCommute" value="Remote"><span>Remote</span></label>
-            <label class="radio-option"><input type="radio" name="editCommute" value="Hybrid"><span>Hybrid</span></label>
+        <div class="form-col-right">
+          <div class="form-group-stack">
+            <span class="form-label">Country</span>
+            <select class="form-select" id="editCountryInput">
+              <option value="United States" selected>United States</option>
+              <option value="Canada">Canada</option>
+              <option value="United Kingdom">United Kingdom</option>
+              <option value="Germany">Germany</option>
+              <option value="France">France</option>
+              <option value="Australia">Australia</option>
+              <option value="Japan">Japan</option>
+              <option value="India">India</option>
+            </select>
           </div>
-        </div>
-      </div>
-      <div class="form-row">
-        <div class="form-group">
-          <span class="form-label">Location</span>
-          <input type="text" class="form-input" id="editLocationInput" placeholder="Los Angeles, CA">
-        </div>
-        <div class="form-group">
-          <div class="radio-group">
-            <label class="radio-option"><input type="radio" name="editJobType" value="Perm" checked><span>Perm</span></label>
-            <label class="radio-option"><input type="radio" name="editJobType" value="Temp"><span>Temp</span></label>
+          <div class="form-group-stack">
+            <span class="form-label">Location</span>
+            <input type="text" class="form-input" id="editLocationInput" placeholder="Los Angeles, CA">
           </div>
-        </div>
-      </div>
-      <div class="form-row">
-        <div class="form-group">
-          <span class="form-label">Currency</span>
-          <select class="form-select" id="editCurrencyInput">
-            <option value="USD" selected>USD</option>
-            <option value="CAD">CAD</option>
-            <option value="GBP">GBP</option>
-            <option value="EUR">EUR</option>
-            <option value="AUD">AUD</option>
-            <option value="JPY">JPY</option>
-            <option value="INR">INR</option>
-          </select>
-        </div>
-        <div class="form-group"></div>
-      </div>
-      <div class="form-row">
-        <div class="form-group">
-          <span class="form-label">Salary</span>
-          <div class="salary-inputs">
-            <input type="text" class="salary-field" id="editSalaryMin" placeholder="$100,000">
-            <span class="salary-to">to</span>
-            <input type="text" class="salary-field" id="editSalaryMax" placeholder="$110,000">
+          <div class="form-group-stack">
+            <span class="form-label">Commute</span>
+            <div class="radio-group">
+              <label class="radio-option"><input type="radio" name="editCommute" value="On Site" checked><span>On Site</span></label>
+              <label class="radio-option"><input type="radio" name="editCommute" value="Remote"><span>Remote</span></label>
+              <label class="radio-option"><input type="radio" name="editCommute" value="Hybrid"><span>Hybrid</span></label>
+            </div>
           </div>
-        </div>
-        <div class="form-group"></div>
-      </div>
-      <div class="job-actions" style="margin-top: 48px;">
-        <div class="job-action" id="saveEditBtn">
-          <span class="action-icon"><span class="action-hex-border"></span><span class="action-hex-fill"></span><svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="13 6 19 12 13 18"></polyline></svg></span>
-          Save Job
-        </div>
-        <div class="job-action" id="cancelEditBtn">
-          <span class="action-icon"><span class="action-hex-border"></span><span class="action-hex-fill"></span><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></span>
-          Cancel
+          <div class="form-group-stack">
+            <span class="form-label">Job Type</span>
+            <div class="radio-group">
+              <label class="radio-option"><input type="radio" name="editJobType" value="Perm" checked><span>Perm</span></label>
+              <label class="radio-option"><input type="radio" name="editJobType" value="Temp"><span>Temp</span></label>
+            </div>
+          </div>
+          <div class="form-group-stack">
+            <span class="form-label">Currency</span>
+            <select class="form-select" id="editCurrencyInput">
+              <option value="USD" selected>USD</option>
+              <option value="CAD">CAD</option>
+              <option value="GBP">GBP</option>
+              <option value="EUR">EUR</option>
+              <option value="AUD">AUD</option>
+              <option value="JPY">JPY</option>
+              <option value="INR">INR</option>
+            </select>
+          </div>
+          <div class="form-group-stack">
+            <span class="form-label">Salary</span>
+            <div class="salary-inputs">
+              <input type="text" class="salary-field" id="editSalaryMin" placeholder="$100,000">
+              <span class="salary-to">to</span>
+              <input type="text" class="salary-field" id="editSalaryMax" placeholder="$110,000">
+            </div>
+          </div>
+          <div class="form-group-stack">
+            <span class="form-label">Req ID</span>
+            <input type="text" class="form-input" id="editReqIdInput" placeholder="Req ID">
+          </div>
+          <div class="form-group-stack">
+            <span class="form-label">Link</span>
+            <input type="text" class="form-input" id="editJobLinkInput" placeholder="Job Posting Link">
+          </div>
+          <div class="job-actions" style="margin-top: 32px;">
+            <div class="job-action" id="saveEditBtn">
+              <span class="action-icon"><span class="action-hex-border"></span><span class="action-hex-fill"></span><svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="13 6 19 12 13 18"></polyline></svg></span>
+              Save Job
+            </div>
+            <div class="job-action" id="cancelEditBtn">
+              <span class="action-icon"><span class="action-hex-border"></span><span class="action-hex-fill"></span><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></span>
+              Cancel
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -1810,88 +1836,82 @@
     <div class="job-header-row">
       <input type="text" class="job-title-input" id="jobTitleInput" placeholder="Job Title" autocomplete="off">
     </div>
-    <div class="form-row" style="margin-top: 16px;">
-      <div class="form-group">
-        <span class="form-label">Req ID</span>
-        <input type="text" class="form-input" id="reqIdInput" placeholder="Req ID">
+    <hr class="job-divider" style="margin-top: 16px;">
+    <div class="form-cols">
+      <div class="form-col-left">
+        <div class="job-desc-input" id="jobDescInput" contenteditable="true" data-placeholder="Enter Job Description..."></div>
       </div>
-      <div class="form-group"></div>
-    </div>
-    <div class="form-row">
-      <div class="form-group">
-        <span class="form-label">Link</span>
-        <input type="text" class="form-input" id="jobLinkInput" placeholder="Job Posting Link">
-      </div>
-    </div>
-    <textarea class="job-desc-input" id="jobDescInput" placeholder="Enter Job Description..."></textarea>
-    <div class="form-row">
-      <div class="form-group">
-        <span class="form-label">Country</span>
-        <select class="form-select" id="countryInput">
-          <option value="United States" selected>United States</option>
-          <option value="Canada">Canada</option>
-          <option value="United Kingdom">United Kingdom</option>
-          <option value="Germany">Germany</option>
-          <option value="France">France</option>
-          <option value="Australia">Australia</option>
-          <option value="Japan">Japan</option>
-          <option value="India">India</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <div class="radio-group" id="commuteRadios">
-          <label class="radio-option"><input type="radio" name="commute" value="On Site" checked><span>On Site</span></label>
-          <label class="radio-option"><input type="radio" name="commute" value="Remote"><span>Remote</span></label>
-          <label class="radio-option"><input type="radio" name="commute" value="Hybrid"><span>Hybrid</span></label>
+      <div class="form-col-right">
+        <div class="form-group-stack">
+          <span class="form-label">Country</span>
+          <select class="form-select" id="countryInput">
+            <option value="United States" selected>United States</option>
+            <option value="Canada">Canada</option>
+            <option value="United Kingdom">United Kingdom</option>
+            <option value="Germany">Germany</option>
+            <option value="France">France</option>
+            <option value="Australia">Australia</option>
+            <option value="Japan">Japan</option>
+            <option value="India">India</option>
+          </select>
         </div>
-      </div>
-    </div>
-    <div class="form-row">
-      <div class="form-group">
-        <span class="form-label">Location</span>
-        <input type="text" class="form-input" id="locationInput" placeholder="Los Angeles, CA">
-      </div>
-      <div class="form-group">
-        <div class="radio-group" id="jobTypeRadios">
-          <label class="radio-option"><input type="radio" name="jobType" value="Perm" checked><span>Perm</span></label>
-          <label class="radio-option"><input type="radio" name="jobType" value="Temp"><span>Temp</span></label>
+        <div class="form-group-stack">
+          <span class="form-label">Location</span>
+          <input type="text" class="form-input" id="locationInput" placeholder="Los Angeles, CA">
         </div>
-      </div>
-    </div>
-    <div class="form-row">
-      <div class="form-group">
-        <span class="form-label">Currency</span>
-        <select class="form-select" id="currencyInput">
-          <option value="USD" selected>USD</option>
-          <option value="CAD">CAD</option>
-          <option value="GBP">GBP</option>
-          <option value="EUR">EUR</option>
-          <option value="AUD">AUD</option>
-          <option value="JPY">JPY</option>
-          <option value="INR">INR</option>
-        </select>
-      </div>
-      <div class="form-group"></div>
-    </div>
-    <div class="form-row">
-      <div class="form-group">
-        <span class="form-label">Salary</span>
-        <div class="salary-inputs">
-          <input type="text" class="salary-field" id="salaryMin" placeholder="$100,000">
-          <span class="salary-to">to</span>
-          <input type="text" class="salary-field" id="salaryMax" placeholder="$110,000">
+        <div class="form-group-stack">
+          <span class="form-label">Commute</span>
+          <div class="radio-group" id="commuteRadios">
+            <label class="radio-option"><input type="radio" name="commute" value="On Site" checked><span>On Site</span></label>
+            <label class="radio-option"><input type="radio" name="commute" value="Remote"><span>Remote</span></label>
+            <label class="radio-option"><input type="radio" name="commute" value="Hybrid"><span>Hybrid</span></label>
+          </div>
         </div>
-      </div>
-      <div class="form-group"></div>
-    </div>
-    <div class="job-actions" style="margin-top: 48px;">
-      <div class="job-action" id="saveJobBtn">
-        <span class="action-icon"><span class="action-hex-border"></span><span class="action-hex-fill"></span><svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="13 6 19 12 13 18"></polyline></svg></span>
-        Create Job Target
-      </div>
-      <div class="job-action" id="deleteJobBtn">
-        <span class="action-icon"><span class="action-hex-border"></span><span class="action-hex-fill"></span><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></span>
-        Cancel
+        <div class="form-group-stack">
+          <span class="form-label">Job Type</span>
+          <div class="radio-group" id="jobTypeRadios">
+            <label class="radio-option"><input type="radio" name="jobType" value="Perm" checked><span>Perm</span></label>
+            <label class="radio-option"><input type="radio" name="jobType" value="Temp"><span>Temp</span></label>
+          </div>
+        </div>
+        <div class="form-group-stack">
+          <span class="form-label">Currency</span>
+          <select class="form-select" id="currencyInput">
+            <option value="USD" selected>USD</option>
+            <option value="CAD">CAD</option>
+            <option value="GBP">GBP</option>
+            <option value="EUR">EUR</option>
+            <option value="AUD">AUD</option>
+            <option value="JPY">JPY</option>
+            <option value="INR">INR</option>
+          </select>
+        </div>
+        <div class="form-group-stack">
+          <span class="form-label">Salary</span>
+          <div class="salary-inputs">
+            <input type="text" class="salary-field" id="salaryMin" placeholder="$100,000">
+            <span class="salary-to">to</span>
+            <input type="text" class="salary-field" id="salaryMax" placeholder="$110,000">
+          </div>
+        </div>
+        <div class="form-group-stack">
+          <span class="form-label">Req ID</span>
+          <input type="text" class="form-input" id="reqIdInput" placeholder="Req ID">
+        </div>
+        <div class="form-group-stack">
+          <span class="form-label">Link</span>
+          <input type="text" class="form-input" id="jobLinkInput" placeholder="Job Posting Link">
+        </div>
+        <div class="job-actions" style="margin-top: 32px;">
+          <div class="job-action" id="saveJobBtn">
+            <span class="action-icon"><span class="action-hex-border"></span><span class="action-hex-fill"></span><svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="13 6 19 12 13 18"></polyline></svg></span>
+            Create Job Target
+          </div>
+          <div class="job-action" id="deleteJobBtn">
+            <span class="action-icon"><span class="action-hex-border"></span><span class="action-hex-fill"></span><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></span>
+            Cancel
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -2869,7 +2889,7 @@
 
     // Reset form fields
     jobTitleInput.value = '';
-    jobDescInput.value = '';
+    jobDescInput.innerHTML = '';
     salaryMin.value = '';
     salaryMax.value = '';
     commuteRadios[0].checked = true;
@@ -3008,7 +3028,7 @@
       salary: displaySalary,
       jobLink: jobLinkInput.value.trim(),
       reqId: reqIdInput.value.trim(),
-      description: jobDescInput.value.trim()
+      description: jobDescInput.innerHTML.trim()
     };
     jobData[title] = newJob;
 
@@ -3113,7 +3133,7 @@
 
     // Populate form fields
     editJobTitleInput.value = editingTitle;
-    editJobDescInput.value = data.description || '';
+    editJobDescInput.innerHTML = data.description || '';
     editLocationInput.value = data.location || '';
     editJobLinkInput.value = data.jobLink || '';
     editReqIdInput.value = data.reqId || '';
@@ -3181,7 +3201,7 @@
       salary: displaySalary,
       jobLink: editJobLinkInput.value.trim(),
       reqId: editReqIdInput.value.trim(),
-      description: editJobDescInput.value.trim()
+      description: editJobDescInput.innerHTML.trim()
     };
 
     // Handle title rename
