@@ -538,7 +538,7 @@
   .job-req-id {
     font-size: 15px;
     font-weight: 400;
-    color: rgba(255, 255, 255, 0.55);
+    color: #fff;
     margin-top: 8px;
   }
 
@@ -588,6 +588,7 @@
     font-size: 15px;
     line-height: 1.8;
     color: #fff;
+    background: #000;
     border: var(--stroke-width) solid #fff;
     padding: 0 24px;
     min-height: 0;
@@ -700,6 +701,211 @@
   .action-icon svg line,
   .action-icon svg polyline {
     vector-effect: non-scaling-stroke;
+  }
+
+  /* ========== REVIEW CANDIDATES SCREEN ========== */
+  .review-candidates {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: #272525;
+    z-index: 50;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    padding-top: 64px;
+  }
+
+  .review-candidates.active {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .review-candidates.zooming-out {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .review-candidates {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .rc-fixed-header {
+    flex-shrink: 0;
+    background: #272525;
+    z-index: 2;
+    padding: 60px 40px 0;
+  }
+
+  .rc-fixed-header-inner {
+    max-width: 700px;
+    margin: 0 auto;
+  }
+
+  .rc-scroll-area {
+    flex: 1;
+    overflow-y: auto;
+    position: relative;
+  }
+
+  .rc-scroll-inner {
+    max-width: 700px;
+    margin: 0 auto;
+    padding: 28px 0 80px;
+    display: flex;
+    gap: 40px;
+  }
+
+  .review-candidates .job-req-id {
+    color: #fff;
+  }
+
+  .rc-req-row {
+    display: flex;
+    align-items: baseline;
+    gap: 20px;
+  }
+
+  .rc-show-summary {
+    font-size: 15px;
+    font-weight: 400;
+    color: #fff;
+    text-decoration: underline;
+    cursor: pointer;
+    transition: color 0.2s ease;
+  }
+
+  .rc-show-summary:hover {
+    color: #f0f;
+  }
+
+  /* ========== REVIEW CANDIDATES CARDS ========== */
+  .rc-card-list {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .rc-card {
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    padding: 20px 24px;
+    display: flex;
+    align-items: stretch;
+    cursor: pointer;
+    transition: border-color 0.2s ease;
+  }
+
+  .rc-card:hover,
+  .rc-card.rc-active {
+    border-color: #f0f;
+  }
+
+  .rc-card-info {
+    flex: 1;
+  }
+
+  .rc-card-name {
+    font-size: 18px;
+    font-weight: 400;
+    color: #fff;
+    margin-bottom: 4px;
+  }
+
+  .rc-card-location {
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.55);
+    margin-bottom: 12px;
+  }
+
+  .rc-card-actions {
+    display: flex;
+    gap: 8px;
+  }
+
+  .rc-card-actions button {
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    color: #fff;
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    padding: 4px 14px;
+    cursor: pointer;
+    transition: border-color 0.2s ease, background 0.2s ease;
+  }
+
+  .rc-card-actions button:hover {
+    border-color: #f0f;
+    background: rgba(255, 0, 255, 0.08);
+  }
+
+
+  .rc-card-right {
+    flex-shrink: 0;
+    margin-left: 24px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: flex-end;
+  }
+
+  .rc-card-match {
+    font-size: 28px;
+    font-weight: 300;
+    color: #fff;
+  }
+
+  .rc-card-match-label {
+    font-size: 11px;
+    font-weight: 400;
+    color: rgba(255, 255, 255, 0.45);
+    margin-bottom: 5px;
+  }
+
+  .rc-sidebar {
+    width: 260px;
+    flex-shrink: 0;
+    position: sticky;
+    top: 28px;
+    align-self: flex-start;
+  }
+
+  .rc-sidebar-heading {
+    font-size: 14px;
+    font-weight: 500;
+    color: #fff;
+    margin-bottom: 12px;
+  }
+
+  .rc-match-summary {
+    font-size: 14px;
+    font-weight: 400;
+    color: #fff;
+    line-height: 1.7;
+    margin-bottom: 28px;
+  }
+
+  .rc-meta-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 28px;
+  }
+
+  .rc-meta-item {
+    font-size: 15px;
+    font-weight: 400;
+    color: rgba(255, 255, 255, 0.85);
+  }
+
+  .rc-meta-check {
+    color: #fff;
+    margin-right: 10px;
   }
 
   /* ========== JOB CREATE SCREEN ========== */
@@ -1565,6 +1771,10 @@
         <span class="action-icon"><span class="action-hex-border"></span><span class="action-hex-fill"></span><svg viewBox="0 0 24 24"><circle cx="10" cy="10" r="5" fill="none"></circle><line x1="13.5" y1="13.5" x2="19" y2="19"></line></svg></span>
         Find Candidates
       </div>
+      <div class="job-action" id="reviewCandidatesSummaryBtn">
+        <span class="action-icon"><span class="action-hex-border"></span><span class="action-hex-fill"></span><svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="13 6 19 12 13 18"></polyline></svg></span>
+        Review Candidates
+      </div>
       <div class="job-action" id="editJobBtn">
         <span class="action-icon"><span class="action-hex-border"></span><span class="action-hex-fill"></span><svg viewBox="0 0 24 24"><line x1="5" y1="19" x2="8.5" y2="15.5"></line><line x1="8.5" y1="15.5" x2="17" y2="7"></line><line x1="11" y1="18" x2="19.5" y2="9.5"></line><line x1="17" y1="7" x2="19.5" y2="9.5"></line><line x1="5" y1="19" x2="11" y2="18"></line></svg></span>
         Edit Job
@@ -1666,6 +1876,32 @@
           <span class="action-icon"><span class="action-hex-border"></span><span class="action-hex-fill"></span><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></span>
           Cancel
         </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="review-candidates" id="reviewCandidates">
+  <div class="rc-fixed-header">
+    <div class="rc-fixed-header-inner">
+      <div class="job-header-row">
+        <h1 class="job-title" id="rcJobTitle"></h1>
+        <span class="job-count" id="rcJobCount"></span>
+      </div>
+      <div class="rc-req-row">
+        <div class="job-req-id" id="rcReqId"></div>
+        <a class="rc-show-summary" id="rcShowSummary">Show Job Summary</a>
+      </div>
+      <hr class="job-divider" style="margin-bottom:0">
+    </div>
+  </div>
+  <div class="rc-scroll-area">
+    <div class="rc-scroll-inner">
+      <div class="rc-card-list" id="rcCardList"></div>
+      <div class="rc-sidebar" id="rcSidebar">
+        <ul class="rc-meta-list" id="rcMetaList"></ul>
+        <div class="rc-sidebar-heading">Match Summary</div>
+        <p class="rc-match-summary" id="rcMatchSummary"></p>
       </div>
     </div>
   </div>
@@ -2072,6 +2308,110 @@
     }
   };
 
+  // ========== CANDIDATE POOL (100 dummy candidates) ==========
+  const candidatePool = [
+    { name: 'Elena Rodriguez', location: 'Boston, MA', matchPct: 99, matchSummary: 'Strong match with 10 years of experience across CPG and tech sectors. Led a global rebrand that increased brand equity scores by 34%. Portfolio demonstrates exceptional narrative-building skills and deep expertise in multi-market strategy.', candidateLocation: 'Boston, MA', openTo: 'Open to Remote', salaryMatch: 'Salary Match', availability: 'Available immediately' },
+    { name: 'Henry Clerval', location: 'New York, NY', matchPct: 98, matchSummary: 'Excellent fit with 9 years of experience at top agencies. Managed brand positioning for Fortune 500 clients with strong executive presentation skills. Experience spans consumer tech, fintech, and healthcare verticals.', candidateLocation: 'New York, NY', openTo: 'Open to Hybrid', salaryMatch: 'Salary Match', availability: 'Available in 2 weeks' },
+    { name: 'Elizabeth Lavenza', location: 'Brooklyn, NY', matchPct: 98, matchSummary: 'Highly qualified professional with 8 years at global agencies. Specializes in architecture and messaging frameworks for technology companies. Led strategy for three successful product launches.', candidateLocation: 'Brooklyn, NY', openTo: 'Open to Remote', salaryMatch: 'Salary Match', availability: 'Available in 30 days' },
+    { name: 'Robert Walton', location: 'Cambridge, MA', matchPct: 97, matchSummary: 'Strong background with 8 years at a leading consultancy. Deep expertise in competitive positioning and health measurement. Excels at building compelling narratives supported by quantitative research.', candidateLocation: 'Cambridge, MA', openTo: 'Open to Relocation', salaryMatch: 'Salary Match', availability: 'Available in 2 weeks' },
+    { name: 'Sarah Chen', location: 'Chicago, IL', matchPct: 97, matchSummary: 'Exceptional professional with 6 years of analytics experience. Built attribution modeling framework at current company, reducing CAC by 22%. Highly proficient in SQL, Python, Tableau, and Looker.', candidateLocation: 'Chicago, IL', openTo: 'Open to Hybrid', salaryMatch: 'Salary Match', availability: 'Available in 2 weeks' },
+    { name: 'Alex Petrov', location: 'Austin, TX', matchPct: 96, matchSummary: 'Excellent fit with 8 years of experience and 3 years leading a squad of 7. Deep expertise in distributed systems and microservices architecture with strong mentorship skills.', candidateLocation: 'Austin, TX', openTo: 'On Site', salaryMatch: 'Salary Match', availability: 'Available in 2 weeks' },
+    { name: 'David Okonkwo', location: 'Seattle, WA', matchPct: 96, matchSummary: 'Outstanding match with 12 years of experience and deep technical expertise. Led the architecture of two large-scale distributed systems handling 50K+ RPS. Serves as tech lead across three teams.', candidateLocation: 'Seattle, WA', openTo: 'Open to Hybrid', salaryMatch: 'Salary Match', availability: 'Available in 2 weeks' },
+    { name: 'Olivia Martinez', location: 'San Francisco, CA', matchPct: 96, matchSummary: 'Excellent leader with 7 years of experience in B2B SaaS. Driven roadmap strategy for enterprise platforms generating $50M+ ARR. Excels at research synthesis and cross-functional collaboration.', candidateLocation: 'San Francisco, CA', openTo: 'Open to Hybrid', salaryMatch: 'Salary Match', availability: 'Available in 2 weeks' },
+    { name: 'Marcus Thompson', location: 'Detroit, MI', matchPct: 95, matchSummary: 'Strong professional with 5 years building dashboards and multi-touch attribution models. Deep SQL expertise and experience leading a team of 3. Presented insights to C-suite stakeholders.', candidateLocation: 'Detroit, MI', openTo: 'Open to Remote', salaryMatch: 'Salary Match', availability: 'Available immediately' },
+    { name: 'Justine Moritz', location: 'Philadelphia, PA', matchPct: 95, matchSummary: 'Solid professional with 7 years in both agency and in-house roles. Experience developing guidelines, managing consistency across 12 markets, and conducting perception research.', candidateLocation: 'Philadelphia, PA', openTo: 'Open to Remote', salaryMatch: 'Salary Match', availability: 'Available immediately' },
+    { name: 'Catherine Zhao', location: 'San Francisco, CA', matchPct: 95, matchSummary: 'Highly experienced with 11 years building cloud-native platforms on AWS. Led design of several critical system components. Extensive Go and Java experience with focus on observability and reliability.', candidateLocation: 'San Francisco, CA', openTo: 'Open to Remote', salaryMatch: 'Salary Match', availability: 'Available in 30 days' },
+    { name: 'Maya Krishnan', location: 'Dallas, TX', matchPct: 94, matchSummary: 'Strong leader with 9 years of development experience and 2 years as tech lead. Shipped multiple high-quality features on schedule. Known for establishing effective code review standards.', candidateLocation: 'Dallas, TX', openTo: 'Open to Relocation', salaryMatch: 'Salary Match', availability: 'Available in 30 days' },
+    { name: 'Priya Sharma', location: 'Minneapolis, MN', matchPct: 94, matchSummary: 'Data-driven professional with 6 years of experience specializing in campaign performance optimization. Built comprehensive Tableau dashboards used across the organization. Strong statistical modeling skills.', candidateLocation: 'Minneapolis, MN', openTo: 'Open to Hybrid', salaryMatch: 'Salary Match', availability: 'Available in 30 days' },
+    { name: 'Ian McAllister', location: 'Portland, OR', matchPct: 94, matchSummary: 'Strong professional with 10 years of experience. Deep expertise in Java microservices and GCP infrastructure. Led multiple cross-team architecture initiatives with 3-5x performance improvements.', candidateLocation: 'Portland, OR', openTo: 'Open to Remote', salaryMatch: 'Salary Match', availability: 'Available immediately' },
+    { name: 'Jordan Williams', location: 'San Antonio, TX', matchPct: 93, matchSummary: 'Experienced professional with 7 years in backend systems and 2 years leading a small team. Strong distributed systems knowledge and mentored 4 junior engineers to senior promotions.', candidateLocation: 'San Antonio, TX', openTo: 'Open to Hybrid', salaryMatch: 'Salary Match', availability: 'Available immediately' },
+    { name: 'Nathan Brooks', location: 'Oakland, CA', matchPct: 93, matchSummary: 'Strong professional with 6 years focused on enterprise SaaS products. Led multiple feature launches with deep agile experience. Brings strong technical acumen and data-driven prioritization.', candidateLocation: 'Oakland, CA', openTo: 'Open to Hybrid', salaryMatch: 'Salary Match', availability: 'Available in 30 days' },
+    { name: 'Victor Frankenstein', location: 'Geneva, Switzerland', matchPct: 92, matchSummary: 'Experienced professional with 9 years across European and US markets. Unique global perspective with fluency in three languages. Sophisticated approach demonstrated at a luxury consultancy.', candidateLocation: 'Geneva, Switzerland', openTo: 'Open to Relocation', salaryMatch: 'Above Range', availability: 'Available in 60 days' },
+    { name: 'James O\'Brien', location: 'Milwaukee, WI', matchPct: 91, matchSummary: 'Solid professional with 5 years focused on digital measurement. Experience with Google Analytics, Looker, and custom SQL pipelines. Managed attribution projects for e-commerce and lead-gen businesses.', candidateLocation: 'Milwaukee, WI', openTo: 'Open to Remote', salaryMatch: 'Below Range', availability: 'Available in 2 weeks' },
+    { name: 'Amara Osei', location: 'Vancouver, BC', matchPct: 91, matchSummary: 'Talented professional with 10 years across backend and infrastructure. Strong Go skills and designed event-driven architectures at scale. Exceptional technical depth and cross-team collaboration.', candidateLocation: 'Vancouver, BC', openTo: 'Open to Relocation', salaryMatch: 'Above Range', availability: 'Available in 60 days' },
+    { name: 'Diana Walsh', location: 'Palo Alto, CA', matchPct: 91, matchSummary: 'Experienced professional with 6 years in B2B platforms. Engineering background gives strong technical credibility. Shipped several major features with full lifecycle management experience.', candidateLocation: 'Palo Alto, CA', openTo: 'Open to Remote', salaryMatch: 'Salary Match', availability: 'Available immediately' },
+    { name: 'Rachel Kim', location: 'Houston, TX', matchPct: 90, matchSummary: 'Solid professional with 8 years of experience and recent transition into leadership. Deep Java and cloud infrastructure expertise with a focus on reliability. Building people management experience.', candidateLocation: 'Houston, TX', openTo: 'Open to Relocation', salaryMatch: 'Below Range', availability: 'Available in 2 weeks' },
+    { name: 'Lisa Park', location: 'Indianapolis, IN', matchPct: 89, matchSummary: 'Growing talent with 4 years in analytics roles. Strong Tableau and SQL skills with several key dashboards built. Transitioning from analyst to management track with strong potential.', candidateLocation: 'Indianapolis, IN', openTo: 'Open to Relocation', salaryMatch: 'Salary Match', availability: 'Available immediately' },
+    { name: 'Ryan Hoffman', location: 'Seattle, WA', matchPct: 89, matchSummary: 'Solid professional with 9 years looking to step up. Strong AWS and Java expertise with experience contributing to large-scale system designs. Mentored junior engineers with growing leadership skills.', candidateLocation: 'Seattle, WA', openTo: 'Open to Hybrid', salaryMatch: 'Below Range', availability: 'Available in 2 weeks' },
+    { name: 'Thomas Ng', location: 'Denver, CO', matchPct: 88, matchSummary: 'Capable professional with 7 years of experience and 1 year as team lead. Experience with microservices and event-driven architectures. Leadership experience is growing but shows strong promise.', candidateLocation: 'Denver, CO', openTo: 'Open to Relocation', salaryMatch: 'Salary Match', availability: 'Available in 60 days' },
+    { name: 'Kevin Huang', location: 'Seattle, WA', matchPct: 88, matchSummary: 'Growing talent with 5 years of experience at a mid-stage startup. Strong user research skills and managed products through rapid growth phases. Consumer-oriented but interested in enterprise.', candidateLocation: 'Seattle, WA', openTo: 'Open to Relocation', salaryMatch: 'Below Range', availability: 'Available in 2 weeks' },
+    { name: 'Simone Abara', location: 'Atlanta, GA', matchPct: 87, matchSummary: 'Versatile professional with 6 years across operations and strategy. Simone has led cross-functional initiatives at a Fortune 500 company and excels at stakeholder alignment and process improvement.', candidateLocation: 'Atlanta, GA', openTo: 'Open to Remote', salaryMatch: 'Salary Match', availability: 'Available in 2 weeks' },
+    { name: 'Marco Bellini', location: 'Miami, FL', matchPct: 87, matchSummary: 'Bilingual professional with 7 years in client-facing roles. Marco brings strong relationship management skills and has expanded key accounts by 40% YoY. Known for creative problem-solving under pressure.', candidateLocation: 'Miami, FL', openTo: 'Open to Hybrid', salaryMatch: 'Salary Match', availability: 'Available immediately' },
+    { name: 'Tanya Gupta', location: 'Raleigh, NC', matchPct: 86, matchSummary: 'Detail-oriented professional with 5 years in program management. Tanya has coordinated multi-million dollar projects and maintains a 95% on-time delivery record. Strong risk assessment and mitigation skills.', candidateLocation: 'Raleigh, NC', openTo: 'Open to Remote', salaryMatch: 'Salary Match', availability: 'Available in 30 days' },
+    { name: 'Derek Lawson', location: 'Nashville, TN', matchPct: 86, matchSummary: 'Results-driven professional with 8 years in business development. Derek has closed deals worth $15M+ and built strategic partnerships with enterprise clients. Excellent negotiation and presentation skills.', candidateLocation: 'Nashville, TN', openTo: 'Open to Relocation', salaryMatch: 'Salary Match', availability: 'Available in 2 weeks' },
+    { name: 'Aisha Mbeki', location: 'Washington, DC', matchPct: 85, matchSummary: 'Policy-savvy professional with 6 years at the intersection of technology and government. Aisha understands regulatory landscapes and has led compliance initiatives. Strong communication skills.', candidateLocation: 'Washington, DC', openTo: 'Open to Hybrid', salaryMatch: 'Salary Match', availability: 'Available immediately' },
+    { name: 'Connor Walsh', location: 'Salt Lake City, UT', matchPct: 85, matchSummary: 'Analytical professional with 5 years in finance and operations. Connor brings strong modeling skills and has optimized budgets resulting in 12% cost savings. Detail-oriented with CPA certification.', candidateLocation: 'Salt Lake City, UT', openTo: 'Open to Remote', salaryMatch: 'Below Range', availability: 'Available in 2 weeks' },
+    { name: 'Yuki Tanaka', location: 'Los Angeles, CA', matchPct: 84, matchSummary: 'Creative professional with 7 years in design and brand development. Yuki has led visual identity projects for major consumer brands. Strong Figma skills and an eye for typography and layout.', candidateLocation: 'Los Angeles, CA', openTo: 'Open to Remote', salaryMatch: 'Salary Match', availability: 'Available in 30 days' },
+    { name: 'Patrick Oduya', location: 'Minneapolis, MN', matchPct: 84, matchSummary: 'Experienced professional with 6 years in supply chain and logistics. Patrick has implemented inventory management systems that reduced waste by 18%. Strong analytical and vendor management skills.', candidateLocation: 'Minneapolis, MN', openTo: 'Open to Hybrid', salaryMatch: 'Salary Match', availability: 'Available immediately' },
+    { name: 'Laura Mendez', location: 'Phoenix, AZ', matchPct: 83, matchSummary: 'Driven professional with 5 years in customer success and account management. Laura has maintained a 96% retention rate across her portfolio. Skilled at identifying upsell opportunities and building trust.', candidateLocation: 'Phoenix, AZ', openTo: 'Open to Remote', salaryMatch: 'Salary Match', availability: 'Available in 2 weeks' },
+    { name: 'Brian Fischer', location: 'Portland, OR', matchPct: 83, matchSummary: 'Technical professional with 8 years in DevOps and infrastructure. Brian has built CI/CD pipelines serving 200+ developers and reduced deployment times by 60%. Strong Kubernetes and Terraform expertise.', candidateLocation: 'Portland, OR', openTo: 'Open to Remote', salaryMatch: 'Salary Match', availability: 'Available in 30 days' },
+    { name: 'Nina Petrova', location: 'Charlotte, NC', matchPct: 82, matchSummary: 'Strategic thinker with 6 years in consulting and change management. Nina has guided organizations through digital transformations and restructuring. Excellent facilitation and executive coaching skills.', candidateLocation: 'Charlotte, NC', openTo: 'Open to Relocation', salaryMatch: 'Salary Match', availability: 'Available immediately' },
+    { name: 'Samuel Adeyemi', location: 'Dallas, TX', matchPct: 82, matchSummary: 'Resourceful professional with 7 years in talent acquisition. Samuel has built recruiting pipelines that reduced time-to-hire by 35%. Deep expertise in technical hiring and employer branding.', candidateLocation: 'Dallas, TX', openTo: 'Open to Hybrid', salaryMatch: 'Below Range', availability: 'Available in 2 weeks' },
+    { name: 'Grace Liu', location: 'San Jose, CA', matchPct: 81, matchSummary: 'Quantitative professional with 5 years in data science and machine learning. Grace has built prediction models improving conversion rates by 25%. Strong Python, TensorFlow, and statistical analysis skills.', candidateLocation: 'San Jose, CA', openTo: 'Open to Hybrid', salaryMatch: 'Salary Match', availability: 'Available in 30 days' },
+    { name: 'Ethan Park', location: 'Columbus, OH', matchPct: 81, matchSummary: 'Adaptable professional with 6 years in product marketing. Ethan has launched 8 products to market and developed positioning that increased pipeline by 45%. Strong cross-functional collaboration.', candidateLocation: 'Columbus, OH', openTo: 'Open to Remote', salaryMatch: 'Salary Match', availability: 'Available immediately' },
+    { name: 'Fatima Al-Hassan', location: 'Detroit, MI', matchPct: 80, matchSummary: 'Innovative professional with 7 years in UX research and design. Fatima has conducted 200+ user interviews and translated insights into product improvements that boosted NPS by 20 points.', candidateLocation: 'Detroit, MI', openTo: 'Open to Remote', salaryMatch: 'Salary Match', availability: 'Available in 2 weeks' },
+    { name: 'Carlos Reyes', location: 'San Diego, CA', matchPct: 80, matchSummary: 'Energetic professional with 5 years in sales engineering. Carlos bridges technical and business conversations, supporting deals that averaged $500K. Strong demo and presentation skills.', candidateLocation: 'San Diego, CA', openTo: 'Open to Hybrid', salaryMatch: 'Below Range', availability: 'Available in 30 days' },
+    { name: 'Hannah Morris', location: 'Denver, CO', matchPct: 79, matchSummary: 'Organized professional with 6 years in project management. Hannah has managed agile teams of 8-12 and delivered $5M+ in projects. PMP certified with strong Jira and Confluence expertise.', candidateLocation: 'Denver, CO', openTo: 'Open to Hybrid', salaryMatch: 'Salary Match', availability: 'Available immediately' },
+    { name: 'Raj Patel', location: 'Tampa, FL', matchPct: 79, matchSummary: 'Technical professional with 8 years in full-stack development. Raj has built customer-facing applications serving 1M+ users. Strong React, Node.js, and PostgreSQL skills with cloud deployment experience.', candidateLocation: 'Tampa, FL', openTo: 'Open to Remote', salaryMatch: 'Salary Match', availability: 'Available in 2 weeks' },
+    { name: 'Megan O\'Connor', location: 'Boston, MA', matchPct: 78, matchSummary: 'Strategic professional with 5 years in content marketing and SEO. Megan has grown organic traffic by 150% and built content teams from scratch. Strong editorial judgment and analytics skills.', candidateLocation: 'Boston, MA', openTo: 'Open to Remote', salaryMatch: 'Salary Match', availability: 'Available in 30 days' },
+    { name: 'André Dupont', location: 'Montreal, QC', matchPct: 78, matchSummary: 'Bilingual professional with 7 years in international operations. André has managed teams across 4 time zones and led office expansions into new markets. Strong cultural intelligence and logistics skills.', candidateLocation: 'Montreal, QC', openTo: 'Open to Relocation', salaryMatch: 'Salary Match', availability: 'Available in 60 days' },
+    { name: 'Stephanie Kim', location: 'San Francisco, CA', matchPct: 77, matchSummary: 'Creative professional with 6 years in social media and community management. Stephanie has grown brand communities to 500K+ followers and managed influencer partnerships generating $2M in revenue.', candidateLocation: 'San Francisco, CA', openTo: 'Open to Hybrid', salaryMatch: 'Below Range', availability: 'Available immediately' },
+    { name: 'Michael Osei', location: 'Chicago, IL', matchPct: 77, matchSummary: 'Experienced professional with 8 years in financial planning and analysis. Michael has built forecasting models for $200M+ revenue lines. Strong Excel modeling, SAP, and stakeholder communication skills.', candidateLocation: 'Chicago, IL', openTo: 'Open to Hybrid', salaryMatch: 'Salary Match', availability: 'Available in 2 weeks' },
+    { name: 'Julie Brennan', location: 'Austin, TX', matchPct: 76, matchSummary: 'Dynamic professional with 5 years in event marketing and experiential campaigns. Julie has produced 50+ events with budgets up to $1M. Strong vendor management and creative direction skills.', candidateLocation: 'Austin, TX', openTo: 'Open to Hybrid', salaryMatch: 'Salary Match', availability: 'Available in 30 days' },
+    { name: 'Wei Zhang', location: 'New York, NY', matchPct: 76, matchSummary: 'Analytical professional with 7 years in quantitative finance and risk management. Wei has developed pricing models and risk frameworks for derivatives portfolios. Strong Python and R skills.', candidateLocation: 'New York, NY', openTo: 'Open to Hybrid', salaryMatch: 'Above Range', availability: 'Available in 2 weeks' },
+    { name: 'Dominic Torres', location: 'Las Vegas, NV', matchPct: 75, matchSummary: 'Versatile professional with 6 years in hospitality and operations management. Dominic has overseen teams of 50+ and improved operational efficiency by 20%. Strong P&L management experience.', candidateLocation: 'Las Vegas, NV', openTo: 'Open to Relocation', salaryMatch: 'Salary Match', availability: 'Available immediately' },
+    { name: 'Ingrid Svensson', location: 'Seattle, WA', matchPct: 75, matchSummary: 'Technical professional with 5 years in QA engineering and test automation. Ingrid has built testing frameworks that reduced regression cycles from 3 days to 4 hours. Strong Selenium and Cypress skills.', candidateLocation: 'Seattle, WA', openTo: 'Open to Remote', salaryMatch: 'Salary Match', availability: 'Available in 2 weeks' },
+    { name: 'Omar Hassan', location: 'Irvine, CA', matchPct: 74, matchSummary: 'Dedicated professional with 6 years in cybersecurity and compliance. Omar has led SOC 2 audits and implemented zero-trust architectures. CISSP certified with strong incident response experience.', candidateLocation: 'Irvine, CA', openTo: 'Open to Hybrid', salaryMatch: 'Salary Match', availability: 'Available in 30 days' },
+    { name: 'Chloe Anderson', location: 'Portland, ME', matchPct: 74, matchSummary: 'Thoughtful professional with 5 years in HR business partnering. Chloe has supported organizations through rapid scaling and built performance management programs. Strong employment law knowledge.', candidateLocation: 'Portland, ME', openTo: 'Open to Remote', salaryMatch: 'Below Range', availability: 'Available immediately' },
+    { name: 'Benjamin Asante', location: 'Philadelphia, PA', matchPct: 73, matchSummary: 'Energetic professional with 7 years in e-commerce and digital strategy. Benjamin has optimized conversion funnels increasing revenue by 30%. Strong A/B testing and personalization expertise.', candidateLocation: 'Philadelphia, PA', openTo: 'Open to Hybrid', salaryMatch: 'Salary Match', availability: 'Available in 2 weeks' },
+    { name: 'Sofia Rossi', location: 'Miami, FL', matchPct: 73, matchSummary: 'Creative professional with 6 years in graphic design and brand identity. Sofia has designed visual systems for 20+ brands. Expert in Adobe Creative Suite, Figma, and motion graphics.', candidateLocation: 'Miami, FL', openTo: 'Open to Remote', salaryMatch: 'Salary Match', availability: 'Available in 30 days' },
+    { name: 'Jake Morrison', location: 'Boise, ID', matchPct: 72, matchSummary: 'Practical professional with 5 years in systems administration and cloud ops. Jake has migrated legacy systems to AWS, reducing infrastructure costs by 40%. Strong Linux and networking skills.', candidateLocation: 'Boise, ID', openTo: 'Open to Remote', salaryMatch: 'Salary Match', availability: 'Available immediately' },
+    { name: 'Ananya Reddy', location: 'Bangalore, India', matchPct: 72, matchSummary: 'Technical professional with 6 years in backend engineering. Ananya has built microservices handling 100K+ concurrent users. Strong Java, Spring Boot, and Kafka expertise with AWS deployment experience.', candidateLocation: 'Bangalore, India', openTo: 'Open to Relocation', salaryMatch: 'Below Range', availability: 'Available in 60 days' },
+    { name: 'Tyler Bennett', location: 'Kansas City, MO', matchPct: 71, matchSummary: 'Reliable professional with 5 years in technical writing and documentation. Tyler has authored API docs, user guides, and knowledge bases used by 10K+ users. Strong Markdown and docs-as-code experience.', candidateLocation: 'Kansas City, MO', openTo: 'Open to Remote', salaryMatch: 'Salary Match', availability: 'Available in 2 weeks' },
+    { name: 'Leah Goldstein', location: 'New York, NY', matchPct: 71, matchSummary: 'Strategic professional with 7 years in media planning and buying. Leah has managed $20M+ in annual ad spend and optimized campaigns across programmatic, social, and linear TV channels.', candidateLocation: 'New York, NY', openTo: 'Open to Hybrid', salaryMatch: 'Salary Match', availability: 'Available in 30 days' },
+    { name: 'Daniel Okoro', location: 'Houston, TX', matchPct: 70, matchSummary: 'Experienced professional with 8 years in mechanical engineering and product design. Daniel has led hardware development projects from concept to manufacturing. Strong CAD and prototyping skills.', candidateLocation: 'Houston, TX', openTo: 'Open to Hybrid', salaryMatch: 'Salary Match', availability: 'Available immediately' },
+    { name: 'Emma Johansson', location: 'Minneapolis, MN', matchPct: 70, matchSummary: 'People-focused professional with 6 years in learning and development. Emma has designed training programs that improved employee engagement scores by 15%. Strong instructional design skills.', candidateLocation: 'Minneapolis, MN', openTo: 'Open to Remote', salaryMatch: 'Below Range', availability: 'Available in 2 weeks' },
+    { name: 'Ricardo Silva', location: 'Austin, TX', matchPct: 69, matchSummary: 'Technical professional with 5 years in mobile development. Ricardo has shipped 6 iOS/Android apps with 4.5+ star ratings. Strong Swift, Kotlin, and React Native skills with CI/CD experience.', candidateLocation: 'Austin, TX', openTo: 'Open to Hybrid', salaryMatch: 'Salary Match', availability: 'Available in 30 days' },
+    { name: 'Natasha Ivanova', location: 'Chicago, IL', matchPct: 69, matchSummary: 'Analytical professional with 6 years in market research and competitive intelligence. Natasha has conducted studies that informed $50M+ in strategic investments. Strong survey design and analysis skills.', candidateLocation: 'Chicago, IL', openTo: 'Open to Remote', salaryMatch: 'Salary Match', availability: 'Available immediately' },
+    { name: 'Chris Nakamura', location: 'San Francisco, CA', matchPct: 68, matchSummary: 'Innovative professional with 7 years in growth marketing. Chris has built acquisition funnels that scaled startups from seed to Series B. Strong experimentation, SEO, and paid media expertise.', candidateLocation: 'San Francisco, CA', openTo: 'Open to Hybrid', salaryMatch: 'Salary Match', availability: 'Available in 2 weeks' },
+    { name: 'Alicia Vargas', location: 'Denver, CO', matchPct: 68, matchSummary: 'Collaborative professional with 5 years in partnerships and business development. Alicia has established 30+ strategic partnerships generating $8M in revenue. Strong negotiation and relationship skills.', candidateLocation: 'Denver, CO', openTo: 'Open to Remote', salaryMatch: 'Below Range', availability: 'Available in 30 days' },
+    { name: 'Jason Lee', location: 'Raleigh, NC', matchPct: 67, matchSummary: 'Focused professional with 6 years in frontend engineering. Jason has built accessible, performant web applications used by millions. Strong React, TypeScript, and CSS architecture skills.', candidateLocation: 'Raleigh, NC', openTo: 'Open to Remote', salaryMatch: 'Salary Match', availability: 'Available immediately' },
+    { name: 'Keira Blackwood', location: 'Toronto, ON', matchPct: 67, matchSummary: 'Creative professional with 5 years in video production and content creation. Keira has produced campaigns with 10M+ views. Strong storytelling, editing, and motion graphics abilities.', candidateLocation: 'Toronto, ON', openTo: 'Open to Relocation', salaryMatch: 'Salary Match', availability: 'Available in 60 days' },
+    { name: 'Aaron Mitchell', location: 'Atlanta, GA', matchPct: 66, matchSummary: 'Experienced professional with 7 years in IT infrastructure and cloud migration. Aaron has led 5 major cloud migrations and reduced downtime by 90%. Strong AWS, Azure, and networking expertise.', candidateLocation: 'Atlanta, GA', openTo: 'Open to Hybrid', salaryMatch: 'Salary Match', availability: 'Available in 2 weeks' },
+    { name: 'Mei-Ling Wu', location: 'Los Angeles, CA', matchPct: 66, matchSummary: 'Detail-oriented professional with 6 years in quality assurance. Mei-Ling has implemented testing strategies that caught 40% more defects pre-release. Strong automation and manual testing skills.', candidateLocation: 'Los Angeles, CA', openTo: 'Open to Hybrid', salaryMatch: 'Below Range', availability: 'Available in 30 days' },
+    { name: 'Kyle Bergstrom', location: 'Madison, WI', matchPct: 65, matchSummary: 'Analytical professional with 5 years in business intelligence. Kyle has built data warehouses and reporting systems serving 500+ users. Strong SQL, dbt, and Snowflake expertise.', candidateLocation: 'Madison, WI', openTo: 'Open to Remote', salaryMatch: 'Salary Match', availability: 'Available immediately' },
+    { name: 'Isabelle Fontaine', location: 'New Orleans, LA', matchPct: 65, matchSummary: 'Persuasive professional with 6 years in public relations and communications. Isabelle has secured coverage in Tier 1 publications and managed crisis communications. Strong media relationship skills.', candidateLocation: 'New Orleans, LA', openTo: 'Open to Remote', salaryMatch: 'Salary Match', availability: 'Available in 2 weeks' },
+    { name: 'Trevor Scott', location: 'Pittsburgh, PA', matchPct: 64, matchSummary: 'Technical professional with 7 years in data engineering. Trevor has built ETL pipelines processing 10TB+ daily. Strong Python, Spark, and Airflow skills with experience in real-time streaming.', candidateLocation: 'Pittsburgh, PA', openTo: 'Open to Hybrid', salaryMatch: 'Salary Match', availability: 'Available in 30 days' },
+    { name: 'Adaeze Eze', location: 'Baltimore, MD', matchPct: 64, matchSummary: 'Resourceful professional with 5 years in procurement and vendor management. Adaeze has negotiated contracts saving $3M+ annually. Strong analytical skills and supplier relationship expertise.', candidateLocation: 'Baltimore, MD', openTo: 'Open to Remote', salaryMatch: 'Below Range', availability: 'Available immediately' },
+    { name: 'Maxwell Grant', location: 'San Diego, CA', matchPct: 63, matchSummary: 'Technical professional with 6 years in embedded systems and IoT. Maxwell has designed firmware for devices deployed in 50+ countries. Strong C/C++ and RTOS experience with hardware debugging skills.', candidateLocation: 'San Diego, CA', openTo: 'Open to Hybrid', salaryMatch: 'Salary Match', availability: 'Available in 2 weeks' },
+    { name: 'Zara Khan', location: 'Houston, TX', matchPct: 63, matchSummary: 'Strategic professional with 5 years in corporate strategy and M&A. Zara has evaluated 20+ acquisition targets and supported due diligence on $100M+ deals. Strong financial modeling skills.', candidateLocation: 'Houston, TX', openTo: 'Open to Hybrid', salaryMatch: 'Salary Match', availability: 'Available in 30 days' },
+    { name: 'Luke Peterson', location: 'Omaha, NE', matchPct: 62, matchSummary: 'Dependable professional with 7 years in customer support and team leadership. Luke has managed support teams handling 5K+ tickets/month and improved CSAT from 78% to 92%. Strong systems thinker.', candidateLocation: 'Omaha, NE', openTo: 'Open to Remote', salaryMatch: 'Below Range', availability: 'Available immediately' },
+    { name: 'Rosa Delgado', location: 'Tucson, AZ', matchPct: 62, matchSummary: 'Organized professional with 5 years in executive assistance and operations. Rosa has supported C-suite executives and coordinated board meetings. Strong scheduling, travel logistics, and communication skills.', candidateLocation: 'Tucson, AZ', openTo: 'Open to Remote', salaryMatch: 'Salary Match', availability: 'Available in 2 weeks' },
+    { name: 'George Okafor', location: 'Newark, NJ', matchPct: 61, matchSummary: 'Technical professional with 6 years in network engineering. George has designed and maintained enterprise networks serving 10K+ users. Strong Cisco, Palo Alto, and SD-WAN expertise with CCNP certification.', candidateLocation: 'Newark, NJ', openTo: 'Open to Hybrid', salaryMatch: 'Salary Match', availability: 'Available in 30 days' },
+    { name: 'Amanda Stevens', location: 'Sacramento, CA', matchPct: 61, matchSummary: 'Creative professional with 5 years in email marketing and CRM. Amanda has built automation workflows that increased conversion by 35%. Strong Marketo, HubSpot, and segmentation expertise.', candidateLocation: 'Sacramento, CA', openTo: 'Open to Remote', salaryMatch: 'Salary Match', availability: 'Available immediately' },
+    { name: 'Takeshi Yamamoto', location: 'Honolulu, HI', matchPct: 60, matchSummary: 'Experienced professional with 7 years in environmental consulting and sustainability. Takeshi has led ESG reporting initiatives and carbon reduction programs. Strong analytical and regulatory knowledge.', candidateLocation: 'Honolulu, HI', openTo: 'Open to Relocation', salaryMatch: 'Below Range', availability: 'Available in 60 days' },
+    { name: 'Christina Mueller', location: 'Milwaukee, WI', matchPct: 60, matchSummary: 'Organized professional with 6 years in supply chain analytics. Christina has optimized inventory levels reducing carrying costs by 25%. Strong demand forecasting and SAP experience.', candidateLocation: 'Milwaukee, WI', openTo: 'Open to Hybrid', salaryMatch: 'Salary Match', availability: 'Available in 2 weeks' },
+    { name: 'Ahmad Nasser', location: 'Detroit, MI', matchPct: 59, matchSummary: 'Technical professional with 5 years in database administration. Ahmad has managed PostgreSQL and MongoDB clusters handling 500M+ records. Strong performance tuning and disaster recovery skills.', candidateLocation: 'Detroit, MI', openTo: 'Open to Remote', salaryMatch: 'Salary Match', availability: 'Available in 30 days' },
+    { name: 'Victoria Chang', location: 'Austin, TX', matchPct: 59, matchSummary: 'Creative professional with 6 years in interior design and space planning. Victoria has redesigned 30+ commercial spaces improving employee satisfaction scores. Strong AutoCAD and 3D rendering skills.', candidateLocation: 'Austin, TX', openTo: 'Open to Hybrid', salaryMatch: 'Below Range', availability: 'Available immediately' },
+    { name: 'Nolan Drake', location: 'Richmond, VA', matchPct: 58, matchSummary: 'Analytical professional with 5 years in insurance underwriting and risk assessment. Nolan has evaluated $200M+ in policies and developed pricing models. Strong actuarial knowledge and attention to detail.', candidateLocation: 'Richmond, VA', openTo: 'Open to Remote', salaryMatch: 'Salary Match', availability: 'Available in 2 weeks' },
+    { name: 'Bianca Torres', location: 'Orlando, FL', matchPct: 58, matchSummary: 'Personable professional with 6 years in real estate development and property management. Bianca has managed portfolios of 200+ units and overseen $10M+ in renovations. Strong tenant relations skills.', candidateLocation: 'Orlando, FL', openTo: 'Open to Hybrid', salaryMatch: 'Salary Match', availability: 'Available in 30 days' },
+    { name: 'Owen McCarthy', location: 'Providence, RI', matchPct: 57, matchSummary: 'Technical professional with 7 years in audiovisual engineering. Owen has designed AV systems for 100+ conference rooms and event spaces. Strong integration, troubleshooting, and project management skills.', candidateLocation: 'Providence, RI', openTo: 'Open to Remote', salaryMatch: 'Below Range', availability: 'Available immediately' },
+    { name: 'Priyanka Desai', location: 'San Jose, CA', matchPct: 57, matchSummary: 'Analytical professional with 5 years in product analytics. Priyanka has built experiment frameworks that accelerated feature iteration by 50%. Strong Amplitude, Mixpanel, and statistical analysis skills.', candidateLocation: 'San Jose, CA', openTo: 'Open to Hybrid', salaryMatch: 'Salary Match', availability: 'Available in 2 weeks' },
+    { name: 'Caleb Rhodes', location: 'Knoxville, TN', matchPct: 56, matchSummary: 'Practical professional with 6 years in facilities management and operations. Caleb has overseen 500K+ sq ft of commercial space and reduced maintenance costs by 18%. Strong vendor and budget management skills.', candidateLocation: 'Knoxville, TN', openTo: 'Open to Relocation', salaryMatch: 'Salary Match', availability: 'Available in 30 days' },
+    { name: 'Fiona Campbell', location: 'Edinburgh, UK', matchPct: 56, matchSummary: 'Strategic professional with 7 years in international marketing. Fiona has launched campaigns across 15 markets and managed localization workflows. Strong cultural awareness and project coordination skills.', candidateLocation: 'Edinburgh, UK', openTo: 'Open to Relocation', salaryMatch: 'Salary Match', availability: 'Available in 60 days' },
+    { name: 'Dante Marshall', location: 'Charlotte, NC', matchPct: 55, matchSummary: 'Focused professional with 5 years in technical sales. Dante has exceeded quota by 120% for 3 consecutive years. Strong consultative selling approach with deep product knowledge and demo skills.', candidateLocation: 'Charlotte, NC', openTo: 'Open to Hybrid', salaryMatch: 'Below Range', availability: 'Available immediately' },
+    { name: 'Eleanor Price', location: 'Portland, OR', matchPct: 55, matchSummary: 'Thoughtful professional with 6 years in nonprofit management. Eleanor has led fundraising campaigns raising $5M+ and managed teams of 15. Strong grant writing and community engagement skills.', candidateLocation: 'Portland, OR', openTo: 'Open to Remote', salaryMatch: 'Salary Match', availability: 'Available in 2 weeks' },
+    { name: 'Hassan Ali', location: 'Columbus, OH', matchPct: 54, matchSummary: 'Technical professional with 5 years in SRE and platform engineering. Hassan has improved system uptime to 99.99% and built self-healing infrastructure. Strong observability and incident management skills.', candidateLocation: 'Columbus, OH', openTo: 'Open to Remote', salaryMatch: 'Salary Match', availability: 'Available in 30 days' },
+    { name: 'Gabrielle Fournier', location: 'Denver, CO', matchPct: 54, matchSummary: 'Creative professional with 6 years in photography and visual content. Gabrielle has built content libraries for Fortune 500 brands. Strong art direction, editing, and brand storytelling skills.', candidateLocation: 'Denver, CO', openTo: 'Open to Hybrid', salaryMatch: 'Salary Match', availability: 'Available immediately' },
+    { name: 'Ivan Kozlov', location: 'San Francisco, CA', matchPct: 53, matchSummary: 'Technical professional with 7 years in machine learning engineering. Ivan has deployed ML models serving 5M+ predictions daily. Strong PyTorch, MLOps, and feature engineering expertise.', candidateLocation: 'San Francisco, CA', openTo: 'Open to Hybrid', salaryMatch: 'Above Range', availability: 'Available in 2 weeks' },
+    { name: 'Tamara Weston', location: 'Virginia Beach, VA', matchPct: 53, matchSummary: 'Organized professional with 5 years in compliance and regulatory affairs. Tamara has led audit preparations and maintained regulatory filings. Strong policy writing and risk assessment skills.', candidateLocation: 'Virginia Beach, VA', openTo: 'Open to Remote', salaryMatch: 'Below Range', availability: 'Available in 30 days' },
+    { name: 'Jerome Baptiste', location: 'New York, NY', matchPct: 52, matchSummary: 'Dynamic professional with 6 years in sports marketing and sponsorship. Jerome has managed $5M+ in sponsorship deals and created campaigns reaching 20M+ fans. Strong relationship and negotiation skills.', candidateLocation: 'New York, NY', openTo: 'Open to Hybrid', salaryMatch: 'Salary Match', availability: 'Available immediately' },
+    { name: 'Samantha Clarke', location: 'Seattle, WA', matchPct: 52, matchSummary: 'Methodical professional with 5 years in clinical research coordination. Samantha has managed 10+ clinical trials through all phases. Strong regulatory knowledge and patient coordination skills.', candidateLocation: 'Seattle, WA', openTo: 'Open to Hybrid', salaryMatch: 'Salary Match', availability: 'Available in 2 weeks' },
+    { name: 'Felix Andersen', location: 'Minneapolis, MN', matchPct: 51, matchSummary: 'Versatile professional with 5 years in logistics and warehouse operations. Felix has optimized fulfillment workflows reducing shipping times by 28%. Strong WMS and inventory management experience.', candidateLocation: 'Minneapolis, MN', openTo: 'Open to Remote', salaryMatch: 'Below Range', availability: 'Available in 30 days' },
+    { name: 'Monica Tran', location: 'San Jose, CA', matchPct: 51, matchSummary: 'Technical professional with 6 years in API design and developer experience. Monica has built developer portals serving 5K+ external developers. Strong documentation, SDK design, and community engagement skills.', candidateLocation: 'San Jose, CA', openTo: 'Open to Hybrid', salaryMatch: 'Salary Match', availability: 'Available immediately' },
+    { name: 'Elijah Washington', location: 'St. Louis, MO', matchPct: 50, matchSummary: 'Dedicated professional with 7 years in social work and community outreach. Elijah has managed programs serving 2K+ individuals annually. Strong grant management, advocacy, and partnership building skills.', candidateLocation: 'St. Louis, MO', openTo: 'Open to Remote', salaryMatch: 'Salary Match', availability: 'Available in 2 weeks' }
+  ];
+
   // ========== ZOOM TRANSITION LOGIC ==========
   const grid = document.querySelector('.grid');
   const jobDetail = document.getElementById('jobDetail');
@@ -2144,7 +2484,7 @@
   }
 
   // Shared function: open job detail from a tile
-  function openJobDetail(tile, e) {
+  function openJobDetail(tile, e, goToReview) {
     if (isAnimating) return;
     isAnimating = true;
 
@@ -2158,10 +2498,13 @@
     jobCount.textContent = data.count;
     document.getElementById('jobReqId').textContent = data.reqId || '';
     // Disable Review Candidates if count is 0
+    const rcSummaryBtn = document.getElementById('reviewCandidatesSummaryBtn');
     if (data.count === 0) {
       reviewCandidatesBtn.classList.add('disabled');
+      rcSummaryBtn.classList.add('disabled');
     } else {
       reviewCandidatesBtn.classList.remove('disabled');
+      rcSummaryBtn.classList.remove('disabled');
     }
     jobMeta.innerHTML = buildMetaHTML(data);
     jobDescription.textContent = data.description;
@@ -2235,7 +2578,16 @@
 
     // Show detail screen once overlay has expanded
     setTimeout(() => {
-      jobDetail.classList.add('active');
+      if (goToReview) {
+        // Go directly to review candidates screen
+        rcJobTitle.textContent = jobTitle.textContent;
+        rcJobCount.textContent = jobCount.textContent;
+        rcReqId.textContent = document.getElementById('jobReqId').textContent;
+        populateReviewCandidates(jobTitle.textContent);
+        reviewCandidatesScreen.classList.add('active');
+      } else {
+        jobDetail.classList.add('active');
+      }
 
       setTimeout(() => {
         overlay.remove();
@@ -2254,14 +2606,18 @@
         tile.style.pointerEvents = '';
         window.scrollTo(0, 0);
         isAnimating = false;
-        if (hasDiamonds) findCandidatesBtn.click();
+        if (!goToReview && hasDiamonds) showConsoleComplete();
       }, 400);
     }, 400);
   }
 
   // Click handler for active tiles
   document.querySelectorAll('.tile:not(.disabled):not(.tile-new)').forEach(tile => {
-    tile.addEventListener('click', (e) => openJobDetail(tile, e));
+    tile.addEventListener('click', (e) => {
+      const ctaLabel = tile.querySelector('.mini-stat-cta-label');
+      const goToReview = ctaLabel && ctaLabel.textContent === 'Review Candidates';
+      openJobDetail(tile, e, goToReview);
+    });
   });
 
   // Reset search console to default state
@@ -2276,6 +2632,36 @@
     jobMeta.style.display = '';
     jobDescription.style.display = '';
     jobDetailActions.style.display = '';
+  }
+
+  // Show search console in its already-completed state (no animation)
+  function showConsoleComplete() {
+    const title = jobTitle.textContent;
+    const lines = [
+      'Creating search strategy.',
+      `Finding candidates for ${title} role.`,
+      'Identifying candidate dimensions.',
+      "Searching Aquent\u2019s candidate database.",
+      'Found 14 potential matches.',
+      'Iterating.',
+      'Expanding the search.'
+    ];
+
+    // Snap-hide job detail content
+    jobDivider.style.display = 'none';
+    jobMeta.style.display = 'none';
+    jobDescription.style.display = 'none';
+    jobDetailActions.style.display = 'none';
+    searchActions.style.display = 'flex';
+
+    // Build console with all lines already present
+    searchConsole.innerHTML = lines.join('<br>') + '<span class="search-cursor"></span>';
+    searchConsole.style.display = 'block';
+    // Skip the slide transition — force open immediately
+    searchConsole.style.transition = 'none';
+    searchConsole.classList.add('open');
+    searchConsole.offsetHeight;
+    searchConsole.style.transition = '';
   }
 
   // Jobs nav button — return to grid from any screen
@@ -2294,6 +2680,9 @@
         hideEditForm();
         editingTitle = null;
       }
+    } else if (reviewCandidatesScreen.classList.contains('active')) {
+      activeScreen = reviewCandidatesScreen;
+      targetTile = currentTile;
     } else if (jobCreate.classList.contains('active')) {
       activeScreen = jobCreate;
       targetTile = tileNew;
@@ -2478,7 +2867,90 @@
     }
   });
 
-  reviewCandidatesBtn.addEventListener('click', () => resetSearchConsole());
+  const reviewCandidatesScreen = document.getElementById('reviewCandidates');
+  const rcJobTitle = document.getElementById('rcJobTitle');
+  const rcJobCount = document.getElementById('rcJobCount');
+  const rcReqId = document.getElementById('rcReqId');
+
+  function updateRcSidebar(candidate) {
+    document.getElementById('rcMatchSummary').textContent = candidate.matchSummary;
+    const metaList = document.getElementById('rcMetaList');
+    metaList.innerHTML = [
+      candidate.candidateLocation,
+      candidate.openTo,
+      candidate.salaryMatch,
+      candidate.availability
+    ].map(v => `<li class="rc-meta-item"><span class="rc-meta-check">&#10003;</span>${v}</li>`).join('');
+  }
+
+  function populateReviewCandidates(title) {
+    const data = jobData[title];
+    const cardList = document.getElementById('rcCardList');
+    const count = data ? data.count : 0;
+    const candidates = [];
+    for (let i = 0; i < count; i++) {
+      candidates.push(candidatePool[i % candidatePool.length]);
+    }
+    cardList.innerHTML = '';
+
+    candidates.forEach((c, i) => {
+      const card = document.createElement('div');
+      card.className = 'rc-card' + (i === 0 ? ' rc-active' : '');
+      card.innerHTML = `
+        <div class="rc-card-info">
+          <div class="rc-card-name">${c.name}</div>
+          <div class="rc-card-location">${c.location}</div>
+          <div class="rc-card-actions">
+            <button>Skip</button>
+            <button>Shortlist</button>
+          </div>
+        </div>
+        <div class="rc-card-right">
+          <div class="rc-card-match">${c.matchPct}%</div>
+          <div class="rc-card-match-label">Interested</div>
+        </div>`;
+
+      card.addEventListener('mouseenter', () => {
+        cardList.querySelectorAll('.rc-card').forEach(el => el.classList.remove('rc-active'));
+        card.classList.add('rc-active');
+        updateRcSidebar(c);
+      });
+
+      card.querySelectorAll('button').forEach(btn => {
+        btn.addEventListener('click', (e) => e.stopPropagation());
+      });
+
+      cardList.appendChild(card);
+    });
+
+    if (candidates.length > 0) {
+      updateRcSidebar(candidates[0]);
+    } else {
+      document.getElementById('rcMatchSummary').textContent = 'No candidates found for this role.';
+      document.getElementById('rcMetaList').innerHTML = '';
+    }
+  }
+
+  function openReviewCandidates() {
+    const title = jobTitle.textContent;
+    const data = jobData[title];
+    rcJobTitle.textContent = title;
+    rcJobCount.textContent = data ? data.count : jobCount.textContent;
+    rcReqId.textContent = data ? (data.reqId || '') : '';
+
+    populateReviewCandidates(title);
+
+    resetSearchConsole();
+    jobDetail.classList.remove('active');
+    reviewCandidatesScreen.classList.add('active');
+  }
+
+  reviewCandidatesBtn.addEventListener('click', openReviewCandidates);
+  document.getElementById('reviewCandidatesSummaryBtn').addEventListener('click', openReviewCandidates);
+  document.getElementById('rcShowSummary').addEventListener('click', () => {
+    reviewCandidatesScreen.classList.remove('active');
+    jobDetail.classList.add('active');
+  });
   modifySearchBtn.addEventListener('click', () => resetSearchConsole());
 
   // ========== NEW JOB CREATE LOGIC ==========
