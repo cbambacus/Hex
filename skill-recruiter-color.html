@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Skill Recruiter</title>
+<title>Skill Recruiter — Color Theme</title>
 <style>
   @font-face {
     font-family: 'IBM Plex Sans';
@@ -35,15 +35,26 @@
 
   :root {
     --stroke-width: 1.0px;
+    --brand: #990690;
+    --brand-bright: #ff4cf7;
+    --yellow: #f7e800;
+    --orange: #ff8a00;
+    --bg: #f4f1f0;
+    --bg-tile: #fff;
+    --text: #000;
+    --text-mid: rgba(0, 0, 0, 0.65);
+    --text-light: rgba(0, 0, 0, 0.45);
+    --border: rgba(0, 0, 0, 0.15);
+    --border-strong: rgba(0, 0, 0, 0.35);
   }
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
   body {
-    background: #000;
+    background: var(--bg);
     min-height: 100vh;
     font-family: 'IBM Plex Sans', sans-serif;
-    color: rgba(255, 255, 255, 0.85);
+    color: var(--text);
   }
 
   /* ========== HEADER ========== */
@@ -67,7 +78,7 @@
   .header-dot {
     width: 12px;
     height: 18px;
-    background: #f0f;
+    background: var(--brand);
     clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
   }
 
@@ -76,6 +87,7 @@
     font-size: 24px;
     font-weight: 400;
     letter-spacing: 0.5px;
+    color: var(--text);
   }
 
   .header-nav {
@@ -88,7 +100,7 @@
     font-family: 'IBM Plex Sans', sans-serif;
     font-size: 14px;
     font-weight: 400;
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--text-mid);
     background: transparent;
     border: none;
     padding: 6px 16px;
@@ -98,13 +110,13 @@
   }
 
   .header-nav-btn:hover {
-    color: rgba(255, 255, 255, 0.85);
-    background: rgba(255, 255, 255, 0.08);
+    color: var(--text);
+    background: rgba(0, 0, 0, 0.05);
   }
 
   .header-nav-btn.active {
-    color: #000;
-    background: #f0f;
+    color: #fff;
+    background: var(--brand);
     font-weight: 500;
   }
 
@@ -122,8 +134,8 @@
 
   .star {
     position: absolute;
-    background: #fff;
-    opacity: 0.2;
+    background: var(--brand);
+    opacity: 0.08;
     clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
     transition: transform 0.9s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.9s cubic-bezier(0.4, 0, 0.2, 1);
   }
@@ -201,9 +213,9 @@
   .hex-fill {
     position: absolute;
     inset: 0;
-    background: #000;
+    background: var(--bg-tile);
     border-radius: 0;
-    box-shadow: inset 0 0 0 1px #fff;
+    box-shadow: inset 0 0 0 1px var(--border);
   }
 
   /* ========== NUMBER ========== */
@@ -216,7 +228,7 @@
     font-family: 'IBM Plex Sans', sans-serif;
     font-size: 52px;
     font-weight: 300;
-    color: rgba(255, 255, 255, 0.85);
+    color: var(--text);
     z-index: 2;
     transition: opacity 0.15s ease;
     pointer-events: none;
@@ -236,7 +248,7 @@
   .tile-icon svg {
     width: 74px;
     height: 74px;
-    stroke: #fff;
+    stroke: var(--text-mid);
     stroke-width: var(--stroke-width);
     transition: none;
   }
@@ -268,7 +280,7 @@
     font-family: 'IBM Plex Sans', sans-serif;
     font-size: 23px;
     font-weight: 300;
-    color: #f0f;
+    color: var(--brand);
     width: 39px;
     text-align: right;
     flex-shrink: 0;
@@ -277,14 +289,14 @@
   .mini-stat-divider {
     width: var(--stroke-width);
     height: 18px;
-    background: #f0f;
+    background: var(--brand);
     flex-shrink: 0;
   }
 
   .mini-stat-label {
     font-size: 14px;
     font-weight: 500;
-    color: #f0f;
+    color: var(--brand);
     text-align: left;
     line-height: 1.2;
     white-space: nowrap;
@@ -302,8 +314,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: #f0f;
-    color: #000;
+    background: var(--brand);
+    color: #fff;
     border-radius: 0;
     padding: 8px 12px;
     font-size: 13px;
@@ -315,7 +327,7 @@
   .mini-stat-cta-arrow {
     font-size: 15px;
     font-weight: 400;
-    color: #000;
+    color: #fff;
   }
 
   .mini-stat-cta-divider {
@@ -323,13 +335,13 @@
   }
 
   .mini-stat-cta-label {
-    color: #000;
+    color: #fff;
     text-align: left;
   }
 
   /* ========== LABEL ========== */
   .tile-label {
-    color: rgba(255, 255, 255, 0.85);
+    color: var(--text);
     font-size: 15px;
     font-weight: 500;
     text-align: center;
@@ -342,8 +354,8 @@
      ======================================== */
 
   .tile:not(.disabled):not(.tile-new):hover .hex-fill {
-    background: #000;
-    box-shadow: inset 0 0 0 1px #f0f;
+    background: var(--bg-tile);
+    box-shadow: inset 0 0 0 1px var(--brand);
   }
 
   .tile:not(.disabled):not(.tile-new):hover .tile-number {
@@ -352,7 +364,7 @@
   }
 
   .tile:not(.disabled):not(.tile-new):hover .tile-label {
-    color: #f0f;
+    color: var(--brand);
   }
 
   .tile:not(.disabled):not(.tile-new):hover .mini-stats {
@@ -375,16 +387,16 @@
   }
 
   .tile-new:hover .hex-fill {
-    background: #000;
-    box-shadow: inset 0 0 0 1px #f0f;
+    background: var(--bg-tile);
+    box-shadow: inset 0 0 0 1px var(--brand);
   }
 
   .tile-new:hover .tile-icon svg {
-    stroke: #f0f;
+    stroke: var(--brand);
   }
 
   .tile-new:hover .tile-label {
-    color: #f0f;
+    color: var(--brand);
   }
 
   /* ========== REVERSE (mouse-out) ========== */
@@ -406,19 +418,19 @@
   }
 
   .tile.disabled .hex-border {
-    background: #444;
+    background: var(--border);
   }
 
   .tile.disabled .hex-fill {
-    background: #444;
+    background: var(--border);
   }
 
   .tile.disabled .tile-number {
-    color: #000;
+    color: var(--bg);
   }
 
   .tile.disabled .tile-label {
-    color: #444;
+    color: var(--text-light);
   }
 
   /* ========== ACTIVITY DIAMONDS ========== */
@@ -434,7 +446,7 @@
 
   .diamond {
     position: absolute;
-    background: #f0f;
+    background: var(--brand-bright);
     clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
   }
 
@@ -474,7 +486,7 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: #000;
+    background: var(--bg);
     z-index: 50;
     opacity: 0;
     pointer-events: none;
@@ -510,7 +522,7 @@
     right: calc(100% + 20px);
     top: 0.3em;
     font-size: 28px;
-    color: rgba(255, 255, 255, 0.85);
+    color: var(--text);
     cursor: pointer;
     line-height: 1;
     user-select: none;
@@ -518,14 +530,14 @@
   }
 
   .job-back:hover {
-    color: #f0f;
+    color: var(--brand);
   }
 
   .job-title {
     font-family: 'Skill Sans', 'IBM Plex Sans', sans-serif;
     font-size: 32px;
     font-weight: 400;
-    color: rgba(255, 255, 255, 0.85);
+    color: var(--text);
     width: 680px;
     flex-shrink: 0;
   }
@@ -533,14 +545,14 @@
   .job-count {
     font-size: 32px;
     font-weight: 300;
-    color: rgba(255, 255, 255, 0.85);
+    color: var(--text);
     margin-left: 40px;
   }
 
   .job-req-id {
     font-size: 15px;
     font-weight: 400;
-    color: rgba(255, 255, 255, 0.85);
+    color: var(--text);
     margin-top: 8px;
   }
 
@@ -555,14 +567,14 @@
     content: '';
     width: 680px;
     flex-shrink: 0;
-    border-top: var(--stroke-width) solid #fff;
+    border-top: var(--stroke-width) solid var(--border-strong);
   }
 
   .job-divider::after {
     content: '';
     width: 280px;
     flex-shrink: 0;
-    border-top: var(--stroke-width) solid #fff;
+    border-top: var(--stroke-width) solid var(--border-strong);
   }
 
   .job-body-cols {
@@ -593,7 +605,7 @@
     gap: 6px;
     font-size: 15px;
     font-weight: 400;
-    color: rgba(255, 255, 255, 0.85);
+    color: var(--text);
   }
 
   .meta-col {
@@ -603,23 +615,23 @@
   }
 
   .posting-link {
-    color: rgba(255, 255, 255, 0.85);
+    color: var(--text);
     text-decoration: underline;
   }
 
   .posting-link:hover {
-    color: #f0f;
+    color: var(--brand);
   }
 
   .job-description {
     font-size: 15px;
     line-height: 1.7;
-    color: rgba(255, 255, 255, 0.65);
+    color: var(--text-mid);
     margin-bottom: 16px;
   }
 
   .job-description strong {
-    color: rgba(255, 255, 255, 0.85);
+    color: var(--text);
     font-weight: 500;
     display: block;
     margin-top: 20px;
@@ -647,9 +659,9 @@
     font-weight: 500;
     font-size: 15px;
     line-height: 1.8;
-    color: rgba(255, 255, 255, 0.85);
-    background: #000;
-    border: var(--stroke-width) solid #fff;
+    color: var(--text);
+    background: #fff;
+    border: var(--stroke-width) solid var(--border-strong);
     padding: 0 24px;
     min-height: 0;
     max-height: 0;
@@ -677,10 +689,10 @@
   }
 
   @keyframes cursor-cycle {
-    0%    { background: #FF004F; }
-    25%   { background: #00D900; }
-    50%   { background: #FFE600; }
-    75%   { background: #63A9FF; }
+    0%    { background: #990690; }
+    25%   { background: #ff4cf7; }
+    50%   { background: #f7e800; }
+    75%   { background: #ff8a00; }
   }
 
   .job-actions {
@@ -696,30 +708,30 @@
     gap: 10px;
     font-size: 15px;
     font-weight: 400;
-    color: rgba(255, 255, 255, 0.85);
+    color: var(--text);
     cursor: pointer;
     transition: color 0.2s ease, border-color 0.2s ease;
-    border: 1px solid rgba(255, 255, 255, 0.4);
+    border: 1px solid var(--border-strong);
     padding: 10px 16px 10px 12px;
   }
 
   .job-action:hover {
-    color: #f0f;
-    border-color: #f0f;
+    color: var(--brand);
+    border-color: var(--brand);
   }
 
   .job-action.disabled {
-    color: #444242;
+    color: var(--text-light);
     cursor: default;
     pointer-events: none;
   }
 
   .job-action.disabled .action-hex-border {
-    background: #444242;
+    background: var(--border);
   }
 
   .job-action.disabled svg {
-    stroke: #444242;
+    stroke: var(--text-light);
   }
 
   .action-icon {
@@ -760,7 +772,7 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: #000;
+    background: var(--bg);
     z-index: 50;
     opacity: 0;
     pointer-events: none;
@@ -785,7 +797,7 @@
 
   .rc-fixed-header {
     flex-shrink: 0;
-    background: #000;
+    background: var(--bg);
     z-index: 2;
     padding: 60px 40px 0;
   }
@@ -810,7 +822,7 @@
   }
 
   .review-candidates .job-req-id {
-    color: rgba(255, 255, 255, 0.85);
+    color: var(--text);
   }
 
   .rc-req-row {
@@ -822,14 +834,14 @@
   .rc-show-summary {
     font-size: 15px;
     font-weight: 400;
-    color: rgba(255, 255, 255, 0.85);
+    color: var(--text);
     text-decoration: underline;
     cursor: pointer;
     transition: color 0.2s ease;
   }
 
   .rc-show-summary:hover {
-    color: #f0f;
+    color: var(--brand);
   }
 
   /* ========== REVIEW CANDIDATES CARDS ========== */
@@ -841,7 +853,7 @@
   }
 
   .rc-card {
-    border: 1px solid rgba(255, 255, 255, 0.35);
+    border: 1px solid var(--border-strong);
     padding: 20px 24px;
     display: flex;
     align-items: stretch;
@@ -851,7 +863,7 @@
 
   .rc-card:hover,
   .rc-card.rc-active {
-    border-color: #f0f;
+    border-color: var(--brand);
   }
 
   .rc-card-info {
@@ -861,13 +873,13 @@
   .rc-card-name {
     font-size: 18px;
     font-weight: 400;
-    color: rgba(255, 255, 255, 0.85);
+    color: var(--text);
     margin-bottom: 4px;
   }
 
   .rc-card-location {
     font-size: 14px;
-    color: rgba(255, 255, 255, 0.55);
+    color: var(--text-light);
     margin-bottom: 12px;
   }
 
@@ -880,17 +892,17 @@
     font-family: 'IBM Plex Sans', sans-serif;
     font-size: 12px;
     font-weight: 500;
-    color: rgba(255, 255, 255, 0.85);
+    color: var(--text);
     background: transparent;
-    border: 1px solid rgba(255, 255, 255, 0.4);
+    border: 1px solid var(--border-strong);
     padding: 4px 14px;
     cursor: pointer;
     transition: border-color 0.2s ease, background 0.2s ease;
   }
 
   .rc-card-actions button:hover {
-    border-color: #f0f;
-    background: rgba(255, 0, 255, 0.08);
+    border-color: var(--brand);
+    background: rgba(153, 6, 144, 0.08);
   }
 
 
@@ -906,13 +918,13 @@
   .rc-card-match {
     font-size: 28px;
     font-weight: 300;
-    color: rgba(255, 255, 255, 0.85);
+    color: var(--text);
   }
 
   .rc-card-match-label {
     font-size: 11px;
     font-weight: 400;
-    color: rgba(255, 255, 255, 0.45);
+    color: var(--text-light);
     margin-bottom: 5px;
   }
 
@@ -927,14 +939,14 @@
   .rc-sidebar-heading {
     font-size: 14px;
     font-weight: 500;
-    color: rgba(255, 255, 255, 0.85);
+    color: var(--text);
     margin-bottom: 12px;
   }
 
   .rc-match-summary {
     font-size: 14px;
     font-weight: 400;
-    color: rgba(255, 255, 255, 0.85);
+    color: var(--text);
     line-height: 1.7;
     margin-bottom: 28px;
   }
@@ -950,11 +962,11 @@
   .rc-meta-item {
     font-size: 15px;
     font-weight: 400;
-    color: rgba(255, 255, 255, 0.85);
+    color: var(--text);
   }
 
   .rc-meta-check {
-    color: rgba(255, 255, 255, 0.85);
+    color: var(--text);
     margin-right: 10px;
   }
 
@@ -965,7 +977,7 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: #000;
+    background: var(--bg);
     z-index: 50;
     opacity: 0;
     pointer-events: none;
@@ -988,9 +1000,9 @@
     font-family: 'Skill Sans', 'IBM Plex Sans', sans-serif;
     font-size: 32px;
     font-weight: 400;
-    color: rgba(255, 255, 255, 0.85);
-    background: #000;
-    border: var(--stroke-width) solid rgba(255, 255, 255, 0.4);
+    color: var(--text);
+    background: var(--bg);
+    border: var(--stroke-width) solid var(--border-strong);
     outline: none;
     width: 100%;
     padding: 4px 12px;
@@ -998,7 +1010,7 @@
   }
 
   .job-title-input::placeholder {
-    color: #888;
+    color: var(--text-light);
     font-style: italic;
   }
 
@@ -1007,9 +1019,9 @@
     height: 300px;
     font-size: 16px;
     line-height: 1.7;
-    color: rgba(255, 255, 255, 0.85);
-    background: #000;
-    border: var(--stroke-width) solid rgba(255, 255, 255, 0.4);
+    color: var(--text);
+    background: var(--bg);
+    border: var(--stroke-width) solid var(--border-strong);
     border-radius: 0;
     outline: none;
     padding: 16px;
@@ -1020,11 +1032,11 @@
   }
 
   .job-desc-input:focus {
-    border-color: #f0f;
+    border-color: var(--brand);
   }
 
   .job-desc-input::placeholder {
-    color: #888;
+    color: var(--text-light);
     font-style: italic;
   }
 
@@ -1046,7 +1058,7 @@
   .form-label {
     font-size: 14px;
     font-weight: 400;
-    color: rgba(255, 255, 255, 0.85);
+    color: var(--text);
     white-space: nowrap;
     width: 60px;
     flex-shrink: 0;
@@ -1054,9 +1066,9 @@
 
   .form-input {
     font-size: 15px;
-    color: rgba(255, 255, 255, 0.85);
-    background: #000;
-    border: var(--stroke-width) solid rgba(255, 255, 255, 0.4);
+    color: var(--text);
+    background: var(--bg);
+    border: var(--stroke-width) solid var(--border-strong);
     outline: none;
     padding: 8px 12px;
     font-family: inherit;
@@ -1066,20 +1078,20 @@
   }
 
   .form-input::placeholder {
-    color: #888;
+    color: var(--text-light);
     font-style: italic;
   }
 
   .form-input:focus,
   .form-select:focus {
-    border-color: #f0f;
+    border-color: var(--brand);
   }
 
   .form-select {
     font-size: 15px;
-    color: rgba(255, 255, 255, 0.85);
-    background: #000;
-    border: var(--stroke-width) solid rgba(255, 255, 255, 0.4);
+    color: var(--text);
+    background: var(--bg);
+    border: var(--stroke-width) solid var(--border-strong);
     outline: none;
     padding: 8px 32px 8px 12px;
     font-family: inherit;
@@ -1088,7 +1100,7 @@
     -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='2.5'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23000000' stroke-width='2.5'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
     background-repeat: no-repeat;
     background-position: right 10px center;
     flex: 1;
@@ -1096,8 +1108,8 @@
   }
 
   .form-select option {
-    background: #000;
-    color: rgba(255, 255, 255, 0.85);
+    background: var(--bg);
+    color: var(--text);
   }
 
   .radio-group {
@@ -1111,7 +1123,7 @@
     gap: 6px;
     cursor: pointer;
     font-size: 15px;
-    color: rgba(255, 255, 255, 0.85);
+    color: var(--text);
   }
 
   .radio-option input[type="radio"] {
@@ -1120,16 +1132,16 @@
     appearance: none;
     width: 14px;
     height: 14px;
-    border: var(--stroke-width) solid rgba(255, 255, 255, 0.4);
+    border: var(--stroke-width) solid var(--border-strong);
     border-radius: 50%;
-    background: #000;
+    background: var(--bg);
     cursor: pointer;
     margin: 0;
     position: relative;
   }
 
   .radio-option input[type="radio"]:checked {
-    border-color: #fff;
+    border-color: var(--brand);
   }
 
   .radio-option input[type="radio"]:checked::after {
@@ -1141,11 +1153,11 @@
     width: 8px;
     height: 8px;
     border-radius: 50%;
-    background: #fff;
+    background: var(--brand);
   }
 
   .radio-option input[type="radio"]:focus {
-    border-color: #f0f;
+    border-color: var(--brand);
   }
 
   .salary-inputs {
@@ -1158,9 +1170,9 @@
 
   .salary-field {
     font-size: 15px;
-    color: rgba(255, 255, 255, 0.85);
-    background: #000;
-    border: var(--stroke-width) solid rgba(255, 255, 255, 0.4);
+    color: var(--text);
+    background: var(--bg);
+    border: var(--stroke-width) solid var(--border-strong);
     outline: none;
     padding: 8px 12px;
     font-family: inherit;
@@ -1170,17 +1182,17 @@
   }
 
   .salary-field:focus {
-    border-color: #f0f;
+    border-color: var(--brand);
   }
 
   .salary-field::placeholder {
-    color: #666;
+    color: var(--text-light);
     font-style: italic;
   }
 
   .salary-to {
     font-size: 14px;
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--text-light);
   }
 </style>
 </head>
@@ -2423,7 +2435,7 @@
     // Kill hover state and fade out tile content
     tile.style.pointerEvents = 'none';
     const hexFill = tile.querySelector('.hex-fill');
-    if (hexFill) { hexFill.style.boxShadow = 'none'; hexFill.style.background = '#272525'; }
+    if (hexFill) { hexFill.style.boxShadow = 'none'; hexFill.style.background = ''; }
     const miniStats = tile.querySelector('.mini-stats');
     if (miniStats) miniStats.style.display = 'none';
     const tileContent = tile.querySelector('.tile-content');
@@ -2439,7 +2451,7 @@
       left: ${tileRect.left}px;
       width: ${tileRect.width}px;
       height: ${tileRect.height}px;
-      background: #000;
+      background: var(--bg);
       border-radius: 10px;
       z-index: 45;
       transition: top 0.6s cubic-bezier(0.4, 0, 0.2, 1), left 0.6s cubic-bezier(0.4, 0, 0.2, 1), width 0.6s cubic-bezier(0.4, 0, 0.2, 1), height 0.6s cubic-bezier(0.4, 0, 0.2, 1), border-radius 0.6s cubic-bezier(0.4, 0, 0.2, 1);
@@ -2599,7 +2611,7 @@
       left: 0px;
       width: 100%;
       height: 100%;
-      background: #000;
+      background: var(--bg);
       border-radius: 0px;
       z-index: 49;
     `;
@@ -2892,7 +2904,7 @@
     // Kill hover state and fade out tile content
     tileNew.style.pointerEvents = 'none';
     const newHexFill = tileNew.querySelector('.hex-fill');
-    if (newHexFill) { newHexFill.style.boxShadow = 'none'; newHexFill.style.background = '#272525'; }
+    if (newHexFill) { newHexFill.style.boxShadow = 'none'; newHexFill.style.background = ''; }
     const newTileContent = tileNew.querySelector('.tile-content');
     const newLabel = tileNew.querySelector('.tile-label');
     const newIcon = tileNew.querySelector('.tile-icon svg');
@@ -2907,7 +2919,7 @@
       left: ${tileRect.left}px;
       width: ${tileRect.width}px;
       height: ${tileRect.height}px;
-      background: #000;
+      background: var(--bg);
       border-radius: 10px;
       z-index: 45;
       transition: top 0.6s cubic-bezier(0.4, 0, 0.2, 1), left 0.6s cubic-bezier(0.4, 0, 0.2, 1), width 0.6s cubic-bezier(0.4, 0, 0.2, 1), height 0.6s cubic-bezier(0.4, 0, 0.2, 1), border-radius 0.6s cubic-bezier(0.4, 0, 0.2, 1);
@@ -2977,7 +2989,7 @@
   saveJobBtn.addEventListener('click', () => {
     const title = jobTitleInput.value.trim();
     if (!title) {
-      jobTitleInput.style.borderBottomColor = '#f0f';
+      jobTitleInput.style.borderBottomColor = '#990690';
       setTimeout(() => { jobTitleInput.style.borderBottomColor = ''; }, 1000);
       jobTitleInput.focus();
       return;
@@ -3149,7 +3161,7 @@
   saveEditBtn.addEventListener('click', () => {
     const newTitle = editJobTitleInput.value.trim();
     if (!newTitle) {
-      editJobTitleInput.style.borderBottomColor = '#f0f';
+      editJobTitleInput.style.borderBottomColor = '#990690';
       setTimeout(() => { editJobTitleInput.style.borderBottomColor = ''; }, 1000);
       editJobTitleInput.focus();
       return;
