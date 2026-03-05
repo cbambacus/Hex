@@ -46,6 +46,18 @@
     --text-light: rgba(0, 0, 0, 0.45);
     --border: rgba(0, 0, 0, 0.15);
     --border-strong: rgba(0, 0, 0, 0.35);
+
+    /* Color pairs: dark / light */
+    --pair-berry-dark: #6B0F4A;
+    --pair-berry-light: #E8335A;
+    --pair-teal-dark: #1B7B6E;
+    --pair-teal-light: #A5D43A;
+    --pair-orange-dark: #E05830;
+    --pair-orange-light: #F7E800;
+    --pair-blue-dark: #2B5AE0;
+    --pair-blue-light: #7EB0F5;
+    --pair-purple-dark: #7B1878;
+    --pair-purple-light: #FF4CF7;
   }
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -349,13 +361,78 @@
     height: 2.7em; /* reserve 2 lines */
   }
 
+  /* ========== COLOR PAIRS ========== */
+  .tile[data-pair] .hex-fill {
+    box-shadow: none;
+  }
+
+  .tile[data-pair] .tile-number {
+    color: #fff;
+  }
+
+  .tile[data-pair="berry"] .hex-fill { background: var(--pair-berry-light); }
+  .tile[data-pair="teal"] .hex-fill { background: var(--pair-teal-light); }
+  .tile[data-pair="orange"] .hex-fill { background: var(--pair-orange-dark); }
+  .tile[data-pair="blue"] .hex-fill { background: var(--pair-blue-light); }
+  .tile[data-pair="purple"] .hex-fill { background: var(--pair-purple-light); }
+
+  .tile[data-pair="berry"] .tile-number { color: var(--pair-berry-dark); }
+  .tile[data-pair="teal"] .tile-number { color: var(--pair-teal-dark); }
+  .tile[data-pair="orange"] .tile-number { color: var(--pair-orange-light); }
+  .tile[data-pair="blue"] .tile-number { color: #fff; }
+  .tile[data-pair="purple"] .tile-number { color: #fff; }
+
+  .tile[data-pair="berry"] .mini-stat-num,
+  .tile[data-pair="berry"] .mini-stat-divider,
+  .tile[data-pair="berry"] .mini-stat-label { color: var(--pair-berry-dark); background-color: transparent; }
+  .tile[data-pair="berry"] .mini-stat-divider { background: var(--pair-berry-dark); }
+  .tile[data-pair="berry"] .mini-stat-cta { background: var(--pair-berry-dark); color: #fff; }
+  .tile[data-pair="berry"] .mini-stat-cta-arrow,
+  .tile[data-pair="berry"] .mini-stat-cta-label { color: #fff; }
+
+  .tile[data-pair="teal"] .mini-stat-num,
+  .tile[data-pair="teal"] .mini-stat-divider,
+  .tile[data-pair="teal"] .mini-stat-label { color: var(--pair-teal-dark); background-color: transparent; }
+  .tile[data-pair="teal"] .mini-stat-divider { background: var(--pair-teal-dark); }
+  .tile[data-pair="teal"] .mini-stat-cta { background: var(--pair-teal-dark); color: #fff; }
+  .tile[data-pair="teal"] .mini-stat-cta-arrow,
+  .tile[data-pair="teal"] .mini-stat-cta-label { color: #fff; }
+
+  .tile[data-pair="orange"] .mini-stat-num,
+  .tile[data-pair="orange"] .mini-stat-divider,
+  .tile[data-pair="orange"] .mini-stat-label { color: var(--pair-orange-light); background-color: transparent; }
+  .tile[data-pair="orange"] .mini-stat-divider { background: var(--pair-orange-light); }
+  .tile[data-pair="orange"] .mini-stat-cta { background: var(--pair-orange-light); color: var(--pair-orange-dark); }
+  .tile[data-pair="orange"] .mini-stat-cta-arrow,
+  .tile[data-pair="orange"] .mini-stat-cta-label { color: var(--pair-orange-dark); }
+
+  .tile[data-pair="blue"] .mini-stat-num,
+  .tile[data-pair="blue"] .mini-stat-divider,
+  .tile[data-pair="blue"] .mini-stat-label { color: var(--pair-blue-dark); background-color: transparent; }
+  .tile[data-pair="blue"] .mini-stat-divider { background: var(--pair-blue-dark); }
+  .tile[data-pair="blue"] .mini-stat-cta { background: var(--pair-blue-dark); color: #fff; }
+  .tile[data-pair="blue"] .mini-stat-cta-arrow,
+  .tile[data-pair="blue"] .mini-stat-cta-label { color: #fff; }
+
+  .tile[data-pair="purple"] .mini-stat-num,
+  .tile[data-pair="purple"] .mini-stat-divider,
+  .tile[data-pair="purple"] .mini-stat-label { color: var(--pair-purple-dark); background-color: transparent; }
+  .tile[data-pair="purple"] .mini-stat-divider { background: var(--pair-purple-dark); }
+  .tile[data-pair="purple"] .mini-stat-cta { background: var(--pair-purple-dark); color: #fff; }
+  .tile[data-pair="purple"] .mini-stat-cta-arrow,
+  .tile[data-pair="purple"] .mini-stat-cta-label { color: #fff; }
+
   /* ========================================
      HOVER — active tiles only (no morph, no expand)
      ======================================== */
 
-  .tile:not(.disabled):not(.tile-new):hover .hex-fill {
+  .tile:not(.disabled):not(.tile-new):not([data-pair]):hover .hex-fill {
     background: var(--bg-tile);
     box-shadow: inset 0 0 0 1px var(--brand);
+  }
+
+  .tile[data-pair]:hover .hex-fill {
+    opacity: 0.85;
   }
 
   .tile:not(.disabled):not(.tile-new):hover .tile-number {
@@ -363,7 +440,7 @@
     transition: none;
   }
 
-  .tile:not(.disabled):not(.tile-new):hover .tile-label {
+  .tile:not(.disabled):not(.tile-new):not([data-pair]):hover .tile-label {
     color: var(--brand);
   }
 
@@ -449,6 +526,12 @@
     background: var(--brand-bright);
     clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
   }
+
+  .tile[data-pair="berry"] .diamond { background: var(--pair-berry-dark); }
+  .tile[data-pair="teal"] .diamond { background: var(--pair-teal-dark); }
+  .tile[data-pair="orange"] .diamond { background: var(--pair-orange-light); }
+  .tile[data-pair="blue"] .diamond { background: var(--pair-blue-dark); }
+  .tile[data-pair="purple"] .diamond { background: var(--pair-purple-dark); }
 
   @keyframes diamond-pulse {
     0%, 100% { transform: scale(0.9); }
@@ -689,10 +772,11 @@
   }
 
   @keyframes cursor-cycle {
-    0%    { background: #990690; }
-    25%   { background: #ff4cf7; }
-    50%   { background: #f7e800; }
-    75%   { background: #ff8a00; }
+    0%    { background: var(--pair-berry-light); }
+    20%   { background: var(--pair-teal-light); }
+    40%   { background: var(--pair-orange-light); }
+    60%   { background: var(--pair-blue-light); }
+    80%   { background: var(--pair-purple-light); }
   }
 
   .job-actions {
@@ -1250,7 +1334,7 @@
     <div class="tile-label">Senior Brand<br>Strategist</div>
   </div>
 
-  <div class="tile">
+  <div class="tile" data-pair="orange">
     <div class="tile-shape">
       <div class="hex-border"></div>
       <div class="hex-fill"></div>
@@ -1275,7 +1359,7 @@
     <div class="tile-label">Marketing Analytics<br>Manager</div>
   </div>
 
-  <div class="tile">
+  <div class="tile" data-pair="teal">
     <div class="tile-diamonds">
       <div class="diamond diamond-1"></div>
       <div class="diamond diamond-2"></div>
@@ -1306,7 +1390,7 @@
     <div class="tile-label">Dev Team Lead</div>
   </div>
 
-  <div class="tile">
+  <div class="tile" data-pair="purple">
     <div class="tile-diamonds">
       <div class="diamond diamond-1"></div>
       <div class="diamond diamond-2"></div>
@@ -1339,7 +1423,7 @@
 
   <!-- Row 2 -->
 
-  <div class="tile">
+  <div class="tile" data-pair="berry">
     <div class="tile-shape">
       <div class="hex-border"></div>
       <div class="hex-fill"></div>
@@ -1364,7 +1448,7 @@
     <div class="tile-label">VP, Corporate<br>Communications</div>
   </div>
 
-  <div class="tile">
+  <div class="tile" data-pair="blue">
     <div class="tile-diamonds">
       <div class="diamond diamond-1"></div>
       <div class="diamond diamond-2"></div>
@@ -1395,7 +1479,7 @@
     <div class="tile-label">UX Content Designer</div>
   </div>
 
-  <div class="tile">
+  <div class="tile" data-pair="purple">
     <div class="tile-shape">
       <div class="hex-border"></div>
       <div class="hex-fill"></div>
@@ -1420,7 +1504,7 @@
     <div class="tile-label">Staff Software<br>Engineer</div>
   </div>
 
-  <div class="tile">
+  <div class="tile" data-pair="teal">
     <div class="tile-shape">
       <div class="hex-border"></div>
       <div class="hex-fill"></div>
@@ -1445,7 +1529,7 @@
     <div class="tile-label">Head of People Ops</div>
   </div>
 
-  <div class="tile">
+  <div class="tile" data-pair="orange">
     <div class="tile-shape">
       <div class="hex-border"></div>
       <div class="hex-fill"></div>
@@ -1472,7 +1556,7 @@
 
   <!-- Row 3 -->
 
-  <div class="tile">
+  <div class="tile" data-pair="berry">
     <div class="tile-shape">
       <div class="hex-border"></div>
       <div class="hex-fill"></div>
@@ -1497,7 +1581,7 @@
     <div class="tile-label">Growth Marketing<br>Manager</div>
   </div>
 
-  <div class="tile">
+  <div class="tile" data-pair="blue">
     <div class="tile-diamonds">
       <div class="diamond diamond-1"></div>
       <div class="diamond diamond-2"></div>
@@ -1528,7 +1612,7 @@
     <div class="tile-label">Principal Designer</div>
   </div>
 
-  <div class="tile">
+  <div class="tile" data-pair="teal">
     <div class="tile-shape">
       <div class="hex-border"></div>
       <div class="hex-fill"></div>
@@ -1553,7 +1637,7 @@
     <div class="tile-label">DevOps Engineer II</div>
   </div>
 
-  <div class="tile">
+  <div class="tile" data-pair="orange">
     <div class="tile-shape">
       <div class="hex-border"></div>
       <div class="hex-fill"></div>
@@ -1578,7 +1662,7 @@
     <div class="tile-label">Director of Sales</div>
   </div>
 
-  <div class="tile">
+  <div class="tile" data-pair="purple">
     <div class="tile-shape">
       <div class="hex-border"></div>
       <div class="hex-fill"></div>
@@ -1605,7 +1689,7 @@
 
   <!-- Row 4 -->
 
-  <div class="tile">
+  <div class="tile" data-pair="blue">
     <div class="tile-shape">
       <div class="hex-border"></div>
       <div class="hex-fill"></div>
@@ -1630,7 +1714,7 @@
     <div class="tile-label">Content Strategy<br>Lead</div>
   </div>
 
-  <div class="tile">
+  <div class="tile" data-pair="berry">
     <div class="tile-shape">
       <div class="hex-border"></div>
       <div class="hex-fill"></div>
