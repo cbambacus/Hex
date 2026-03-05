@@ -1,0 +1,2618 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Skill Recruiter</title>
+<style>
+  @font-face {
+    font-family: 'IBM Plex Sans';
+    src: url('Fonts/IBMPlexSans-VariableFont_wdth,wght.ttf') format('truetype');
+    font-weight: 100 900;
+    font-style: normal;
+  }
+
+  @font-face {
+    font-family: 'IBM Plex Sans';
+    src: url('Fonts/IBMPlexSans-Italic-VariableFont_wdth,wght.ttf') format('truetype');
+    font-weight: 100 900;
+    font-style: italic;
+  }
+
+  @font-face {
+    font-family: 'IBM Plex Mono';
+    src: url('Fonts/IBMPlexMono-Medium.ttf') format('truetype');
+    font-weight: 500;
+    font-style: normal;
+  }
+
+  @font-face {
+    font-family: 'Skill Sans';
+    src: url('Fonts/SkillSans-Regular.otf') format('opentype');
+    font-weight: 400;
+    font-style: normal;
+  }
+
+  :root {
+    --stroke-width: 1.0px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #000;
+    min-height: 100vh;
+    font-family: 'IBM Plex Sans', sans-serif;
+    color: #fff;
+  }
+
+  /* ========== HEADER ========== */
+  .header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    padding: 20px 32px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    z-index: 100;
+    pointer-events: none;
+  }
+
+  .header > * {
+    pointer-events: auto;
+  }
+
+  .header-dot {
+    width: 12px;
+    height: 18px;
+    background: #f0f;
+    clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+  }
+
+  .header-title {
+    font-family: 'Skill Sans', 'IBM Plex Sans', sans-serif;
+    font-size: 24px;
+    font-weight: 400;
+    letter-spacing: 0.5px;
+  }
+
+  .header-nav {
+    display: flex;
+    gap: 4px;
+    margin-left: auto;
+  }
+
+  .header-nav-btn {
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 400;
+    color: rgba(255, 255, 255, 0.5);
+    background: transparent;
+    border: none;
+    padding: 6px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: color 0.2s ease, background 0.2s ease;
+  }
+
+  .header-nav-btn:hover {
+    color: #fff;
+    background: rgba(255, 255, 255, 0.08);
+  }
+
+  .header-nav-btn.active {
+    color: #fff;
+    background: rgba(255, 255, 255, 0.12);
+    font-weight: 500;
+  }
+
+  /* ========== GRID ========== */
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 0;
+    padding: 74px 240px 60px;
+    margin: 0 auto;
+    transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* ========== TILE CONTAINER ========== */
+  .tile {
+    position: relative;
+    width: 100%;
+    height: 302px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    cursor: pointer;
+  }
+
+  .tile:hover {
+    z-index: 10;
+  }
+
+  /* ========== SHAPE WRAPPER ========== */
+  .tile-shape {
+    position: absolute;
+    bottom: 56px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 182px;
+    height: 182px;
+  }
+
+  /* ========== CONTENT LAYER (doesn't rotate) ========== */
+  .tile-content {
+    position: absolute;
+    bottom: 56px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 182px;
+    height: 182px;
+    pointer-events: none;
+  }
+
+  /* ========== TILE BORDER & FILL ========== */
+  .hex-border {
+    position: absolute;
+    inset: 0;
+    background: transparent;
+    border-radius: 10px;
+    transition: background 0.25s ease;
+  }
+
+  .hex-fill {
+    position: absolute;
+    inset: 0;
+    background: #272525;
+    border-radius: 10px;
+  }
+
+  /* ========== NUMBER ========== */
+  .tile-number {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 52px;
+    font-weight: 300;
+    color: rgba(255, 255, 255, 0.85);
+    z-index: 2;
+    transition: opacity 0.15s ease;
+    pointer-events: none;
+  }
+
+  /* ========== "+" icon for New Rec tile ========== */
+  .tile-icon {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+    pointer-events: none;
+  }
+
+  .tile-icon svg {
+    width: 74px;
+    height: 74px;
+    stroke: #fff;
+    stroke-width: var(--stroke-width);
+    transition: none;
+  }
+
+  /* ========== MINI STATS (in-hex hover content) ========== */
+  .mini-stats {
+    position: absolute;
+    inset: 0;
+    z-index: 3;
+    opacity: 0;
+    transition: opacity 0.15s ease;
+    pointer-events: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 0 16px 0 20px;
+  }
+
+  .mini-stat-row {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    width: 100%;
+  }
+
+  .mini-stat-num {
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 23px;
+    font-weight: 300;
+    color: #f0f;
+    width: 39px;
+    text-align: right;
+    flex-shrink: 0;
+  }
+
+  .mini-stat-divider {
+    width: var(--stroke-width);
+    height: 18px;
+    background: #f0f;
+    flex-shrink: 0;
+  }
+
+  .mini-stat-label {
+    font-size: 14px;
+    font-weight: 500;
+    color: #f0f;
+    text-align: left;
+    line-height: 1.2;
+    white-space: nowrap;
+  }
+
+  .mini-stat-cta-spacer {
+    height: 10px;
+  }
+
+  .mini-stat-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #f0f;
+    color: #000;
+    border-radius: 4px;
+    padding: 5px 12px;
+    font-size: 13px;
+    font-weight: 500;
+    line-height: 1.2;
+    white-space: nowrap;
+  }
+
+  .mini-stat-cta-arrow {
+    font-size: 15px;
+    font-weight: 400;
+    color: #000;
+  }
+
+  .mini-stat-cta-divider {
+    display: none;
+  }
+
+  .mini-stat-cta-label {
+    color: #000;
+    text-align: left;
+  }
+
+  /* ========== LABEL ========== */
+  .tile-label {
+    color: #fff;
+    font-size: 15px;
+    font-weight: 500;
+    text-align: center;
+    line-height: 1.35;
+    height: 2.7em; /* reserve 2 lines */
+  }
+
+  /* ========================================
+     HOVER — active tiles only (no morph, no expand)
+     ======================================== */
+
+  .tile:not(.disabled):not(.tile-new):hover .hex-fill {
+    box-shadow: inset 0 0 0 1px #f0f;
+  }
+
+  .tile:not(.disabled):not(.tile-new):hover .tile-number {
+    opacity: 0;
+    transition: opacity 0.2s ease 0.05s;
+  }
+
+  .tile:not(.disabled):not(.tile-new):hover .tile-label {
+    color: #f0f;
+  }
+
+  .tile:not(.disabled):not(.tile-new):hover .mini-stats {
+    opacity: 1;
+    transition: opacity 0.3s ease 0.15s;
+    pointer-events: auto;
+  }
+
+  /* ========== NEW JOB — magenta highlight only, instant snap ========== */
+  .tile-new .hex-border {
+    transition: none;
+  }
+
+  .tile-new .tile-icon svg {
+    transition: none;
+  }
+
+  .tile-new .tile-label {
+    transition: none;
+  }
+
+  .tile-new:hover .hex-fill {
+    box-shadow: inset 0 0 0 1px #f0f;
+  }
+
+  .tile-new:hover .tile-icon svg {
+    stroke: #f0f;
+  }
+
+  .tile-new:hover .tile-label {
+    color: #f0f;
+  }
+
+  /* ========== REVERSE (mouse-out) ========== */
+  .tile .hex-border {
+    transition: background 0.3s ease 0.1s;
+  }
+
+  .tile .tile-number {
+    transition: opacity 0.15s ease;
+  }
+
+  .tile .mini-stats {
+    transition: opacity 0.15s ease;
+  }
+
+  /* ========== DISABLED TILES ========== */
+  .tile.disabled {
+    cursor: default;
+  }
+
+  .tile.disabled .hex-border {
+    background: #444;
+  }
+
+  .tile.disabled .hex-fill {
+    background: #444;
+  }
+
+  .tile.disabled .tile-number {
+    color: #000;
+  }
+
+  .tile.disabled .tile-label {
+    color: #444;
+  }
+
+  /* ========== ACTIVITY DIAMONDS ========== */
+  .tile-diamonds {
+    position: absolute;
+    top: 41px;
+    right: 44px;
+    width: 53px;
+    height: 62px;
+    z-index: 5;
+    pointer-events: none;
+  }
+
+  .diamond {
+    position: absolute;
+    background: #f0f;
+    clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+  }
+
+  @keyframes diamond-pulse {
+    0%, 100% { transform: scale(0.9); }
+    50% { transform: scale(1.1); }
+  }
+
+  /* ========== ZOOM TRANSITION ========== */
+  .grid.zooming-out {
+    transform: scale(8);
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .grid.zoomed {
+    visibility: hidden;
+    pointer-events: none;
+  }
+
+  /* ========== JOB DETAIL SCREEN ========== */
+  .job-detail {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: #000;
+    z-index: 50;
+    opacity: 0;
+    transform: scale(0.5);
+    pointer-events: none;
+    transition: opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1), transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow-y: auto;
+    padding-top: 64px;
+    transform-origin: center center;
+  }
+
+  .job-detail.active {
+    opacity: 1;
+    transform: scale(1);
+    pointer-events: auto;
+  }
+
+  .job-detail.zooming-out {
+    opacity: 0;
+    transform: scale(0.5);
+    pointer-events: none;
+  }
+
+  .job-detail-inner {
+    max-width: 700px;
+    margin: 0 auto;
+    padding: 60px 40px 80px;
+  }
+
+  .job-header-row {
+    display: flex;
+    align-items: baseline;
+    position: relative;
+  }
+
+  .job-back {
+    position: absolute;
+    right: calc(100% + 20px);
+    top: 0.3em;
+    font-size: 28px;
+    color: #fff;
+    cursor: pointer;
+    line-height: 1;
+    user-select: none;
+    transition: color 0.2s ease;
+  }
+
+  .job-back:hover {
+    color: #f0f;
+  }
+
+  .job-title {
+    font-family: 'Skill Sans', 'IBM Plex Sans', sans-serif;
+    font-size: 32px;
+    font-weight: 400;
+    color: #fff;
+    flex: 1;
+  }
+
+  .job-count {
+    font-size: 36px;
+    font-weight: 300;
+    color: #fff;
+    flex-shrink: 0;
+  }
+
+  .job-req-id {
+    font-size: 15px;
+    font-weight: 400;
+    color: rgba(255, 255, 255, 0.55);
+    margin-top: 8px;
+  }
+
+  .job-divider {
+    border: none;
+    border-top: var(--stroke-width) solid #fff;
+    margin: 24px 0 28px;
+  }
+
+  .job-meta {
+    display: flex;
+    gap: 62px;
+    font-size: 15px;
+    font-weight: 400;
+    color: rgba(255, 255, 255, 0.85);
+    margin-bottom: 32px;
+  }
+
+  .meta-col {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    flex: 1;
+  }
+
+  .posting-link {
+    color: #fff;
+    text-decoration: underline;
+  }
+
+  .posting-link:hover {
+    color: #f0f;
+  }
+
+  .job-description {
+    font-size: 16px;
+    line-height: 1.7;
+    color: rgba(255, 255, 255, 0.75);
+    margin-bottom: 16px;
+  }
+
+  /* ========== SEARCH CONSOLE ========== */
+  .search-console {
+    display: none;
+    font-family: 'IBM Plex Mono', monospace;
+    font-weight: 500;
+    font-size: 15px;
+    line-height: 1.8;
+    color: #fff;
+    border: var(--stroke-width) solid #fff;
+    padding: 0 24px;
+    min-height: 0;
+    max-height: 0;
+    overflow: hidden;
+    margin-top: 24px;
+    margin-bottom: 48px;
+    transition: max-height 0.5s ease-in, min-height 0.5s ease-in, padding 0.5s ease-in;
+  }
+
+  .search-console.open {
+    padding: 24px;
+    min-height: 280px;
+    max-height: 280px;
+  }
+
+  .search-cursor {
+    display: inline-block;
+    width: 8px;
+    height: 22px;
+    margin-left: 2px;
+    vertical-align: text-bottom;
+    position: relative;
+    top: 2px;
+    animation: cursor-cycle 0.8s step-end infinite;
+  }
+
+  @keyframes cursor-cycle {
+    0%    { background: #FF004F; }
+    25%   { background: #00D900; }
+    50%   { background: #FFE600; }
+    75%   { background: #63A9FF; }
+  }
+
+  .job-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .job-action {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    font-size: 20px;
+    font-weight: 400;
+    color: #fff;
+    cursor: pointer;
+    transition: color 0.2s ease;
+  }
+
+  .job-action:hover {
+    color: #f0f;
+  }
+
+  .action-icon {
+    width: 40px;
+    height: 46px; /* 40 × 2/√3 for regular hexagon */
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .action-hex-border {
+    position: absolute;
+    inset: 0;
+    clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+    background: #fff;
+    transition: background 0.2s ease;
+  }
+
+  .action-hex-fill {
+    position: absolute;
+    inset: var(--stroke-width);
+    clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+    background: #000;
+  }
+
+  .job-action:hover .action-hex-border {
+    background: #f0f;
+  }
+
+  .action-icon svg {
+    width: 22px;
+    height: 22px;
+    stroke: currentColor;
+    fill: none;
+    stroke-width: 2px;
+    vector-effect: non-scaling-stroke;
+    position: relative;
+    z-index: 1;
+  }
+
+  .action-icon svg line,
+  .action-icon svg polyline {
+    vector-effect: non-scaling-stroke;
+  }
+
+  /* ========== JOB CREATE SCREEN ========== */
+  .job-create {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: #000;
+    z-index: 50;
+    opacity: 0;
+    transform: scale(0.5);
+    pointer-events: none;
+    transition: opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1), transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow-y: auto;
+    padding-top: 64px;
+    transform-origin: center center;
+  }
+
+  .job-create.active {
+    opacity: 1;
+    transform: scale(1);
+    pointer-events: auto;
+  }
+
+  .job-create.zooming-out {
+    opacity: 0;
+    transform: scale(0.5);
+    pointer-events: none;
+  }
+
+  .job-title-input {
+    font-family: 'Skill Sans', 'IBM Plex Sans', sans-serif;
+    font-size: 32px;
+    font-weight: 400;
+    color: #fff;
+    background: transparent;
+    border: var(--stroke-width) solid #fff;
+    outline: none;
+    width: 100%;
+    padding: 4px 12px;
+    margin-top: 2px;
+  }
+
+  .job-title-input::placeholder {
+    color: #666;
+    font-style: italic;
+  }
+
+  .job-desc-input {
+    width: 100%;
+    height: 300px;
+    font-size: 16px;
+    line-height: 1.7;
+    color: rgba(255, 255, 255, 0.85);
+    background: transparent;
+    border: var(--stroke-width) solid #fff;
+    border-radius: 0;
+    outline: none;
+    padding: 16px;
+    font-family: inherit;
+    resize: vertical;
+    margin-bottom: 32px;
+    box-sizing: border-box;
+  }
+
+  .job-desc-input:focus {
+    border-color: #f0f;
+  }
+
+  .job-desc-input::placeholder {
+    color: #666;
+    font-style: italic;
+  }
+
+  .form-row {
+    display: flex;
+    align-items: center;
+    gap: 62px;
+    margin-bottom: 20px;
+  }
+
+  .form-group {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .form-label {
+    font-size: 14px;
+    font-weight: 400;
+    color: #fff;
+    white-space: nowrap;
+    width: 60px;
+    flex-shrink: 0;
+  }
+
+  .form-input {
+    font-size: 15px;
+    color: #fff;
+    background: transparent;
+    border: var(--stroke-width) solid #fff;
+    outline: none;
+    padding: 8px 12px;
+    font-family: inherit;
+    border-radius: 0;
+    width: 220px;
+  }
+
+  .form-input::placeholder {
+    color: #666;
+    font-style: italic;
+  }
+
+  .form-input:focus,
+  .form-select:focus {
+    border-color: #f0f;
+  }
+
+  .form-select {
+    font-size: 15px;
+    color: #fff;
+    background: #000;
+    border: var(--stroke-width) solid #fff;
+    outline: none;
+    padding: 8px 32px 8px 12px;
+    font-family: inherit;
+    border-radius: 0;
+    cursor: pointer;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='2.5'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    width: 220px;
+  }
+
+  .form-select option {
+    background: #111;
+    color: #fff;
+  }
+
+  .radio-group {
+    display: flex;
+    gap: 16px;
+  }
+
+  .radio-option {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    font-size: 15px;
+    color: #fff;
+  }
+
+  .radio-option input[type="radio"] {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    width: 14px;
+    height: 14px;
+    border: var(--stroke-width) solid #fff;
+    border-radius: 50%;
+    background: #000;
+    cursor: pointer;
+    margin: 0;
+    position: relative;
+  }
+
+  .radio-option input[type="radio"]:checked {
+    border-color: #fff;
+  }
+
+  .radio-option input[type="radio"]:checked::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #fff;
+  }
+
+  .radio-option input[type="radio"]:focus {
+    border-color: #f0f;
+  }
+
+  .salary-inputs {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 220px;
+  }
+
+  .salary-field {
+    font-size: 15px;
+    color: #fff;
+    background: transparent;
+    border: var(--stroke-width) solid #fff;
+    outline: none;
+    padding: 8px 12px;
+    font-family: inherit;
+    border-radius: 0;
+    flex: 1;
+    min-width: 0;
+  }
+
+  .salary-field:focus {
+    border-color: #f0f;
+  }
+
+  .salary-field::placeholder {
+    color: #666;
+    font-style: italic;
+  }
+
+  .salary-to {
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.5);
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-dot"></div>
+  <div class="header-title" id="headerLogo" style="cursor: pointer;">Skill Recruiter</div>
+  <nav class="header-nav">
+    <button class="header-nav-btn">Dashboard</button>
+    <button class="header-nav-btn active">Jobs</button>
+    <button class="header-nav-btn">Candidates</button>
+  </nav>
+</div>
+
+<div class="grid">
+
+  <!-- Row 1 -->
+
+  <div class="tile tile-new">
+    <div class="tile-shape">
+      <div class="hex-border"></div>
+      <div class="hex-fill"></div>
+    </div>
+    <div class="tile-content">
+      <div class="tile-icon"><svg viewBox="0 0 40 40" fill="none"><path d="M15.7 2 L24.3 2 L24.3 15.7 L38 15.7 L38 24.3 L24.3 24.3 L24.3 38 L15.7 38 L15.7 24.3 L2 24.3 L2 15.7 L15.7 15.7 Z"/></svg></div>
+    </div>
+    <div class="tile-label">New Job</div>
+  </div>
+
+  <div class="tile">
+    <div class="tile-shape">
+      <div class="hex-border"></div>
+      <div class="hex-fill"></div>
+    </div>
+    <div class="tile-content">
+      <span class="tile-number">0</span>
+      <div class="mini-stats">
+        <div class="mini-stat-row">
+          <span class="mini-stat-num">0</span>
+          <span class="mini-stat-divider"></span>
+          <span class="mini-stat-label">Candidates</span>
+        </div>
+        <div class="mini-stat-row">
+          <span class="mini-stat-num">0</span>
+          <span class="mini-stat-divider"></span>
+          <span class="mini-stat-label">Shortlist</span>
+        </div>
+        <div class="mini-stat-cta-spacer"></div>
+        <div class="mini-stat-cta"><span class="mini-stat-cta-arrow">&rarr;</span><span class="mini-stat-cta-divider"></span><span class="mini-stat-cta-label">Find Candidates</span></div>
+      </div>
+    </div>
+    <div class="tile-label">Senior Brand<br>Strategist</div>
+  </div>
+
+  <div class="tile">
+    <div class="tile-shape">
+      <div class="hex-border"></div>
+      <div class="hex-fill"></div>
+    </div>
+    <div class="tile-content">
+      <span class="tile-number">35</span>
+      <div class="mini-stats">
+        <div class="mini-stat-row">
+          <span class="mini-stat-num">35</span>
+          <span class="mini-stat-divider"></span>
+          <span class="mini-stat-label">Candidates</span>
+        </div>
+        <div class="mini-stat-row">
+          <span class="mini-stat-num">16</span>
+          <span class="mini-stat-divider"></span>
+          <span class="mini-stat-label">Shortlist</span>
+        </div>
+        <div class="mini-stat-cta-spacer"></div>
+        <div class="mini-stat-cta"><span class="mini-stat-cta-arrow">&rarr;</span><span class="mini-stat-cta-divider"></span><span class="mini-stat-cta-label">Review Candidates</span></div>
+      </div>
+    </div>
+    <div class="tile-label">Marketing Analytics<br>Manager</div>
+  </div>
+
+  <div class="tile">
+    <div class="tile-diamonds">
+      <div class="diamond diamond-1"></div>
+      <div class="diamond diamond-2"></div>
+      <div class="diamond diamond-3"></div>
+      <div class="diamond diamond-4"></div>
+    </div>
+    <div class="tile-shape">
+      <div class="hex-border"></div>
+      <div class="hex-fill"></div>
+    </div>
+    <div class="tile-content">
+      <span class="tile-number">22</span>
+      <div class="mini-stats">
+        <div class="mini-stat-row">
+          <span class="mini-stat-num">22</span>
+          <span class="mini-stat-divider"></span>
+          <span class="mini-stat-label">Candidates</span>
+        </div>
+        <div class="mini-stat-row">
+          <span class="mini-stat-num">8</span>
+          <span class="mini-stat-divider"></span>
+          <span class="mini-stat-label">Shortlist</span>
+        </div>
+        <div class="mini-stat-cta-spacer"></div>
+        <div class="mini-stat-cta"><span class="mini-stat-cta-arrow">&rarr;</span><span class="mini-stat-cta-divider"></span><span class="mini-stat-cta-label">Review Candidates</span></div>
+      </div>
+    </div>
+    <div class="tile-label">Dev Team Lead</div>
+  </div>
+
+  <div class="tile">
+    <div class="tile-diamonds">
+      <div class="diamond diamond-1"></div>
+      <div class="diamond diamond-2"></div>
+      <div class="diamond diamond-3"></div>
+      <div class="diamond diamond-4"></div>
+    </div>
+    <div class="tile-shape">
+      <div class="hex-border"></div>
+      <div class="hex-fill"></div>
+    </div>
+    <div class="tile-content">
+      <span class="tile-number">94</span>
+      <div class="mini-stats">
+        <div class="mini-stat-row">
+          <span class="mini-stat-num">94</span>
+          <span class="mini-stat-divider"></span>
+          <span class="mini-stat-label">Candidates</span>
+        </div>
+        <div class="mini-stat-row">
+          <span class="mini-stat-num">38</span>
+          <span class="mini-stat-divider"></span>
+          <span class="mini-stat-label">Shortlist</span>
+        </div>
+        <div class="mini-stat-cta-spacer"></div>
+        <div class="mini-stat-cta"><span class="mini-stat-cta-arrow">&rarr;</span><span class="mini-stat-cta-divider"></span><span class="mini-stat-cta-label">Find More Candidates</span></div>
+      </div>
+    </div>
+    <div class="tile-label">Sr Product Manager</div>
+  </div>
+
+  <!-- Row 2 -->
+
+  <div class="tile">
+    <div class="tile-shape">
+      <div class="hex-border"></div>
+      <div class="hex-fill"></div>
+    </div>
+    <div class="tile-content">
+      <span class="tile-number">115</span>
+      <div class="mini-stats">
+        <div class="mini-stat-row">
+          <span class="mini-stat-num">115</span>
+          <span class="mini-stat-divider"></span>
+          <span class="mini-stat-label">Candidates</span>
+        </div>
+        <div class="mini-stat-row">
+          <span class="mini-stat-num">42</span>
+          <span class="mini-stat-divider"></span>
+          <span class="mini-stat-label">Shortlist</span>
+        </div>
+        <div class="mini-stat-cta-spacer"></div>
+        <div class="mini-stat-cta"><span class="mini-stat-cta-arrow">&rarr;</span><span class="mini-stat-cta-divider"></span><span class="mini-stat-cta-label">Review Candidates</span></div>
+      </div>
+    </div>
+    <div class="tile-label">VP, Corporate<br>Communications</div>
+  </div>
+
+  <div class="tile">
+    <div class="tile-diamonds">
+      <div class="diamond diamond-1"></div>
+      <div class="diamond diamond-2"></div>
+      <div class="diamond diamond-3"></div>
+      <div class="diamond diamond-4"></div>
+    </div>
+    <div class="tile-shape">
+      <div class="hex-border"></div>
+      <div class="hex-fill"></div>
+    </div>
+    <div class="tile-content">
+      <span class="tile-number">64</span>
+      <div class="mini-stats">
+        <div class="mini-stat-row">
+          <span class="mini-stat-num">64</span>
+          <span class="mini-stat-divider"></span>
+          <span class="mini-stat-label">Candidates</span>
+        </div>
+        <div class="mini-stat-row">
+          <span class="mini-stat-num">25</span>
+          <span class="mini-stat-divider"></span>
+          <span class="mini-stat-label">Shortlist</span>
+        </div>
+        <div class="mini-stat-cta-spacer"></div>
+        <div class="mini-stat-cta"><span class="mini-stat-cta-arrow">&rarr;</span><span class="mini-stat-cta-divider"></span><span class="mini-stat-cta-label">Review Candidates</span></div>
+      </div>
+    </div>
+    <div class="tile-label">UX Content Designer</div>
+  </div>
+
+  <div class="tile">
+    <div class="tile-shape">
+      <div class="hex-border"></div>
+      <div class="hex-fill"></div>
+    </div>
+    <div class="tile-content">
+      <span class="tile-number">48</span>
+      <div class="mini-stats">
+        <div class="mini-stat-row">
+          <span class="mini-stat-num">48</span>
+          <span class="mini-stat-divider"></span>
+          <span class="mini-stat-label">Candidates</span>
+        </div>
+        <div class="mini-stat-row">
+          <span class="mini-stat-num">20</span>
+          <span class="mini-stat-divider"></span>
+          <span class="mini-stat-label">Shortlist</span>
+        </div>
+        <div class="mini-stat-cta-spacer"></div>
+        <div class="mini-stat-cta"><span class="mini-stat-cta-arrow">&rarr;</span><span class="mini-stat-cta-divider"></span><span class="mini-stat-cta-label">Review Candidates</span></div>
+      </div>
+    </div>
+    <div class="tile-label">Staff Software<br>Engineer</div>
+  </div>
+
+  <div class="tile">
+    <div class="tile-shape">
+      <div class="hex-border"></div>
+      <div class="hex-fill"></div>
+    </div>
+    <div class="tile-content">
+      <span class="tile-number">17</span>
+      <div class="mini-stats">
+        <div class="mini-stat-row">
+          <span class="mini-stat-num">17</span>
+          <span class="mini-stat-divider"></span>
+          <span class="mini-stat-label">Candidates</span>
+        </div>
+        <div class="mini-stat-row">
+          <span class="mini-stat-num">5</span>
+          <span class="mini-stat-divider"></span>
+          <span class="mini-stat-label">Shortlist</span>
+        </div>
+        <div class="mini-stat-cta-spacer"></div>
+        <div class="mini-stat-cta"><span class="mini-stat-cta-arrow">&rarr;</span><span class="mini-stat-cta-divider"></span><span class="mini-stat-cta-label">Review Candidates</span></div>
+      </div>
+    </div>
+    <div class="tile-label">Head of People Ops</div>
+  </div>
+
+  <div class="tile">
+    <div class="tile-shape">
+      <div class="hex-border"></div>
+      <div class="hex-fill"></div>
+    </div>
+    <div class="tile-content">
+      <span class="tile-number">83</span>
+      <div class="mini-stats">
+        <div class="mini-stat-row">
+          <span class="mini-stat-num">83</span>
+          <span class="mini-stat-divider"></span>
+          <span class="mini-stat-label">Candidates</span>
+        </div>
+        <div class="mini-stat-row">
+          <span class="mini-stat-num">34</span>
+          <span class="mini-stat-divider"></span>
+          <span class="mini-stat-label">Shortlist</span>
+        </div>
+        <div class="mini-stat-cta-spacer"></div>
+        <div class="mini-stat-cta"><span class="mini-stat-cta-arrow">&rarr;</span><span class="mini-stat-cta-divider"></span><span class="mini-stat-cta-label">Review Candidates</span></div>
+      </div>
+    </div>
+    <div class="tile-label">Data Science Lead</div>
+  </div>
+
+  <!-- Row 3 -->
+
+  <div class="tile">
+    <div class="tile-shape">
+      <div class="hex-border"></div>
+      <div class="hex-fill"></div>
+    </div>
+    <div class="tile-content">
+      <span class="tile-number">29</span>
+      <div class="mini-stats">
+        <div class="mini-stat-row">
+          <span class="mini-stat-num">29</span>
+          <span class="mini-stat-divider"></span>
+          <span class="mini-stat-label">Candidates</span>
+        </div>
+        <div class="mini-stat-row">
+          <span class="mini-stat-num">11</span>
+          <span class="mini-stat-divider"></span>
+          <span class="mini-stat-label">Shortlist</span>
+        </div>
+        <div class="mini-stat-cta-spacer"></div>
+        <div class="mini-stat-cta"><span class="mini-stat-cta-arrow">&rarr;</span><span class="mini-stat-cta-divider"></span><span class="mini-stat-cta-label">Find More Candidates</span></div>
+      </div>
+    </div>
+    <div class="tile-label">Growth Marketing<br>Manager</div>
+  </div>
+
+  <div class="tile">
+    <div class="tile-diamonds">
+      <div class="diamond diamond-1"></div>
+      <div class="diamond diamond-2"></div>
+      <div class="diamond diamond-3"></div>
+      <div class="diamond diamond-4"></div>
+    </div>
+    <div class="tile-shape">
+      <div class="hex-border"></div>
+      <div class="hex-fill"></div>
+    </div>
+    <div class="tile-content">
+      <span class="tile-number">41</span>
+      <div class="mini-stats">
+        <div class="mini-stat-row">
+          <span class="mini-stat-num">41</span>
+          <span class="mini-stat-divider"></span>
+          <span class="mini-stat-label">Candidates</span>
+        </div>
+        <div class="mini-stat-row">
+          <span class="mini-stat-num">15</span>
+          <span class="mini-stat-divider"></span>
+          <span class="mini-stat-label">Shortlist</span>
+        </div>
+        <div class="mini-stat-cta-spacer"></div>
+        <div class="mini-stat-cta"><span class="mini-stat-cta-arrow">&rarr;</span><span class="mini-stat-cta-divider"></span><span class="mini-stat-cta-label">Review Candidates</span></div>
+      </div>
+    </div>
+    <div class="tile-label">Principal Designer</div>
+  </div>
+
+  <div class="tile">
+    <div class="tile-shape">
+      <div class="hex-border"></div>
+      <div class="hex-fill"></div>
+    </div>
+    <div class="tile-content">
+      <span class="tile-number">156</span>
+      <div class="mini-stats">
+        <div class="mini-stat-row">
+          <span class="mini-stat-num">156</span>
+          <span class="mini-stat-divider"></span>
+          <span class="mini-stat-label">Candidates</span>
+        </div>
+        <div class="mini-stat-row">
+          <span class="mini-stat-num">58</span>
+          <span class="mini-stat-divider"></span>
+          <span class="mini-stat-label">Shortlist</span>
+        </div>
+        <div class="mini-stat-cta-spacer"></div>
+        <div class="mini-stat-cta"><span class="mini-stat-cta-arrow">&rarr;</span><span class="mini-stat-cta-divider"></span><span class="mini-stat-cta-label">Review Candidates</span></div>
+      </div>
+    </div>
+    <div class="tile-label">DevOps Engineer II</div>
+  </div>
+
+  <div class="tile">
+    <div class="tile-shape">
+      <div class="hex-border"></div>
+      <div class="hex-fill"></div>
+    </div>
+    <div class="tile-content">
+      <span class="tile-number">72</span>
+      <div class="mini-stats">
+        <div class="mini-stat-row">
+          <span class="mini-stat-num">72</span>
+          <span class="mini-stat-divider"></span>
+          <span class="mini-stat-label">Candidates</span>
+        </div>
+        <div class="mini-stat-row">
+          <span class="mini-stat-num">28</span>
+          <span class="mini-stat-divider"></span>
+          <span class="mini-stat-label">Shortlist</span>
+        </div>
+        <div class="mini-stat-cta-spacer"></div>
+        <div class="mini-stat-cta"><span class="mini-stat-cta-arrow">&rarr;</span><span class="mini-stat-cta-divider"></span><span class="mini-stat-cta-label">Review Candidates</span></div>
+      </div>
+    </div>
+    <div class="tile-label">Director of Sales</div>
+  </div>
+
+  <div class="tile">
+    <div class="tile-shape">
+      <div class="hex-border"></div>
+      <div class="hex-fill"></div>
+    </div>
+    <div class="tile-content">
+      <span class="tile-number">38</span>
+      <div class="mini-stats">
+        <div class="mini-stat-row">
+          <span class="mini-stat-num">38</span>
+          <span class="mini-stat-divider"></span>
+          <span class="mini-stat-label">Candidates</span>
+        </div>
+        <div class="mini-stat-row">
+          <span class="mini-stat-num">14</span>
+          <span class="mini-stat-divider"></span>
+          <span class="mini-stat-label">Shortlist</span>
+        </div>
+        <div class="mini-stat-cta-spacer"></div>
+        <div class="mini-stat-cta"><span class="mini-stat-cta-arrow">&rarr;</span><span class="mini-stat-cta-divider"></span><span class="mini-stat-cta-label">Review Candidates</span></div>
+      </div>
+    </div>
+    <div class="tile-label">Mobile Engineer (iOS)</div>
+  </div>
+
+  <!-- Row 4 -->
+
+  <div class="tile">
+    <div class="tile-shape">
+      <div class="hex-border"></div>
+      <div class="hex-fill"></div>
+    </div>
+    <div class="tile-content">
+      <span class="tile-number">19</span>
+      <div class="mini-stats">
+        <div class="mini-stat-row">
+          <span class="mini-stat-num">19</span>
+          <span class="mini-stat-divider"></span>
+          <span class="mini-stat-label">Candidates</span>
+        </div>
+        <div class="mini-stat-row">
+          <span class="mini-stat-num">7</span>
+          <span class="mini-stat-divider"></span>
+          <span class="mini-stat-label">Shortlist</span>
+        </div>
+        <div class="mini-stat-cta-spacer"></div>
+        <div class="mini-stat-cta"><span class="mini-stat-cta-arrow">&rarr;</span><span class="mini-stat-cta-divider"></span><span class="mini-stat-cta-label">Review Candidates</span></div>
+      </div>
+    </div>
+    <div class="tile-label">Content Strategy<br>Lead</div>
+  </div>
+
+  <div class="tile">
+    <div class="tile-shape">
+      <div class="hex-border"></div>
+      <div class="hex-fill"></div>
+    </div>
+    <div class="tile-content">
+      <span class="tile-number">8</span>
+      <div class="mini-stats">
+        <div class="mini-stat-row">
+          <span class="mini-stat-num">8</span>
+          <span class="mini-stat-divider"></span>
+          <span class="mini-stat-label">Candidates</span>
+        </div>
+        <div class="mini-stat-row">
+          <span class="mini-stat-num">3</span>
+          <span class="mini-stat-divider"></span>
+          <span class="mini-stat-label">Shortlist</span>
+        </div>
+        <div class="mini-stat-cta-spacer"></div>
+        <div class="mini-stat-cta"><span class="mini-stat-cta-arrow">&rarr;</span><span class="mini-stat-cta-divider"></span><span class="mini-stat-cta-label">Review Candidates</span></div>
+      </div>
+    </div>
+    <div class="tile-label">Security Architect</div>
+  </div>
+
+  <div class="tile">
+    <div class="tile-shape">
+      <div class="hex-border"></div>
+      <div class="hex-fill"></div>
+    </div>
+    <div class="tile-content">
+      <span class="tile-number">53</span>
+      <div class="mini-stats">
+        <div class="mini-stat-row">
+          <span class="mini-stat-num">53</span>
+          <span class="mini-stat-divider"></span>
+          <span class="mini-stat-label">Candidates</span>
+        </div>
+        <div class="mini-stat-row">
+          <span class="mini-stat-num">21</span>
+          <span class="mini-stat-divider"></span>
+          <span class="mini-stat-label">Shortlist</span>
+        </div>
+        <div class="mini-stat-cta-spacer"></div>
+        <div class="mini-stat-cta"><span class="mini-stat-cta-arrow">&rarr;</span><span class="mini-stat-cta-divider"></span><span class="mini-stat-cta-label">Review Candidates</span></div>
+      </div>
+    </div>
+    <div class="tile-label">Research Scientist</div>
+  </div>
+
+  <div class="tile">
+    <div class="tile-shape">
+      <div class="hex-border"></div>
+      <div class="hex-fill"></div>
+    </div>
+    <div class="tile-content">
+      <span class="tile-number">67</span>
+      <div class="mini-stats">
+        <div class="mini-stat-row">
+          <span class="mini-stat-num">67</span>
+          <span class="mini-stat-divider"></span>
+          <span class="mini-stat-label">Candidates</span>
+        </div>
+        <div class="mini-stat-row">
+          <span class="mini-stat-num">24</span>
+          <span class="mini-stat-divider"></span>
+          <span class="mini-stat-label">Shortlist</span>
+        </div>
+        <div class="mini-stat-cta-spacer"></div>
+        <div class="mini-stat-cta"><span class="mini-stat-cta-arrow">&rarr;</span><span class="mini-stat-cta-divider"></span><span class="mini-stat-cta-label">Find More Candidates</span></div>
+      </div>
+    </div>
+    <div class="tile-label">Customer Success<br>Manager</div>
+  </div>
+
+  <div class="tile">
+    <div class="tile-diamonds">
+      <div class="diamond diamond-1"></div>
+      <div class="diamond diamond-2"></div>
+      <div class="diamond diamond-3"></div>
+      <div class="diamond diamond-4"></div>
+    </div>
+    <div class="tile-shape">
+      <div class="hex-border"></div>
+      <div class="hex-fill"></div>
+    </div>
+    <div class="tile-content">
+      <span class="tile-number">112</span>
+      <div class="mini-stats">
+        <div class="mini-stat-row">
+          <span class="mini-stat-num">112</span>
+          <span class="mini-stat-divider"></span>
+          <span class="mini-stat-label">Candidates</span>
+        </div>
+        <div class="mini-stat-row">
+          <span class="mini-stat-num">45</span>
+          <span class="mini-stat-divider"></span>
+          <span class="mini-stat-label">Shortlist</span>
+        </div>
+        <div class="mini-stat-cta-spacer"></div>
+        <div class="mini-stat-cta"><span class="mini-stat-cta-arrow">&rarr;</span><span class="mini-stat-cta-divider"></span><span class="mini-stat-cta-label">Review Candidates</span></div>
+      </div>
+    </div>
+    <div class="tile-label">Frontend Engineer III</div>
+  </div>
+
+  <!-- Row 5 -->
+
+  <div class="tile">
+    <div class="tile-diamonds">
+      <div class="diamond diamond-1"></div>
+      <div class="diamond diamond-2"></div>
+      <div class="diamond diamond-3"></div>
+      <div class="diamond diamond-4"></div>
+    </div>
+    <div class="tile-shape">
+      <div class="hex-border"></div>
+      <div class="hex-fill"></div>
+    </div>
+    <div class="tile-content">
+      <span class="tile-number">26</span>
+      <div class="mini-stats">
+        <div class="mini-stat-row">
+          <span class="mini-stat-num">26</span>
+          <span class="mini-stat-divider"></span>
+          <span class="mini-stat-label">Candidates</span>
+        </div>
+        <div class="mini-stat-row">
+          <span class="mini-stat-num">10</span>
+          <span class="mini-stat-divider"></span>
+          <span class="mini-stat-label">Shortlist</span>
+        </div>
+        <div class="mini-stat-cta-spacer"></div>
+        <div class="mini-stat-cta"><span class="mini-stat-cta-arrow">&rarr;</span><span class="mini-stat-cta-divider"></span><span class="mini-stat-cta-label">Find More Candidates</span></div>
+      </div>
+    </div>
+    <div class="tile-label">Talent Acquisition<br>Lead</div>
+  </div>
+
+  <div class="tile">
+    <div class="tile-shape">
+      <div class="hex-border"></div>
+      <div class="hex-fill"></div>
+    </div>
+    <div class="tile-content">
+      <span class="tile-number">44</span>
+      <div class="mini-stats">
+        <div class="mini-stat-row">
+          <span class="mini-stat-num">44</span>
+          <span class="mini-stat-divider"></span>
+          <span class="mini-stat-label">Candidates</span>
+        </div>
+        <div class="mini-stat-row">
+          <span class="mini-stat-num">18</span>
+          <span class="mini-stat-divider"></span>
+          <span class="mini-stat-label">Shortlist</span>
+        </div>
+        <div class="mini-stat-cta-spacer"></div>
+        <div class="mini-stat-cta"><span class="mini-stat-cta-arrow">&rarr;</span><span class="mini-stat-cta-divider"></span><span class="mini-stat-cta-label">Find More Candidates</span></div>
+      </div>
+    </div>
+    <div class="tile-label">Platform Engineer</div>
+  </div>
+
+  <div class="tile">
+    <div class="tile-shape">
+      <div class="hex-border"></div>
+      <div class="hex-fill"></div>
+    </div>
+    <div class="tile-content">
+      <span class="tile-number">31</span>
+      <div class="mini-stats">
+        <div class="mini-stat-row">
+          <span class="mini-stat-num">31</span>
+          <span class="mini-stat-divider"></span>
+          <span class="mini-stat-label">Candidates</span>
+        </div>
+        <div class="mini-stat-row">
+          <span class="mini-stat-num">12</span>
+          <span class="mini-stat-divider"></span>
+          <span class="mini-stat-label">Shortlist</span>
+        </div>
+        <div class="mini-stat-cta-spacer"></div>
+        <div class="mini-stat-cta"><span class="mini-stat-cta-arrow">&rarr;</span><span class="mini-stat-cta-divider"></span><span class="mini-stat-cta-label">Review Candidates</span></div>
+      </div>
+    </div>
+    <div class="tile-label">Business Analyst Sr</div>
+  </div>
+
+
+</div>
+
+<div class="job-detail" id="jobDetail">
+  <div class="job-detail-inner">
+    <div class="job-header-row">
+      <h1 class="job-title" id="jobTitle"></h1>
+      <span class="job-count" id="jobCount"></span>
+    </div>
+    <div class="job-req-id" id="jobReqId"></div>
+    <hr class="job-divider">
+    <p class="job-description" id="jobDescription"></p>
+    <div class="job-meta" id="jobMeta"></div>
+    <div class="search-console" id="searchConsole"></div>
+    <div class="job-actions" id="jobDetailActions">
+      <div class="job-action" id="findCandidatesBtn">
+        <span class="action-icon"><span class="action-hex-border"></span><span class="action-hex-fill"></span><svg viewBox="0 0 24 24"><circle cx="10" cy="10" r="5" fill="none"></circle><line x1="13.5" y1="13.5" x2="19" y2="19"></line></svg></span>
+        Find Candidates
+      </div>
+      <div class="job-action" id="editJobBtn">
+        <span class="action-icon"><span class="action-hex-border"></span><span class="action-hex-fill"></span><svg viewBox="0 0 24 24"><line x1="5" y1="19" x2="8.5" y2="15.5"></line><line x1="8.5" y1="15.5" x2="17" y2="7"></line><line x1="11" y1="18" x2="19.5" y2="9.5"></line><line x1="17" y1="7" x2="19.5" y2="9.5"></line><line x1="5" y1="19" x2="11" y2="18"></line></svg></span>
+        Edit Job
+      </div>
+    </div>
+    <div class="job-actions" id="searchActions" style="display: none;">
+      <div class="job-action" id="reviewCandidatesBtn">
+        <span class="action-icon"><span class="action-hex-border"></span><span class="action-hex-fill"></span><svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="13 6 19 12 13 18"></polyline></svg></span>
+        Review Candidates
+      </div>
+      <div class="job-action" id="modifySearchBtn">
+        <span class="action-icon"><span class="action-hex-border"></span><span class="action-hex-fill"></span><svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="13 6 19 12 13 18"></polyline></svg></span>
+        Modify Search
+      </div>
+    </div>
+    <div id="jobEditForm" style="display:none">
+      <input type="text" class="job-title-input" id="editJobTitleInput" placeholder="Job Title">
+      <div class="form-row" style="margin-top: 16px;">
+        <div class="form-group">
+          <span class="form-label">Req ID</span>
+          <input type="text" class="form-input" id="editReqIdInput" placeholder="Req ID">
+        </div>
+        <div class="form-group"></div>
+      </div>
+      <textarea class="job-desc-input" id="editJobDescInput" placeholder="Enter Job Description..." style="margin-top: 24px;"></textarea>
+      <div class="form-row">
+        <div class="form-group">
+          <span class="form-label">Country</span>
+          <select class="form-select" id="editCountryInput">
+            <option value="United States" selected>United States</option>
+            <option value="Canada">Canada</option>
+            <option value="United Kingdom">United Kingdom</option>
+            <option value="Germany">Germany</option>
+            <option value="France">France</option>
+            <option value="Australia">Australia</option>
+            <option value="Japan">Japan</option>
+            <option value="India">India</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <div class="radio-group">
+            <label class="radio-option"><input type="radio" name="editCommute" value="On Site" checked><span>On Site</span></label>
+            <label class="radio-option"><input type="radio" name="editCommute" value="Remote"><span>Remote</span></label>
+            <label class="radio-option"><input type="radio" name="editCommute" value="Hybrid"><span>Hybrid</span></label>
+          </div>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <span class="form-label">Location</span>
+          <input type="text" class="form-input" id="editLocationInput" placeholder="Los Angeles, CA">
+        </div>
+        <div class="form-group">
+          <div class="radio-group">
+            <label class="radio-option"><input type="radio" name="editJobType" value="Perm" checked><span>Perm</span></label>
+            <label class="radio-option"><input type="radio" name="editJobType" value="Temp"><span>Temp</span></label>
+          </div>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <span class="form-label">Currency</span>
+          <select class="form-select" id="editCurrencyInput">
+            <option value="USD" selected>USD</option>
+            <option value="CAD">CAD</option>
+            <option value="GBP">GBP</option>
+            <option value="EUR">EUR</option>
+            <option value="AUD">AUD</option>
+            <option value="JPY">JPY</option>
+            <option value="INR">INR</option>
+          </select>
+        </div>
+        <div class="form-group"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <span class="form-label">Salary</span>
+          <div class="salary-inputs">
+            <input type="text" class="salary-field" id="editSalaryMin" placeholder="$100,000">
+            <span class="salary-to">to</span>
+            <input type="text" class="salary-field" id="editSalaryMax" placeholder="$110,000">
+          </div>
+        </div>
+        <div class="form-group"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <span class="form-label">Link</span>
+          <input type="text" class="form-input" id="editJobLinkInput" placeholder="Job Posting Link">
+        </div>
+        <div class="form-group"></div>
+      </div>
+      <div class="job-actions" style="margin-top: 48px;">
+        <div class="job-action" id="saveEditBtn">
+          <span class="action-icon"><span class="action-hex-border"></span><span class="action-hex-fill"></span><svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="13 6 19 12 13 18"></polyline></svg></span>
+          Save Job
+        </div>
+        <div class="job-action" id="cancelEditBtn">
+          <span class="action-icon"><span class="action-hex-border"></span><span class="action-hex-fill"></span><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></span>
+          Cancel
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="job-create" id="jobCreate">
+  <div class="job-detail-inner">
+    <div class="job-header-row">
+      <input type="text" class="job-title-input" id="jobTitleInput" placeholder="Job Title">
+    </div>
+    <div class="form-row" style="margin-top: 16px;">
+      <div class="form-group">
+        <span class="form-label">Req ID</span>
+        <input type="text" class="form-input" id="reqIdInput" placeholder="Req ID">
+      </div>
+      <div class="form-group"></div>
+    </div>
+    <textarea class="job-desc-input" id="jobDescInput" placeholder="Enter Job Description..." style="margin-top: 24px;"></textarea>
+    <div class="form-row">
+      <div class="form-group">
+        <span class="form-label">Country</span>
+        <select class="form-select" id="countryInput">
+          <option value="United States" selected>United States</option>
+          <option value="Canada">Canada</option>
+          <option value="United Kingdom">United Kingdom</option>
+          <option value="Germany">Germany</option>
+          <option value="France">France</option>
+          <option value="Australia">Australia</option>
+          <option value="Japan">Japan</option>
+          <option value="India">India</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <div class="radio-group" id="commuteRadios">
+          <label class="radio-option"><input type="radio" name="commute" value="On Site" checked><span>On Site</span></label>
+          <label class="radio-option"><input type="radio" name="commute" value="Remote"><span>Remote</span></label>
+          <label class="radio-option"><input type="radio" name="commute" value="Hybrid"><span>Hybrid</span></label>
+        </div>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <span class="form-label">Location</span>
+        <input type="text" class="form-input" id="locationInput" placeholder="Los Angeles, CA">
+      </div>
+      <div class="form-group">
+        <div class="radio-group" id="jobTypeRadios">
+          <label class="radio-option"><input type="radio" name="jobType" value="Perm" checked><span>Perm</span></label>
+          <label class="radio-option"><input type="radio" name="jobType" value="Temp"><span>Temp</span></label>
+        </div>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <span class="form-label">Currency</span>
+        <select class="form-select" id="currencyInput">
+          <option value="USD" selected>USD</option>
+          <option value="CAD">CAD</option>
+          <option value="GBP">GBP</option>
+          <option value="EUR">EUR</option>
+          <option value="AUD">AUD</option>
+          <option value="JPY">JPY</option>
+          <option value="INR">INR</option>
+        </select>
+      </div>
+      <div class="form-group"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <span class="form-label">Salary</span>
+        <div class="salary-inputs">
+          <input type="text" class="salary-field" id="salaryMin" placeholder="$100,000">
+          <span class="salary-to">to</span>
+          <input type="text" class="salary-field" id="salaryMax" placeholder="$110,000">
+        </div>
+      </div>
+      <div class="form-group"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <span class="form-label">Link</span>
+        <input type="text" class="form-input" id="jobLinkInput" placeholder="Job Posting Link">
+      </div>
+      <div class="form-group"></div>
+    </div>
+    <div class="job-actions" style="margin-top: 48px;">
+      <div class="job-action" id="saveJobBtn">
+        <span class="action-icon"><span class="action-hex-border"></span><span class="action-hex-fill"></span><svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="13 6 19 12 13 18"></polyline></svg></span>
+        Create Job Target
+      </div>
+      <div class="job-action" id="deleteJobBtn">
+        <span class="action-icon"><span class="action-hex-border"></span><span class="action-hex-fill"></span><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></span>
+        Cancel
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // ========== DIAMOND RANDOMIZATION ==========
+  function rand(min, max) { return min + Math.random() * (max - min); }
+
+  function randomizeDiamonds(group) {
+    group.querySelectorAll('.diamond').forEach((d, i) => {
+      const quadTop = i < 2 ? rand(0, 24) : rand(26, 50);
+      const quadRight = i % 2 === 0 ? rand(0, 19) : rand(22, 41);
+      const size = rand(7, 17);
+      const height = size * 1.5;
+      const duration = rand(1.0, 1.5);
+      const delay = rand(-2, 0);
+      d.style.top = quadTop + 'px';
+      d.style.right = quadRight + 'px';
+      d.style.width = size + 'px';
+      d.style.height = Math.round(height) + 'px';
+      d.style.animation = `diamond-pulse ${duration.toFixed(2)}s ease-in-out ${delay.toFixed(2)}s infinite`;
+    });
+  }
+
+  function addDiamondsToTile(tile) {
+    if (tile.querySelector('.tile-diamonds')) return; // already has diamonds
+    const group = document.createElement('div');
+    group.className = 'tile-diamonds';
+    for (let i = 0; i < 4; i++) {
+      const d = document.createElement('div');
+      d.className = 'diamond diamond-' + (i + 1);
+      group.appendChild(d);
+    }
+    tile.insertBefore(group, tile.firstChild);
+    randomizeDiamonds(group);
+    // Register in tick-up system
+    const numberEl = tile.querySelector('.tile-number');
+    const candidateStat = tile.querySelector('.mini-stat-num');
+    const currentCount = parseInt(numberEl.textContent, 10);
+    activeTiles.push({ tile, numberEl, candidateStat, defaultCount: currentCount, current: currentCount });
+  }
+
+  document.querySelectorAll('.tile-diamonds').forEach(group => randomizeDiamonds(group));
+
+  // ========== JOB DATA (22 unique entries) ==========
+  const jobData = {
+    'Senior Brand Strategist': {
+      count: 0,
+      location: 'New York, NY',
+      country: 'United States',
+      commute: 'Hybrid',
+      jobType: 'Perm',
+      jobLink: 'https://careers.example.com/brand-strategist-4821',
+      reqId: 'MKT-2026-0041',
+      currency: 'USD',
+      salary: '$130k \u2013 150k',
+      description: 'The Senior Brand Strategist leads global brand positioning and long-term strategy across markets. This person will define brand architecture and messaging frameworks, translate research into actionable creative briefs, and guide annual planning in partnership with internal teams and agencies. The ideal candidate brings 8+ years of brand strategy experience in multi-market or global environments, strong executive presentation skills, and a proven ability to shape compelling narratives that drive business growth.'
+    },
+    'Marketing Analytics Manager': {
+      count: 35,
+      location: 'Chicago, IL',
+      country: 'United States',
+      commute: 'Hybrid',
+      jobType: 'Perm',
+      jobLink: 'https://careers.example.com/mktg-analytics-mgr-3392',
+      reqId: 'MKT-2026-0038',
+      currency: 'USD',
+      salary: '$115k \u2013 135k',
+      description: 'The Marketing Analytics Manager owns the measurement framework across all digital and offline marketing channels. You will build dashboards, design attribution models, and translate campaign performance data into strategic recommendations for leadership. This role requires strong SQL skills, experience with tools like Tableau or Looker, and 5+ years in a marketing analytics function. The ideal candidate is both deeply technical and a clear communicator who can influence non-technical stakeholders.'
+    },
+    'Dev Team Lead': {
+      count: 22,
+      location: 'Austin, TX',
+      country: 'United States',
+      commute: 'On Site',
+      jobType: 'Perm',
+      jobLink: 'https://careers.example.com/dev-team-lead-5107',
+      reqId: 'ENG-2026-0115',
+      currency: 'USD',
+      salary: '$155k \u2013 180k',
+      description: 'The Dev Team Lead manages a squad of 6\u20138 engineers building our core platform services. You will own sprint planning, code review standards, and architectural decisions while remaining hands-on with the codebase. We are looking for someone with 7+ years of software development experience, at least 2 years in a leadership role, and deep expertise in distributed systems. Strong mentorship skills and a track record of shipping high-quality software on schedule are essential.'
+    },
+    'Sr Product Manager': {
+      count: 94,
+      location: 'San Francisco, CA',
+      country: 'United States',
+      commute: 'Hybrid',
+      jobType: 'Perm',
+      jobLink: 'https://careers.example.com/sr-product-mgr-4490',
+      reqId: 'PRD-2026-0072',
+      currency: 'USD',
+      salary: '$145k \u2013 170k',
+      description: 'The Sr Product Manager drives the product roadmap for our enterprise SaaS platform, balancing customer needs with business goals and technical feasibility. You will conduct user research, define requirements, and work closely with engineering and design to deliver features that delight users. This role requires 6+ years of product management experience, strong analytical skills, and excellent cross-functional collaboration. Experience with B2B SaaS products and agile methodologies is strongly preferred.'
+    },
+    'VP, Corporate Communications': {
+      count: 115,
+      location: 'New York, NY',
+      country: 'United States',
+      commute: 'On Site',
+      jobType: 'Perm',
+      jobLink: 'https://careers.example.com/vp-corp-comms-2785',
+      reqId: 'COM-2026-0009',
+      currency: 'USD',
+      salary: '$185k \u2013 220k',
+      description: 'The VP of Corporate Communications shapes and protects the company\'s public narrative across media, investor relations, and internal channels. You will lead a team of communications professionals, manage crisis response protocols, and develop executive thought leadership programs. The ideal candidate has 12+ years of experience in corporate communications or public relations, a strong media network, and exceptional writing and presentation skills. Experience in technology or financial services is preferred.'
+    },
+    'UX Content Designer': {
+      count: 64,
+      location: 'Remote (US)',
+      country: 'United States',
+      commute: 'Remote',
+      jobType: 'Perm',
+      jobLink: 'https://careers.example.com/ux-content-designer-6013',
+      reqId: 'DES-2026-0027',
+      currency: 'USD',
+      salary: '$100k \u2013 120k',
+      description: 'The UX Content Designer crafts clear, concise microcopy and content strategy for our product interfaces. You will partner with UX designers and researchers to ensure every touchpoint communicates effectively, from onboarding flows to error messages. This role requires 4+ years of UX writing or content design experience, a portfolio demonstrating user-centered writing, and familiarity with design tools like Figma. A background in linguistics, journalism, or technical writing is a plus.'
+    },
+    'Staff Software Engineer': {
+      count: 48,
+      location: 'Seattle, WA',
+      country: 'United States',
+      commute: 'Hybrid',
+      jobType: 'Perm',
+      jobLink: 'https://careers.example.com/staff-swe-5280',
+      reqId: 'ENG-2026-0118',
+      currency: 'USD',
+      salary: '$180k \u2013 210k',
+      description: 'The Staff Software Engineer serves as a technical leader across multiple engineering teams, driving architecture decisions and establishing best practices for our cloud-native platform. You will design scalable systems, mentor senior engineers, and contribute to our most complex technical challenges. We require 10+ years of professional software engineering experience, deep expertise in Go or Java, and extensive experience with cloud infrastructure (AWS or GCP). A track record of leading large-scale system designs is essential.'
+    },
+    'Head of People Ops': {
+      count: 17,
+      location: 'Denver, CO',
+      country: 'United States',
+      commute: 'Hybrid',
+      jobType: 'Perm',
+      jobLink: 'https://careers.example.com/head-people-ops-3841',
+      reqId: 'HR-2026-0006',
+      currency: 'USD',
+      salary: '$140k \u2013 165k',
+      description: 'The Head of People Ops oversees all HR operations including benefits administration, compliance, HRIS management, and employee lifecycle programs. You will build scalable people processes for a rapidly growing organization and lead a team of HR coordinators. This role requires 8+ years of HR operations experience, deep knowledge of employment law across multiple states, and experience with Workday or similar HRIS platforms. Strong project management skills and a data-driven approach to people decisions are essential.'
+    },
+    'Data Science Lead': {
+      count: 83,
+      location: 'Boston, MA',
+      country: 'United States',
+      commute: 'Hybrid',
+      jobType: 'Perm',
+      jobLink: 'https://careers.example.com/data-science-lead-4917',
+      reqId: 'DAT-2026-0033',
+      currency: 'USD',
+      salary: '$160k \u2013 190k',
+      description: 'The Data Science Lead manages a team of data scientists and ML engineers building predictive models that power core product features. You will define the data science roadmap, establish modeling best practices, and collaborate with product and engineering to deploy models at scale. This role requires 7+ years of experience in data science, proficiency in Python and SQL, and hands-on experience with ML frameworks like TensorFlow or PyTorch. A PhD or Master\'s degree in a quantitative field is preferred.'
+    },
+    'Growth Marketing Manager': {
+      count: 29,
+      location: 'Los Angeles, CA',
+      country: 'United States',
+      commute: 'Remote',
+      jobType: 'Temp',
+      jobLink: 'https://careers.example.com/growth-mktg-mgr-5544',
+      reqId: 'MKT-2026-0045',
+      currency: 'USD',
+      salary: '$110k \u2013 130k',
+      description: 'The Growth Marketing Manager owns user acquisition and retention funnels across paid and organic channels. You will design and execute experiments, optimize conversion rates, and scale campaigns that drive measurable revenue growth. This role requires 5+ years of growth or performance marketing experience, strong analytical skills, and proficiency with tools like Google Analytics, Mixpanel, and paid media platforms. Experience in SaaS or marketplace businesses and a test-and-learn mindset are highly valued.'
+    },
+    'Principal Designer': {
+      count: 41,
+      location: 'San Francisco, CA',
+      country: 'United States',
+      commute: 'Hybrid',
+      jobType: 'Perm',
+      jobLink: 'https://careers.example.com/principal-designer-3190',
+      reqId: 'DES-2026-0031',
+      currency: 'USD',
+      salary: '$165k \u2013 195k',
+      description: 'The Principal Designer sets the creative vision and design standards for the entire product suite. You will lead design critiques, define our design system, and mentor designers at all levels. This individual contributor role requires 10+ years of product design experience, a world-class portfolio, and the ability to influence product strategy at the executive level. Deep expertise in interaction design, visual systems, and user research methods is essential.'
+    },
+    'DevOps Engineer II': {
+      count: 156,
+      location: 'Remote (US)',
+      country: 'United States',
+      commute: 'Remote',
+      jobType: 'Perm',
+      jobLink: 'https://careers.example.com/devops-eng-ii-7201',
+      reqId: 'ENG-2026-0122',
+      currency: 'USD',
+      salary: '$120k \u2013 145k',
+      description: 'The DevOps Engineer II builds and maintains CI/CD pipelines, container orchestration, and cloud infrastructure that supports our engineering teams. You will automate deployments, improve system reliability, and implement monitoring and alerting solutions. This role requires 3+ years of DevOps or SRE experience, strong skills in Kubernetes and Terraform, and experience with AWS or GCP. Familiarity with GitOps workflows and infrastructure-as-code principles is expected.'
+    },
+    'Director of Sales': {
+      count: 72,
+      location: 'New York, NY',
+      country: 'United States',
+      commute: 'On Site',
+      jobType: 'Perm',
+      jobLink: 'https://careers.example.com/dir-sales-1847',
+      reqId: 'SAL-2026-0014',
+      currency: 'USD',
+      salary: '$160k \u2013 200k + commission',
+      description: 'The Director of Sales leads a team of enterprise account executives and owns the full sales cycle from prospecting to close. You will build and refine the sales playbook, forecast quarterly revenue, and develop strategic account plans for Fortune 500 targets. This role requires 8+ years of B2B SaaS sales experience, at least 3 years in sales leadership, and a consistent track record of exceeding quota. Experience selling to C-suite buyers and navigating complex procurement processes is essential.'
+    },
+    'Mobile Engineer (iOS)': {
+      count: 38,
+      location: 'Austin, TX',
+      country: 'United States',
+      commute: 'Hybrid',
+      jobType: 'Perm',
+      jobLink: 'https://careers.example.com/mobile-eng-ios-6330',
+      reqId: 'ENG-2026-0125',
+      currency: 'USD',
+      salary: '$140k \u2013 165k',
+      description: 'The Mobile Engineer (iOS) builds and ships features for our flagship iOS application used by millions of users. You will work in Swift, collaborate with designers on pixel-perfect UI implementations, and optimize app performance and reliability. This role requires 5+ years of iOS development experience, deep knowledge of UIKit and SwiftUI, and experience with CI/CD for mobile. Familiarity with reactive programming patterns and a passion for crafting exceptional mobile experiences are strongly preferred.'
+    },
+    'Content Strategy Lead': {
+      count: 19,
+      location: 'Portland, OR',
+      country: 'United States',
+      commute: 'Remote',
+      jobType: 'Temp',
+      jobLink: 'https://careers.example.com/content-strategy-lead-4102',
+      reqId: 'MKT-2026-0049',
+      currency: 'USD',
+      salary: '$105k \u2013 125k',
+      description: 'The Content Strategy Lead defines and executes the content roadmap across blog, email, social, and thought leadership channels. You will develop editorial calendars, manage freelance writers, and measure content performance against business KPIs. This role requires 6+ years of content strategy or content marketing experience, excellent editorial judgment, and strong SEO knowledge. Experience building content programs from the ground up and a portfolio of published work are essential.'
+    },
+    'Security Architect': {
+      count: 8,
+      location: 'Washington, DC',
+      country: 'United States',
+      commute: 'Hybrid',
+      jobType: 'Perm',
+      jobLink: 'https://careers.example.com/security-architect-2950',
+      reqId: 'SEC-2026-0003',
+      currency: 'USD',
+      salary: '$170k \u2013 200k',
+      description: 'The Security Architect designs and implements the security architecture across our cloud infrastructure, application layer, and data platforms. You will conduct threat modeling, define security standards, and lead incident response planning. This role requires 8+ years of information security experience, deep expertise in cloud security (AWS/GCP), and relevant certifications (CISSP, CCSP, or equivalent). Experience with zero-trust architectures and compliance frameworks like SOC 2 and FedRAMP is strongly preferred.'
+    },
+    'Research Scientist': {
+      count: 53,
+      location: 'Cambridge, MA',
+      country: 'United States',
+      commute: 'On Site',
+      jobType: 'Perm',
+      jobLink: 'https://careers.example.com/research-scientist-5712',
+      reqId: 'RND-2026-0018',
+      currency: 'USD',
+      salary: '$150k \u2013 180k',
+      description: 'The Research Scientist conducts applied research in natural language processing and machine learning to develop novel algorithms for our core product. You will publish papers, prototype new approaches, and collaborate with engineering teams to productionize research findings. This role requires a PhD in Computer Science, Machine Learning, or a related field, a strong publication record, and hands-on programming skills in Python. Experience with large language models and transformer architectures is highly valued.'
+    },
+    'Customer Success Manager': {
+      count: 67,
+      location: 'Chicago, IL',
+      country: 'United States',
+      commute: 'Hybrid',
+      jobType: 'Perm',
+      jobLink: 'https://careers.example.com/csm-3678',
+      reqId: 'CX-2026-0021',
+      currency: 'USD',
+      salary: '$95k \u2013 115k',
+      description: 'The Customer Success Manager owns a portfolio of enterprise accounts and drives adoption, retention, and expansion revenue. You will build deep relationships with customer stakeholders, conduct quarterly business reviews, and proactively identify upsell opportunities. This role requires 4+ years of customer success or account management experience in B2B SaaS, excellent communication skills, and a data-driven approach to account health. Experience with customer success platforms like Gainsight or Totango is preferred.'
+    },
+    'Frontend Engineer III': {
+      count: 112,
+      location: 'Remote (US)',
+      country: 'United States',
+      commute: 'Remote',
+      jobType: 'Perm',
+      jobLink: 'https://careers.example.com/frontend-eng-iii-8104',
+      reqId: 'ENG-2026-0130',
+      currency: 'USD',
+      salary: '$145k \u2013 170k',
+      description: 'The Frontend Engineer III builds performant, accessible web interfaces using React and TypeScript. You will own major feature areas, contribute to our component library, and drive frontend architecture decisions. This role requires 5+ years of frontend development experience, deep expertise in React and modern JavaScript, and a strong eye for UI quality. Experience with design systems, performance optimization, and accessibility standards (WCAG) is essential.'
+    },
+    'Talent Acquisition Lead': {
+      count: 26,
+      location: 'Denver, CO',
+      country: 'United States',
+      commute: 'Hybrid',
+      jobType: 'Perm',
+      jobLink: 'https://careers.example.com/ta-lead-4455',
+      reqId: 'HR-2026-0011',
+      currency: 'USD',
+      salary: '$110k \u2013 130k',
+      description: 'The Talent Acquisition Lead manages a team of recruiters and owns the end-to-end hiring strategy for engineering, product, and design roles. You will optimize sourcing channels, build employer branding initiatives, and partner with hiring managers to raise the bar on talent quality. This role requires 6+ years of recruiting experience in tech, at least 2 years leading a TA team, and expertise with ATS platforms. A data-driven approach to pipeline management and a passion for diversity hiring are essential.'
+    },
+    'Platform Engineer': {
+      count: 44,
+      location: 'Seattle, WA',
+      country: 'United States',
+      commute: 'Hybrid',
+      jobType: 'Perm',
+      jobLink: 'https://careers.example.com/platform-eng-5890',
+      reqId: 'ENG-2026-0134',
+      currency: 'USD',
+      salary: '$150k \u2013 175k',
+      description: 'The Platform Engineer designs and builds the internal developer platform that accelerates engineering productivity across the organization. You will create self-service tooling, manage shared infrastructure components, and define platform APIs and abstractions. This role requires 6+ years of software engineering experience, strong skills in Go or Python, and deep expertise with Kubernetes and cloud-native technologies. Experience building internal platforms and a passion for developer experience are highly valued.'
+    },
+    'Business Analyst Sr': {
+      count: 31,
+      location: 'Atlanta, GA',
+      country: 'United States',
+      commute: 'Hybrid',
+      jobType: 'Perm',
+      jobLink: 'https://careers.example.com/biz-analyst-sr-2310',
+      reqId: 'OPS-2026-0008',
+      currency: 'USD',
+      salary: '$95k \u2013 115k',
+      description: 'The Senior Business Analyst partners with cross-functional teams to translate business requirements into technical specifications and process improvements. You will conduct data analysis, build financial models, and present findings to senior leadership. This role requires 5+ years of business analysis experience, advanced Excel and SQL skills, and excellent communication abilities. Experience with BI tools like Tableau or Power BI and familiarity with agile project management methodologies are preferred.'
+    }
+  };
+
+  // ========== ZOOM TRANSITION LOGIC ==========
+  const grid = document.querySelector('.grid');
+  const jobDetail = document.getElementById('jobDetail');
+  const jobTitle = document.getElementById('jobTitle');
+  const jobCount = document.getElementById('jobCount');
+  const jobMeta = document.getElementById('jobMeta');
+  const jobDescription = document.getElementById('jobDescription');
+  const jobsNavBtn = document.querySelectorAll('.header-nav-btn')[1];
+  const jobDivider = jobDetail.querySelector('.job-divider');
+  const jobDetailActions = document.getElementById('jobDetailActions');
+  const searchConsole = document.getElementById('searchConsole');
+  const searchActions = document.getElementById('searchActions');
+  const findCandidatesBtn = document.getElementById('findCandidatesBtn');
+  const reviewCandidatesBtn = document.getElementById('reviewCandidatesBtn');
+  const modifySearchBtn = document.getElementById('modifySearchBtn');
+  let searchInterval = null;
+  let searchTimeout = null;
+
+  // Job create form elements
+  const jobCreate = document.getElementById('jobCreate');
+  const jobTitleInput = document.getElementById('jobTitleInput');
+  const jobDescInput = document.getElementById('jobDescInput');
+  const salaryMin = document.getElementById('salaryMin');
+  const salaryMax = document.getElementById('salaryMax');
+  const commuteRadios = document.querySelectorAll('input[name="commute"]');
+  const locationInput = document.getElementById('locationInput');
+  const jobLinkInput = document.getElementById('jobLinkInput');
+  const reqIdInput = document.getElementById('reqIdInput');
+  const jobTypeRadios = document.querySelectorAll('input[name="jobType"]');
+  const saveJobBtn = document.getElementById('saveJobBtn');
+  const deleteJobBtn = document.getElementById('deleteJobBtn');
+  const tileNew = document.querySelector('.tile-new');
+
+  // Edit form elements
+  const editJobBtn = document.getElementById('editJobBtn');
+  const jobEditForm = document.getElementById('jobEditForm');
+  const editJobTitleInput = document.getElementById('editJobTitleInput');
+  const editJobDescInput = document.getElementById('editJobDescInput');
+  const editSalaryMin = document.getElementById('editSalaryMin');
+  const editSalaryMax = document.getElementById('editSalaryMax');
+  const editLocationInput = document.getElementById('editLocationInput');
+  const editJobLinkInput = document.getElementById('editJobLinkInput');
+  const editReqIdInput = document.getElementById('editReqIdInput');
+  const saveEditBtn = document.getElementById('saveEditBtn');
+  const cancelEditBtn = document.getElementById('cancelEditBtn');
+  let editingTitle = null; // track which job is being edited
+
+  let savedScrollY = 0;
+  let isAnimating = false;
+  let currentTile = null;
+
+  // Get clean title text from tile label (convert <br> to space)
+  function getTileTitle(tile) {
+    const label = tile.querySelector('.tile-label');
+    return label.innerHTML.replace(/<br\s*\/?>/gi, ' ').replace(/<[^>]*>/g, '').trim();
+  }
+
+  // Build meta HTML in two-column layout matching edit form
+  function buildMetaHTML(data) {
+    let left = '';
+    let right = '';
+    if (data.country) left += `<div>Country: ${data.country}</div>`;
+    if (data.commute) right += `<div>${data.commute}</div>`;
+    if (data.location) left += `<div>Location: ${data.location}</div>`;
+    if (data.jobType) right += `<div>${data.jobType}</div>`;
+    if (data.currency) left += `<div>Currency: ${data.currency}</div>`;
+    if (data.salary) left += `<div>Salary: ${data.salary}</div>`;
+    if (data.jobLink) left += `<div><a href="${data.jobLink}" target="_blank" class="posting-link">View Posting</a></div>`;
+    return `<div class="meta-col">${left}</div><div class="meta-col">${right}</div>`;
+  }
+
+  // Shared function: open job detail from a tile
+  function openJobDetail(tile, e) {
+    if (isAnimating) return;
+    isAnimating = true;
+
+    currentTile = tile;
+    const title = getTileTitle(tile);
+    const data = jobData[title];
+    if (!data) { isAnimating = false; return; }
+
+    // Populate job detail
+    jobTitle.textContent = title;
+    jobCount.textContent = data.count;
+    document.getElementById('jobReqId').textContent = data.reqId || '';
+    jobMeta.innerHTML = buildMetaHTML(data);
+    jobDescription.textContent = data.description;
+
+    // Calculate transform-origin from tile center relative to grid
+    const tileRect = tile.getBoundingClientRect();
+    const gridRect = grid.getBoundingClientRect();
+    const originX = (tileRect.left + tileRect.width / 2) - gridRect.left;
+    const originY = (tileRect.top + tileRect.height / 2) - gridRect.top;
+    grid.style.transformOrigin = `${originX}px ${originY}px`;
+
+    // Set job detail transform-origin to cursor position (viewport coords)
+    jobDetail.style.transformOrigin = `${e.clientX}px ${e.clientY}px`;
+
+    // Save scroll position
+    savedScrollY = window.scrollY;
+
+    // Start zoom-in
+    grid.classList.add('zooming-out');
+    jobDetail.classList.add('active');
+
+    const hasDiamonds = !!tile.querySelector('.tile-diamonds');
+
+    grid.addEventListener('transitionend', function handler(ev) {
+      if (ev.propertyName !== 'opacity') return;
+      grid.removeEventListener('transitionend', handler);
+      grid.classList.add('zoomed');
+      window.scrollTo(0, 0);
+      isAnimating = false;
+      // Auto-open search console for tiles with active searches
+      if (hasDiamonds) findCandidatesBtn.click();
+    });
+  }
+
+  // Click handler for active tiles
+  document.querySelectorAll('.tile:not(.disabled):not(.tile-new)').forEach(tile => {
+    tile.addEventListener('click', (e) => openJobDetail(tile, e));
+  });
+
+  // Reset search console to default state
+  function resetSearchConsole() {
+    if (searchInterval) { clearInterval(searchInterval); searchInterval = null; }
+    if (searchTimeout) { clearTimeout(searchTimeout); searchTimeout = null; }
+    searchConsole.classList.remove('open');
+    searchConsole.style.display = 'none';
+    searchConsole.innerHTML = '';
+    searchActions.style.display = 'none';
+    jobDivider.style.display = '';
+    jobMeta.style.display = '';
+    jobDescription.style.display = '';
+    jobDetailActions.style.display = '';
+  }
+
+  // Jobs nav button — return to grid from any screen
+  function navigateToJobs() {
+    if (isAnimating) return;
+    isAnimating = true;
+
+    // If on job detail screen
+    if (jobDetail.classList.contains('active')) {
+      resetSearchConsole();
+      if (jobEditForm.style.display !== 'none') {
+        hideEditForm();
+        editingTitle = null;
+      }
+
+      grid.classList.remove('zoomed');
+      jobDetail.classList.add('zooming-out');
+
+      requestAnimationFrame(() => {
+        grid.classList.remove('zooming-out');
+        jobDetail.classList.remove('active');
+
+        window.scrollTo(0, savedScrollY);
+
+        grid.addEventListener('transitionend', function handler(ev) {
+          if (ev.propertyName !== 'opacity') return;
+          grid.removeEventListener('transitionend', handler);
+          jobDetail.classList.remove('zooming-out');
+          isAnimating = false;
+        });
+      });
+      return;
+    }
+
+    // If on job create screen
+    if (jobCreate.classList.contains('active')) {
+      grid.classList.remove('zoomed');
+      jobCreate.classList.add('zooming-out');
+
+      requestAnimationFrame(() => {
+        grid.classList.remove('zooming-out');
+        jobCreate.classList.remove('active');
+
+        window.scrollTo(0, savedScrollY);
+
+        grid.addEventListener('transitionend', function handler(ev) {
+          if (ev.propertyName !== 'opacity') return;
+          grid.removeEventListener('transitionend', handler);
+          jobCreate.classList.remove('zooming-out');
+          isAnimating = false;
+        });
+      });
+      return;
+    }
+
+    isAnimating = false;
+  }
+
+  jobsNavBtn.addEventListener('click', navigateToJobs);
+
+  // ========== SEARCH CONSOLE LOGIC ==========
+  findCandidatesBtn.addEventListener('click', () => {
+    // Put current tile into searching state
+    if (currentTile) addDiamondsToTile(currentTile);
+
+    const title = jobTitle.textContent;
+    const lines = [
+      'Creating search strategy.',
+      `Finding candidates for ${title} role.`,
+      'Identifying candidate dimensions.',
+      "Searching Aquent\u2019s candidate database.",
+      'Found 14 potential matches.',
+      'Iterating.',
+      'Expanding the search.'
+    ];
+
+    // Snap-hide job detail content
+    jobDivider.style.display = 'none';
+    jobMeta.style.display = 'none';
+    jobDescription.style.display = 'none';
+    jobDetailActions.style.display = 'none';
+    searchActions.style.display = 'flex';
+
+    // Reset console state fully before starting
+    searchConsole.classList.remove('open');
+    searchConsole.style.display = 'none';
+    searchConsole.innerHTML = '<span class="search-cursor"></span>';
+    // Show console and slide down
+    searchConsole.style.display = 'block';
+    searchConsole.offsetHeight;
+    searchConsole.classList.add('open');
+
+    let lineIndex = 0;
+    let charIndex = 0;
+    let currentTextNode = null;
+
+    function typeLine() {
+      const line = lines[lineIndex];
+      // Add line break before new lines (not the first)
+      if (lineIndex > 0) {
+        searchConsole.querySelector('.search-cursor')?.remove();
+        searchConsole.appendChild(document.createElement('br'));
+        searchConsole.appendChild(document.createElement('span'));
+        searchConsole.lastElementChild.className = 'search-cursor';
+      }
+      currentTextNode = document.createTextNode('');
+      searchConsole.insertBefore(currentTextNode, searchConsole.querySelector('.search-cursor'));
+      charIndex = 0;
+
+      searchInterval = setInterval(() => {
+        if (charIndex < line.length) {
+          currentTextNode.textContent += line[charIndex];
+          charIndex++;
+        } else {
+          clearInterval(searchInterval);
+          searchInterval = null;
+          lineIndex++;
+          if (lineIndex < lines.length) {
+            searchTimeout = setTimeout(typeLine, 5000);
+          }
+        }
+      }, 35);
+    }
+
+    typeLine();
+  });
+
+  reviewCandidatesBtn.addEventListener('click', () => resetSearchConsole());
+  modifySearchBtn.addEventListener('click', () => resetSearchConsole());
+
+  // ========== NEW JOB CREATE LOGIC ==========
+
+  // Click handler for + tile → zoom into create form
+  tileNew.addEventListener('click', (e) => {
+    if (isAnimating) return;
+    isAnimating = true;
+
+    // Reset form fields
+    jobTitleInput.value = '';
+    jobDescInput.value = '';
+    salaryMin.value = '';
+    salaryMax.value = '';
+    commuteRadios[0].checked = true;
+    document.getElementById('countryInput').value = 'United States';
+    locationInput.value = '';
+    document.getElementById('currencyInput').value = 'USD';
+    jobLinkInput.value = '';
+    reqIdInput.value = '';
+    jobTypeRadios[0].checked = true;
+
+    // Calculate transform-origin from tile center
+    const tileRect = tileNew.getBoundingClientRect();
+    const gridRect = grid.getBoundingClientRect();
+    const originX = (tileRect.left + tileRect.width / 2) - gridRect.left;
+    const originY = (tileRect.top + tileRect.height / 2) - gridRect.top;
+    grid.style.transformOrigin = `${originX}px ${originY}px`;
+
+    // Set create form transform-origin to cursor position
+    jobCreate.style.transformOrigin = `${e.clientX}px ${e.clientY}px`;
+
+    // Save scroll position
+    savedScrollY = window.scrollY;
+
+    // Start zoom-in
+    grid.classList.add('zooming-out');
+    jobCreate.classList.add('active');
+
+    grid.addEventListener('transitionend', function handler(ev) {
+      if (ev.propertyName !== 'opacity') return;
+      grid.removeEventListener('transitionend', handler);
+      grid.classList.add('zoomed');
+      window.scrollTo(0, 0);
+      isAnimating = false;
+      jobTitleInput.focus();
+    });
+  });
+
+  // Cancel button → navigate back to jobs
+  deleteJobBtn.addEventListener('click', () => {
+    navigateToJobs();
+  });
+
+  // Create Job Target
+  saveJobBtn.addEventListener('click', () => {
+    const title = jobTitleInput.value.trim();
+    if (!title) {
+      jobTitleInput.style.borderBottomColor = '#f0f';
+      setTimeout(() => { jobTitleInput.style.borderBottomColor = ''; }, 1000);
+      jobTitleInput.focus();
+      return;
+    }
+
+    // Build display values
+    const commute = document.querySelector('input[name="commute"]:checked').value;
+    const loc = locationInput.value.trim();
+    const sMin = salaryMin.value.trim();
+    const sMax = salaryMax.value.trim();
+    let displaySalary = '';
+    if (sMin && sMax) {
+      displaySalary = `${sMin} \u2013 ${sMax}`;
+    } else if (sMin) {
+      displaySalary = `${sMin}+`;
+    } else if (sMax) {
+      displaySalary = `Up to ${sMax}`;
+    }
+
+    // Create jobData entry
+    const newJob = {
+      count: 0,
+      country: document.getElementById('countryInput').value,
+      location: loc,
+      currency: document.getElementById('currencyInput').value,
+      commute: commute,
+      jobType: document.querySelector('input[name="jobType"]:checked').value || '',
+      salary: displaySalary,
+      jobLink: jobLinkInput.value.trim(),
+      reqId: reqIdInput.value.trim(),
+      description: jobDescInput.value.trim()
+    };
+    jobData[title] = newJob;
+
+    // --- Create new tile DOM element ---
+    const newTile = document.createElement('div');
+    newTile.className = 'tile';
+
+    // Split long titles across two lines
+    let labelHTML = title;
+    if (title.length > 18) {
+      const words = title.split(' ');
+      const mid = Math.ceil(words.length / 2);
+      labelHTML = words.slice(0, mid).join(' ') + '<br>' + words.slice(mid).join(' ');
+    }
+
+    newTile.innerHTML = `
+      <div class="tile-shape">
+        <div class="hex-border"></div>
+        <div class="hex-fill"></div>
+      </div>
+      <div class="tile-content">
+        <span class="tile-number">0</span>
+        <div class="mini-stats">
+          <div class="mini-stat-row">
+            <span class="mini-stat-num">0</span>
+            <span class="mini-stat-divider"></span>
+            <span class="mini-stat-label">Candidates</span>
+          </div>
+          <div class="mini-stat-row">
+            <span class="mini-stat-num">0</span>
+            <span class="mini-stat-divider"></span>
+            <span class="mini-stat-label">Shortlist</span>
+          </div>
+        <div class="mini-stat-cta-spacer"></div>
+        <div class="mini-stat-cta"><span class="mini-stat-cta-arrow">&rarr;</span><span class="mini-stat-cta-divider"></span><span class="mini-stat-cta-label">Find Candidates</span></div>
+        </div>
+      </div>
+      <div class="tile-label">${labelHTML}</div>
+    `;
+
+    // Insert after + tile (position 2 in grid)
+    tileNew.after(newTile);
+
+    // Attach click handler to new tile
+    newTile.addEventListener('click', (e) => openJobDetail(newTile, e));
+
+    // --- Snap from create form to job detail summary ---
+    jobTitle.textContent = title;
+    jobCount.textContent = '0';
+    jobMeta.innerHTML = buildMetaHTML(newJob);
+    jobDescription.textContent = newJob.description;
+
+    // Instant snap: disable transitions, swap panels
+    jobCreate.style.transition = 'none';
+    jobDetail.style.transition = 'none';
+
+    jobCreate.classList.remove('active');
+    jobDetail.classList.add('active');
+
+    // Force reflow then re-enable transitions and clear inline overrides
+    void jobDetail.offsetHeight;
+    requestAnimationFrame(() => {
+      jobCreate.style.transition = '';
+      jobDetail.style.transition = '';
+    });
+  });
+
+  // ========== EDIT JOB ==========
+  function showEditForm() {
+    jobTitle.style.display = 'none';
+    jobCount.style.display = 'none';
+    jobDescription.style.display = 'none';
+    jobMeta.style.display = 'none';
+    document.querySelector('#jobDetail .job-divider').style.display = 'none';
+    document.getElementById('jobReqId').style.display = 'none';
+    document.getElementById('jobDetailActions').style.display = 'none';
+    document.getElementById('searchActions').style.display = 'none';
+    document.getElementById('searchConsole').style.display = 'none';
+    jobEditForm.style.display = '';
+  }
+
+  function hideEditForm() {
+    jobEditForm.style.display = 'none';
+    jobTitle.style.display = '';
+    jobCount.style.display = '';
+    jobDescription.style.display = '';
+    jobMeta.style.display = '';
+    document.querySelector('#jobDetail .job-divider').style.display = '';
+    document.getElementById('jobReqId').style.display = '';
+    document.getElementById('jobDetailActions').style.display = '';
+  }
+
+  editJobBtn.addEventListener('click', () => {
+    editingTitle = jobTitle.textContent;
+    const data = jobData[editingTitle];
+    if (!data) return;
+
+    // Populate form fields
+    editJobTitleInput.value = editingTitle;
+    editJobDescInput.value = data.description || '';
+    editLocationInput.value = data.location || '';
+    editJobLinkInput.value = data.jobLink || '';
+    editReqIdInput.value = data.reqId || '';
+    document.getElementById('editCountryInput').value = data.country || 'United States';
+    document.getElementById('editCurrencyInput').value = data.currency || 'USD';
+
+    // Parse salary
+    const salaryStr = data.salary || '';
+    const salaryParts = salaryStr.split(/\s*\u2013\s*/);
+    editSalaryMin.value = salaryParts[0] || '';
+    editSalaryMax.value = salaryParts[1] || '';
+
+    // Set commute radio
+    const commuteVal = data.commute || 'On Site';
+    document.querySelectorAll('input[name="editCommute"]').forEach(r => {
+      r.checked = r.value === commuteVal;
+    });
+
+    // Set job type radio
+    const jobTypeVal = data.jobType || 'Perm';
+    document.querySelectorAll('input[name="editJobType"]').forEach(r => {
+      r.checked = r.value === jobTypeVal;
+    });
+
+    showEditForm();
+  });
+
+  cancelEditBtn.addEventListener('click', () => {
+    hideEditForm();
+    editingTitle = null;
+  });
+
+  saveEditBtn.addEventListener('click', () => {
+    const newTitle = editJobTitleInput.value.trim();
+    if (!newTitle) {
+      editJobTitleInput.style.borderBottomColor = '#f0f';
+      setTimeout(() => { editJobTitleInput.style.borderBottomColor = ''; }, 1000);
+      editJobTitleInput.focus();
+      return;
+    }
+
+    // Build salary display
+    const sMin = editSalaryMin.value.trim();
+    const sMax = editSalaryMax.value.trim();
+    let displaySalary = '';
+    if (sMin && sMax) {
+      displaySalary = `${sMin} \u2013 ${sMax}`;
+    } else if (sMin) {
+      displaySalary = `${sMin}+`;
+    } else if (sMax) {
+      displaySalary = `Up to ${sMax}`;
+    }
+
+    const commute = document.querySelector('input[name="editCommute"]:checked').value;
+    const jobType = document.querySelector('input[name="editJobType"]:checked').value;
+
+    // Update jobData
+    const updatedJob = {
+      count: jobData[editingTitle].count,
+      country: document.getElementById('editCountryInput').value,
+      location: editLocationInput.value.trim(),
+      currency: document.getElementById('editCurrencyInput').value,
+      commute: commute,
+      jobType: jobType,
+      salary: displaySalary,
+      jobLink: editJobLinkInput.value.trim(),
+      reqId: editReqIdInput.value.trim(),
+      description: editJobDescInput.value.trim()
+    };
+
+    // Handle title rename
+    if (newTitle !== editingTitle) {
+      delete jobData[editingTitle];
+      // Update tile label
+      if (currentTile) {
+        const label = currentTile.querySelector('.tile-label');
+        if (label) {
+          let labelHTML = newTitle;
+          if (newTitle.length > 18) {
+            const words = newTitle.split(' ');
+            const mid = Math.ceil(words.length / 2);
+            labelHTML = words.slice(0, mid).join(' ') + '<br>' + words.slice(mid).join(' ');
+          }
+          label.innerHTML = labelHTML;
+        }
+      }
+    }
+    jobData[newTitle] = updatedJob;
+
+    // Update summary view
+    jobTitle.textContent = newTitle;
+    jobCount.textContent = updatedJob.count;
+    jobDescription.textContent = updatedJob.description;
+    jobMeta.innerHTML = buildMetaHTML(updatedJob);
+
+    hideEditForm();
+    editingTitle = null;
+  });
+
+  // ========== CANDIDATE COUNT TICK-UP ==========
+  const diamondTiles = document.querySelectorAll('.tile-diamonds');
+  const activeTiles = [];
+  diamondTiles.forEach(group => {
+    const tile = group.closest('.tile');
+    const numberEl = tile.querySelector('.tile-number');
+    const candidateStat = tile.querySelector('.mini-stat-num');
+    const defaultCount = parseInt(numberEl.textContent, 10);
+    activeTiles.push({ tile, numberEl, candidateStat, defaultCount, current: defaultCount });
+  });
+
+  function animateCount(pick, bump) {
+    const start = pick.current;
+    const target = start + bump;
+    pick.current = target;
+    const title = getTileTitle(pick.tile);
+    if (jobData[title]) jobData[title].count = target;
+    const duration = 1500;
+    const startTime = performance.now();
+    function step(now) {
+      const t = Math.min((now - startTime) / duration, 1);
+      // Ease-out (starts fast, slows down): 1 - (1-t)^3
+      const eased = 1 - Math.pow(1 - t, 3);
+      const display = Math.round(start + bump * eased);
+      pick.numberEl.textContent = display;
+      if (pick.candidateStat) pick.candidateStat.textContent = display;
+      if (t < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }
+
+  const tickInterval = setInterval(() => {
+    if (Math.random() < 0.5) return; // coin flip
+    const pick = activeTiles[Math.floor(Math.random() * activeTiles.length)];
+    const bump = Math.floor(Math.random() * 20) + 1;
+    animateCount(pick, bump);
+  }, 3000);
+
+  // Logo click resets counts to defaults
+  document.getElementById('headerLogo').addEventListener('click', () => {
+    activeTiles.forEach(t => {
+      t.current = t.defaultCount;
+      t.numberEl.textContent = t.defaultCount;
+      if (t.candidateStat) t.candidateStat.textContent = t.defaultCount;
+      const title = getTileTitle(t.tile);
+      if (jobData[title]) jobData[title].count = t.defaultCount;
+    });
+  });
+</script>
+
+</body>
+</html>
