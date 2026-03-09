@@ -961,6 +961,94 @@
     margin-right: 10px;
   }
 
+  /* ========== CANDIDATE CARD EXPANDED ========== */
+  .rc-card.rc-expanded {
+    flex-wrap: wrap;
+    border-color: #f0f;
+  }
+
+  .rc-card-expand-body {
+    width: 100%;
+    margin-top: 20px;
+    margin-bottom: -18px;
+    display: none;
+  }
+
+  .rc-card.rc-expanded .rc-card-expand-body {
+    display: block;
+  }
+
+  .rc-card-tabs {
+    display: flex;
+    gap: 0;
+    margin-bottom: -1px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .rc-card-tab {
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.55);
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    padding: 8px 20px;
+    cursor: pointer;
+    transition: color 0.2s ease, background 0.2s ease;
+  }
+
+  .rc-card-tab.active {
+    color: #000;
+    background: #f0f;
+    border-color: #f0f;
+  }
+
+  .rc-card-tab:not(.active):hover {
+    color: rgba(255, 255, 255, 0.85);
+  }
+
+  .rc-card-tab-panel {
+    background: #fff;
+    color: #222;
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 14px;
+    line-height: 1.7;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+  }
+
+  .rc-card-tab-panel.dark {
+    background: transparent;
+    color: rgba(255, 255, 255, 0.85);
+  }
+
+  .rc-card-tab-panel p {
+    margin: 0;
+    padding: 28px 32px;
+    color: #555;
+    font-size: 13px;
+  }
+
+  .rc-card-tab-panel.dark p {
+    color: rgba(255, 255, 255, 0.55);
+  }
+
+  .rc-card-collapse-btn {
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.55);
+    background: transparent;
+    border: none;
+    padding: 12px 24px 18px;
+    cursor: pointer;
+    transition: color 0.2s ease;
+  }
+
+  .rc-card-collapse-btn:hover {
+    color: rgba(255, 255, 255, 0.85);
+  }
+
   /* ========== JOB CREATE SCREEN ========== */
   .job-create {
     position: fixed;
@@ -987,6 +1075,32 @@
     pointer-events: none;
   }
 
+  .job-create .job-divider,
+  #jobEditForm .job-divider {
+    display: block;
+    border-top: var(--stroke-width) solid #fff;
+    margin: 24px 0 28px;
+  }
+
+  .job-create .job-divider::before,
+  .job-create .job-divider::after,
+  #jobEditForm .job-divider::before,
+  #jobEditForm .job-divider::after {
+    display: none;
+  }
+
+  .form-title-row {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 24px;
+    align-items: baseline;
+  }
+
+  .form-reqid-input {
+    width: 100%;
+    box-sizing: border-box;
+  }
+
   .job-title-input {
     font-family: 'Skill Sans', 'IBM Plex Sans', sans-serif;
     font-size: 32px;
@@ -995,9 +1109,10 @@
     background: #000;
     border: var(--stroke-width) solid rgba(255, 255, 255, 0.4);
     outline: none;
-    width: 100%;
     padding: 4px 12px;
     margin-top: 2px;
+    box-sizing: border-box;
+    min-width: 0;
   }
 
   .job-title-input::placeholder {
@@ -1006,7 +1121,6 @@
   }
 
   .job-desc-input {
-    width: 100%;
     overflow-y: auto;
     font-size: 16px;
     line-height: 1.7;
@@ -1031,19 +1145,17 @@
   }
 
   .form-cols {
-    display: flex;
-    gap: 0;
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 24px;
   }
 
   .form-col-left {
-    width: 480px;
-    flex-shrink: 0;
+    min-width: 0;
   }
 
   .form-col-right {
-    flex: 1;
     min-width: 0;
-    padding-left: 40px;
   }
 
   .form-group-stack {
@@ -1087,6 +1199,7 @@
     border-radius: 0;
     flex: 1;
     min-width: 0;
+    box-sizing: border-box;
   }
 
   .form-input::placeholder {
@@ -1718,13 +1831,27 @@
       </div>
     </div>
     <div id="jobEditForm" style="display:none">
-      <input type="text" class="job-title-input" id="editJobTitleInput" placeholder="Job Title" autocomplete="off">
+      <div class="form-title-row">
+        <input type="text" class="job-title-input" id="editJobTitleInput" placeholder="Job Title" autocomplete="off">
+        <input type="text" class="form-input form-reqid-input" id="editReqIdInput" placeholder="Req ID">
+      </div>
       <hr class="job-divider" style="margin-top: 16px;">
       <div class="form-cols">
         <div class="form-col-left">
           <div class="job-desc-input" id="editJobDescInput" contenteditable="true" data-placeholder="Enter Job Description..."></div>
+          <div class="form-group-stack" style="margin-top: 20px;">
+            <span class="form-label">Link</span>
+            <input type="text" class="form-input" id="editJobLinkInput" placeholder="Job Posting Link" style="width: 100%;">
+          </div>
         </div>
         <div class="form-col-right">
+          <div class="form-group-stack">
+            <span class="form-label">Job Type</span>
+            <div class="radio-group">
+              <label class="radio-option"><input type="radio" name="editJobType" value="Perm" checked><span>Perm</span></label>
+              <label class="radio-option"><input type="radio" name="editJobType" value="Temp"><span>Temp</span></label>
+            </div>
+          </div>
           <div class="form-group-stack">
             <span class="form-label">Country</span>
             <select class="form-select" id="editCountryInput">
@@ -1751,13 +1878,6 @@
             </div>
           </div>
           <div class="form-group-stack">
-            <span class="form-label">Job Type</span>
-            <div class="radio-group">
-              <label class="radio-option"><input type="radio" name="editJobType" value="Perm" checked><span>Perm</span></label>
-              <label class="radio-option"><input type="radio" name="editJobType" value="Temp"><span>Temp</span></label>
-            </div>
-          </div>
-          <div class="form-group-stack">
             <span class="form-label">Currency</span>
             <select class="form-select" id="editCurrencyInput">
               <option value="USD" selected>USD</option>
@@ -1776,14 +1896,6 @@
               <span class="salary-to">to</span>
               <input type="text" class="salary-field" id="editSalaryMax" placeholder="$110,000">
             </div>
-          </div>
-          <div class="form-group-stack">
-            <span class="form-label">Req ID</span>
-            <input type="text" class="form-input" id="editReqIdInput" placeholder="Req ID">
-          </div>
-          <div class="form-group-stack">
-            <span class="form-label">Link</span>
-            <input type="text" class="form-input" id="editJobLinkInput" placeholder="Job Posting Link">
           </div>
           <div class="job-actions" style="margin-top: 32px;">
             <div class="job-action" id="saveEditBtn">
@@ -1863,15 +1975,27 @@
 
 <div class="job-create" id="jobCreate">
   <div class="job-detail-inner">
-    <div class="job-header-row">
+    <div class="form-title-row">
       <input type="text" class="job-title-input" id="jobTitleInput" placeholder="Job Title" autocomplete="off">
+      <input type="text" class="form-input form-reqid-input" id="reqIdInput" placeholder="Req ID">
     </div>
     <hr class="job-divider" style="margin-top: 16px;">
     <div class="form-cols">
       <div class="form-col-left">
         <div class="job-desc-input" id="jobDescInput" contenteditable="true" data-placeholder="Enter Job Description..."></div>
+        <div class="form-group-stack" style="margin-top: 20px;">
+          <span class="form-label">Link</span>
+          <input type="text" class="form-input" id="jobLinkInput" placeholder="Job Posting Link" style="width: 100%;">
+        </div>
       </div>
       <div class="form-col-right">
+        <div class="form-group-stack">
+          <span class="form-label">Job Type</span>
+          <div class="radio-group" id="jobTypeRadios">
+            <label class="radio-option"><input type="radio" name="jobType" value="Perm" checked><span>Perm</span></label>
+            <label class="radio-option"><input type="radio" name="jobType" value="Temp"><span>Temp</span></label>
+          </div>
+        </div>
         <div class="form-group-stack">
           <span class="form-label">Country</span>
           <select class="form-select" id="countryInput">
@@ -1898,13 +2022,6 @@
           </div>
         </div>
         <div class="form-group-stack">
-          <span class="form-label">Job Type</span>
-          <div class="radio-group" id="jobTypeRadios">
-            <label class="radio-option"><input type="radio" name="jobType" value="Perm" checked><span>Perm</span></label>
-            <label class="radio-option"><input type="radio" name="jobType" value="Temp"><span>Temp</span></label>
-          </div>
-        </div>
-        <div class="form-group-stack">
           <span class="form-label">Currency</span>
           <select class="form-select" id="currencyInput">
             <option value="USD" selected>USD</option>
@@ -1923,14 +2040,6 @@
             <span class="salary-to">to</span>
             <input type="text" class="salary-field" id="salaryMax" placeholder="$110,000">
           </div>
-        </div>
-        <div class="form-group-stack">
-          <span class="form-label">Req ID</span>
-          <input type="text" class="form-input" id="reqIdInput" placeholder="Req ID">
-        </div>
-        <div class="form-group-stack">
-          <span class="form-label">Link</span>
-          <input type="text" class="form-input" id="jobLinkInput" placeholder="Job Posting Link">
         </div>
         <div class="job-actions" style="margin-top: 32px;">
           <div class="job-action" id="saveJobBtn">
@@ -2848,6 +2957,55 @@
     ].map(v => `<li class="rc-meta-item"><span class="rc-meta-check">&#10003;</span>${v}</li>`).join('');
   }
 
+  const resumeImages = ['Resume1.png', 'Resume2.png', 'Resume3.png'];
+
+  function generateResumeHTML(candidate) {
+    const img = resumeImages[Math.floor(Math.random() * resumeImages.length)];
+    return `<img src="${img}" alt="${candidate.name} Resume" style="width:100%; display:block;">`;
+  }
+
+  const candidateSources = ['Monster', 'LinkedIn', 'Indeed', 'Referral', 'Direct Apply'];
+
+  function generateDetailsHTML(candidate) {
+    const first = candidate.name.split(' ')[0].toLowerCase();
+    const last = candidate.name.split(' ').slice(-1)[0].toLowerCase();
+    const email = first + '.' + last + '@email.com';
+    const phone = '(' + (100 + Math.floor(Math.random() * 900)) + ') ' + (100 + Math.floor(Math.random() * 900)) + '-' + (1000 + Math.floor(Math.random() * 9000));
+    const source = candidateSources[Math.floor(Math.random() * candidateSources.length)];
+    const salary = '$' + (80 + Math.floor(Math.random() * 80)) + ',000';
+    return `
+      <div style="padding: 28px 32px;">
+            <div style="font-size: 13px; font-weight: 500; color: rgba(255,255,255,0.45); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 12px;">Contact</div>
+            <div style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 24px;">
+              <div style="display: flex; align-items: center; gap: 8px; font-size: 14px; color: rgba(255,255,255,0.85);">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.45)" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                ${email}
+              </div>
+              <div style="display: flex; align-items: center; gap: 8px; font-size: 14px; color: rgba(255,255,255,0.85);">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.45)" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.362 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.338 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                ${phone}
+              </div>
+              <div style="display: flex; align-items: center; gap: 8px; font-size: 14px; color: rgba(255,255,255,0.85);">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.45)" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                ${candidate.location}
+              </div>
+            </div>
+            <div style="font-size: 13px; font-weight: 500; color: rgba(255,255,255,0.45); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 12px;">Source</div>
+            <div style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 24px;">
+              <div style="display: flex; align-items: center; gap: 8px; font-size: 14px; color: rgba(255,255,255,0.85);">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.45)" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+                ${source}
+              </div>
+              <div style="display: flex; align-items: center; gap: 8px; font-size: 14px; color: rgba(255,255,255,0.85);">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.45)" stroke-width="2"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-4 0v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+                LinkedIn Profile
+              </div>
+            </div>
+            <div style="font-size: 13px; font-weight: 500; color: rgba(255,255,255,0.45); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 12px;">Compensation</div>
+            <div style="font-size: 14px; color: rgba(255,255,255,0.85);">${salary} &middot; ${candidate.salaryMatch}</div>
+      </div>`;
+  }
+
   function populateReviewCandidates(title) {
     const data = jobData[title];
     const cardList = document.getElementById('rcCardList');
@@ -2881,6 +3039,62 @@
         cardList.querySelectorAll('.rc-card').forEach(el => el.classList.remove('rc-active'));
         card.classList.add('rc-active');
         updateRcSidebar(c);
+      });
+
+      card.addEventListener('click', () => {
+        if (card.classList.contains('rc-expanded')) return;
+        // Collapse any other expanded card
+        cardList.querySelectorAll('.rc-card.rc-expanded').forEach(el => {
+          el.classList.remove('rc-expanded');
+          const body = el.querySelector('.rc-card-expand-body');
+          if (body) body.remove();
+        });
+        // Expand this card
+        card.classList.add('rc-expanded');
+        const expandBody = document.createElement('div');
+        expandBody.className = 'rc-card-expand-body';
+        expandBody.style.display = 'block';
+        expandBody.innerHTML = `
+          <div class="rc-card-tabs">
+            <button class="rc-card-tab active" data-tab="resume">Resume</button>
+            <button class="rc-card-tab" data-tab="prescreen">Pre-Screen Questions</button>
+            <button class="rc-card-tab" data-tab="details">Additional Details</button>
+          </div>
+          <div class="rc-card-tab-panel" id="expandPanel">
+            ${generateResumeHTML(c)}
+          </div>
+          <button class="rc-card-collapse-btn"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: middle; margin-right: 4px;"><polyline points="18 15 12 9 6 15"></polyline></svg>Collapse</button>`;
+        card.appendChild(expandBody);
+
+        // Tab switching
+        expandBody.querySelectorAll('.rc-card-tab').forEach(tab => {
+          tab.addEventListener('click', (e) => {
+            e.stopPropagation();
+            expandBody.querySelectorAll('.rc-card-tab').forEach(t => t.classList.remove('active'));
+            tab.classList.add('active');
+            const panel = expandBody.querySelector('.rc-card-tab-panel');
+            if (tab.dataset.tab === 'resume') {
+              panel.classList.remove('dark');
+              panel.innerHTML = generateResumeHTML(c);
+            } else if (tab.dataset.tab === 'prescreen') {
+              panel.classList.add('dark');
+              panel.innerHTML = '<p>Pre-screening questions and responses will appear here.</p>';
+            } else if (tab.dataset.tab === 'details') {
+              panel.classList.add('dark');
+              panel.innerHTML = generateDetailsHTML(c);
+            }
+          });
+        });
+
+        // Collapse button
+        expandBody.querySelector('.rc-card-collapse-btn').addEventListener('click', (e) => {
+          e.stopPropagation();
+          card.classList.remove('rc-expanded');
+          expandBody.remove();
+        });
+
+        // Scroll expanded card into view
+        setTimeout(() => card.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 50);
       });
 
       card.querySelectorAll('button').forEach(btn => {
@@ -3154,6 +3368,9 @@
     document.getElementById('jobDetailActions').style.display = 'none';
     document.getElementById('searchActions').style.display = 'none';
     document.getElementById('searchConsole').style.display = 'none';
+    detailDivider.style.display = 'none';
+    searchDivider.style.display = 'none';
+    jobBodyLinks.style.display = 'none';
     jobEditForm.style.display = '';
   }
 
@@ -3169,6 +3386,8 @@
     if (data && data.jobLink) document.getElementById('jobPostingLink').style.display = '';
     editJobBtn.style.display = '';
     document.getElementById('jobDetailActions').style.display = '';
+    detailDivider.style.display = '';
+    jobBodyLinks.style.display = '';
   }
 
   editJobBtn.addEventListener('click', () => {
