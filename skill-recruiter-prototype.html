@@ -550,6 +550,10 @@
     font-weight: 400;
   }
 
+  .job-count + .job-count {
+    margin-left: 24px;
+  }
+
   .job-req-id {
     font-size: 15px;
     font-weight: 400;
@@ -918,6 +922,27 @@
   .rc-card-actions button:hover {
     border-color: #f0f;
     background: rgba(255, 0, 255, 0.08);
+  }
+
+  .rc-card-actions button.shortlisted {
+    background: #f0f;
+    border-color: #f0f;
+    color: #000;
+    font-weight: 600;
+  }
+
+  /* Shortlisted card */
+  .rc-card.rc-shortlisted {
+    box-shadow: inset 8px 0 0 #f0f;
+  }
+
+  /* Skipped card */
+  .rc-card.rc-skipped {
+    opacity: 0.35;
+  }
+
+  .rc-card.rc-skipped:hover {
+    opacity: 0.7;
   }
 
   .rc-sidebar {
@@ -1356,7 +1381,7 @@
         <div class="mini-stat-row">
           <span class="mini-stat-num">0</span>
           <span class="mini-stat-divider"></span>
-          <span class="mini-stat-label">Candidates</span>
+          <span class="mini-stat-label">Matches</span>
         </div>
         <div class="mini-stat-row">
           <span class="mini-stat-num">0</span>
@@ -1364,7 +1389,7 @@
           <span class="mini-stat-label">Shortlist</span>
         </div>
         <div class="mini-stat-cta-spacer"></div>
-        <div class="mini-stat-cta">&rarr;&nbsp; <span class="mini-stat-cta-label">Find Candidates</span></div>
+        <div class="mini-stat-cta">&rarr;&nbsp; <span class="mini-stat-cta-label">Find Matches</span></div>
       </div>
     </div>
     <div class="tile-label">Senior Brand<br>Strategist</div>
@@ -1381,15 +1406,15 @@
         <div class="mini-stat-row">
           <span class="mini-stat-num">35</span>
           <span class="mini-stat-divider"></span>
-          <span class="mini-stat-label">Candidates</span>
+          <span class="mini-stat-label">Matches</span>
         </div>
         <div class="mini-stat-row">
-          <span class="mini-stat-num">16</span>
+          <span class="mini-stat-num">0</span>
           <span class="mini-stat-divider"></span>
           <span class="mini-stat-label">Shortlist</span>
         </div>
         <div class="mini-stat-cta-spacer"></div>
-        <div class="mini-stat-cta">&rarr;&nbsp; <span class="mini-stat-cta-label">Review Candidates</span></div>
+        <div class="mini-stat-cta">&rarr;&nbsp; <span class="mini-stat-cta-label">Review Matches</span></div>
       </div>
     </div>
     <div class="tile-label">Marketing Analytics<br>Manager</div>
@@ -1412,15 +1437,15 @@
         <div class="mini-stat-row">
           <span class="mini-stat-num">22</span>
           <span class="mini-stat-divider"></span>
-          <span class="mini-stat-label">Candidates</span>
+          <span class="mini-stat-label">Matches</span>
         </div>
         <div class="mini-stat-row">
-          <span class="mini-stat-num">8</span>
+          <span class="mini-stat-num">0</span>
           <span class="mini-stat-divider"></span>
           <span class="mini-stat-label">Shortlist</span>
         </div>
         <div class="mini-stat-cta-spacer"></div>
-        <div class="mini-stat-cta">&rarr;&nbsp; <span class="mini-stat-cta-label">Review Candidates</span></div>
+        <div class="mini-stat-cta">&rarr;&nbsp; <span class="mini-stat-cta-label">Review Matches</span></div>
       </div>
     </div>
     <div class="tile-label">Dev Team Lead</div>
@@ -1443,15 +1468,15 @@
         <div class="mini-stat-row">
           <span class="mini-stat-num">94</span>
           <span class="mini-stat-divider"></span>
-          <span class="mini-stat-label">Candidates</span>
+          <span class="mini-stat-label">Matches</span>
         </div>
         <div class="mini-stat-row">
-          <span class="mini-stat-num">38</span>
+          <span class="mini-stat-num">0</span>
           <span class="mini-stat-divider"></span>
           <span class="mini-stat-label">Shortlist</span>
         </div>
         <div class="mini-stat-cta-spacer"></div>
-        <div class="mini-stat-cta">&rarr;&nbsp; <span class="mini-stat-cta-label">Find More Candidates</span></div>
+        <div class="mini-stat-cta">&rarr;&nbsp; <span class="mini-stat-cta-label">Review Matches</span></div>
       </div>
     </div>
     <div class="tile-label">Sr Product Manager</div>
@@ -1470,15 +1495,15 @@
         <div class="mini-stat-row">
           <span class="mini-stat-num">115</span>
           <span class="mini-stat-divider"></span>
-          <span class="mini-stat-label">Candidates</span>
+          <span class="mini-stat-label">Matches</span>
         </div>
         <div class="mini-stat-row">
-          <span class="mini-stat-num">42</span>
+          <span class="mini-stat-num">0</span>
           <span class="mini-stat-divider"></span>
           <span class="mini-stat-label">Shortlist</span>
         </div>
         <div class="mini-stat-cta-spacer"></div>
-        <div class="mini-stat-cta">&rarr;&nbsp; <span class="mini-stat-cta-label">Review Candidates</span></div>
+        <div class="mini-stat-cta">&rarr;&nbsp; <span class="mini-stat-cta-label">Review Matches</span></div>
       </div>
     </div>
     <div class="tile-label">VP, Corporate<br>Communications</div>
@@ -1501,7 +1526,7 @@
         <div class="mini-stat-row">
           <span class="mini-stat-num">64</span>
           <span class="mini-stat-divider"></span>
-          <span class="mini-stat-label">Candidates</span>
+          <span class="mini-stat-label">Matches</span>
         </div>
         <div class="mini-stat-row">
           <span class="mini-stat-num">25</span>
@@ -1509,7 +1534,7 @@
           <span class="mini-stat-label">Shortlist</span>
         </div>
         <div class="mini-stat-cta-spacer"></div>
-        <div class="mini-stat-cta">&rarr;&nbsp; <span class="mini-stat-cta-label">Review Candidates</span></div>
+        <div class="mini-stat-cta">&rarr;&nbsp; <span class="mini-stat-cta-label">Review Matches</span></div>
       </div>
     </div>
     <div class="tile-label">UX Content Designer</div>
@@ -1526,7 +1551,7 @@
         <div class="mini-stat-row">
           <span class="mini-stat-num">48</span>
           <span class="mini-stat-divider"></span>
-          <span class="mini-stat-label">Candidates</span>
+          <span class="mini-stat-label">Matches</span>
         </div>
         <div class="mini-stat-row">
           <span class="mini-stat-num">20</span>
@@ -1534,7 +1559,7 @@
           <span class="mini-stat-label">Shortlist</span>
         </div>
         <div class="mini-stat-cta-spacer"></div>
-        <div class="mini-stat-cta">&rarr;&nbsp; <span class="mini-stat-cta-label">Review Candidates</span></div>
+        <div class="mini-stat-cta">&rarr;&nbsp; <span class="mini-stat-cta-label">Review Matches</span></div>
       </div>
     </div>
     <div class="tile-label">Staff Software<br>Engineer</div>
@@ -1551,7 +1576,7 @@
         <div class="mini-stat-row">
           <span class="mini-stat-num">17</span>
           <span class="mini-stat-divider"></span>
-          <span class="mini-stat-label">Candidates</span>
+          <span class="mini-stat-label">Matches</span>
         </div>
         <div class="mini-stat-row">
           <span class="mini-stat-num">5</span>
@@ -1559,7 +1584,7 @@
           <span class="mini-stat-label">Shortlist</span>
         </div>
         <div class="mini-stat-cta-spacer"></div>
-        <div class="mini-stat-cta">&rarr;&nbsp; <span class="mini-stat-cta-label">Review Candidates</span></div>
+        <div class="mini-stat-cta">&rarr;&nbsp; <span class="mini-stat-cta-label">Review Matches</span></div>
       </div>
     </div>
     <div class="tile-label">Head of People Ops</div>
@@ -1576,7 +1601,7 @@
         <div class="mini-stat-row">
           <span class="mini-stat-num">83</span>
           <span class="mini-stat-divider"></span>
-          <span class="mini-stat-label">Candidates</span>
+          <span class="mini-stat-label">Matches</span>
         </div>
         <div class="mini-stat-row">
           <span class="mini-stat-num">34</span>
@@ -1584,7 +1609,7 @@
           <span class="mini-stat-label">Shortlist</span>
         </div>
         <div class="mini-stat-cta-spacer"></div>
-        <div class="mini-stat-cta">&rarr;&nbsp; <span class="mini-stat-cta-label">Review Candidates</span></div>
+        <div class="mini-stat-cta">&rarr;&nbsp; <span class="mini-stat-cta-label">Review Matches</span></div>
       </div>
     </div>
     <div class="tile-label">Data Science Lead</div>
@@ -1603,7 +1628,7 @@
         <div class="mini-stat-row">
           <span class="mini-stat-num">29</span>
           <span class="mini-stat-divider"></span>
-          <span class="mini-stat-label">Candidates</span>
+          <span class="mini-stat-label">Matches</span>
         </div>
         <div class="mini-stat-row">
           <span class="mini-stat-num">11</span>
@@ -1611,7 +1636,7 @@
           <span class="mini-stat-label">Shortlist</span>
         </div>
         <div class="mini-stat-cta-spacer"></div>
-        <div class="mini-stat-cta">&rarr;&nbsp; <span class="mini-stat-cta-label">Find More Candidates</span></div>
+        <div class="mini-stat-cta">&rarr;&nbsp; <span class="mini-stat-cta-label">Review Matches</span></div>
       </div>
     </div>
     <div class="tile-label">Growth Marketing<br>Manager</div>
@@ -1634,7 +1659,7 @@
         <div class="mini-stat-row">
           <span class="mini-stat-num">41</span>
           <span class="mini-stat-divider"></span>
-          <span class="mini-stat-label">Candidates</span>
+          <span class="mini-stat-label">Matches</span>
         </div>
         <div class="mini-stat-row">
           <span class="mini-stat-num">15</span>
@@ -1642,7 +1667,7 @@
           <span class="mini-stat-label">Shortlist</span>
         </div>
         <div class="mini-stat-cta-spacer"></div>
-        <div class="mini-stat-cta">&rarr;&nbsp; <span class="mini-stat-cta-label">Review Candidates</span></div>
+        <div class="mini-stat-cta">&rarr;&nbsp; <span class="mini-stat-cta-label">Review Matches</span></div>
       </div>
     </div>
     <div class="tile-label">Principal Designer</div>
@@ -1659,7 +1684,7 @@
         <div class="mini-stat-row">
           <span class="mini-stat-num">156</span>
           <span class="mini-stat-divider"></span>
-          <span class="mini-stat-label">Candidates</span>
+          <span class="mini-stat-label">Matches</span>
         </div>
         <div class="mini-stat-row">
           <span class="mini-stat-num">58</span>
@@ -1667,7 +1692,7 @@
           <span class="mini-stat-label">Shortlist</span>
         </div>
         <div class="mini-stat-cta-spacer"></div>
-        <div class="mini-stat-cta">&rarr;&nbsp; <span class="mini-stat-cta-label">Review Candidates</span></div>
+        <div class="mini-stat-cta">&rarr;&nbsp; <span class="mini-stat-cta-label">Review Matches</span></div>
       </div>
     </div>
     <div class="tile-label">DevOps Engineer II</div>
@@ -1684,7 +1709,7 @@
         <div class="mini-stat-row">
           <span class="mini-stat-num">72</span>
           <span class="mini-stat-divider"></span>
-          <span class="mini-stat-label">Candidates</span>
+          <span class="mini-stat-label">Matches</span>
         </div>
         <div class="mini-stat-row">
           <span class="mini-stat-num">28</span>
@@ -1692,7 +1717,7 @@
           <span class="mini-stat-label">Shortlist</span>
         </div>
         <div class="mini-stat-cta-spacer"></div>
-        <div class="mini-stat-cta">&rarr;&nbsp; <span class="mini-stat-cta-label">Review Candidates</span></div>
+        <div class="mini-stat-cta">&rarr;&nbsp; <span class="mini-stat-cta-label">Review Matches</span></div>
       </div>
     </div>
     <div class="tile-label">Director of Sales</div>
@@ -1709,7 +1734,7 @@
         <div class="mini-stat-row">
           <span class="mini-stat-num">38</span>
           <span class="mini-stat-divider"></span>
-          <span class="mini-stat-label">Candidates</span>
+          <span class="mini-stat-label">Matches</span>
         </div>
         <div class="mini-stat-row">
           <span class="mini-stat-num">14</span>
@@ -1717,7 +1742,7 @@
           <span class="mini-stat-label">Shortlist</span>
         </div>
         <div class="mini-stat-cta-spacer"></div>
-        <div class="mini-stat-cta">&rarr;&nbsp; <span class="mini-stat-cta-label">Review Candidates</span></div>
+        <div class="mini-stat-cta">&rarr;&nbsp; <span class="mini-stat-cta-label">Review Matches</span></div>
       </div>
     </div>
     <div class="tile-label">Mobile Engineer (iOS)</div>
@@ -1736,7 +1761,7 @@
         <div class="mini-stat-row">
           <span class="mini-stat-num">19</span>
           <span class="mini-stat-divider"></span>
-          <span class="mini-stat-label">Candidates</span>
+          <span class="mini-stat-label">Matches</span>
         </div>
         <div class="mini-stat-row">
           <span class="mini-stat-num">7</span>
@@ -1744,7 +1769,7 @@
           <span class="mini-stat-label">Shortlist</span>
         </div>
         <div class="mini-stat-cta-spacer"></div>
-        <div class="mini-stat-cta">&rarr;&nbsp; <span class="mini-stat-cta-label">Review Candidates</span></div>
+        <div class="mini-stat-cta">&rarr;&nbsp; <span class="mini-stat-cta-label">Review Matches</span></div>
       </div>
     </div>
     <div class="tile-label">Content Strategy<br>Lead</div>
@@ -1761,7 +1786,7 @@
         <div class="mini-stat-row">
           <span class="mini-stat-num">8</span>
           <span class="mini-stat-divider"></span>
-          <span class="mini-stat-label">Candidates</span>
+          <span class="mini-stat-label">Matches</span>
         </div>
         <div class="mini-stat-row">
           <span class="mini-stat-num">3</span>
@@ -1769,7 +1794,7 @@
           <span class="mini-stat-label">Shortlist</span>
         </div>
         <div class="mini-stat-cta-spacer"></div>
-        <div class="mini-stat-cta">&rarr;&nbsp; <span class="mini-stat-cta-label">Review Candidates</span></div>
+        <div class="mini-stat-cta">&rarr;&nbsp; <span class="mini-stat-cta-label">Review Matches</span></div>
       </div>
     </div>
     <div class="tile-label">Security Architect</div>
@@ -1785,6 +1810,7 @@
         <div class="job-req-id" id="jobReqId"></div>
       </div>
       <span class="job-count" id="jobCount"></span>
+      <span class="job-count" id="jobShortlistCount" style="display:none"></span>
     </div>
     <hr class="job-divider">
     <div class="job-body-cols">
@@ -1802,11 +1828,11 @@
         <div class="job-actions" id="jobDetailActions">
           <div class="job-action" id="findCandidatesBtn">
             <span class="action-icon"><span class="action-hex-border"></span><span class="action-hex-fill"></span><svg viewBox="0 0 24 24"><circle cx="10" cy="10" r="5" fill="none"></circle><line x1="13.5" y1="13.5" x2="19" y2="19"></line></svg></span>
-            Find Candidates
+            Find Matches
           </div>
           <div class="job-action" id="reviewCandidatesSummaryBtn">
             <span class="action-icon"><span class="action-hex-border"></span><span class="action-hex-fill"></span><svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="13 6 19 12 13 18"></polyline></svg></span>
-            Review Candidates
+            Review Matches
           </div>
           <div class="job-action all-jobs-btn">
             <span class="action-icon"><svg viewBox="0 0 24 24"><line x1="18" y1="18" x2="6" y2="6"></line><polyline points="6 15 6 6 15 6"></polyline></svg></span>
@@ -1817,7 +1843,7 @@
         <div class="job-actions" id="searchActions" style="display: none;">
           <div class="job-action" id="reviewCandidatesBtn">
             <span class="action-icon"><span class="action-hex-border"></span><span class="action-hex-fill"></span><svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="13 6 19 12 13 18"></polyline></svg></span>
-            Review Candidates
+            Review Matches
           </div>
           <div class="job-action" id="modifySearchBtn">
             <span class="action-icon"><span class="action-hex-border"></span><span class="action-hex-fill"></span><svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="13 6 19 12 13 18"></polyline></svg></span>
@@ -1922,6 +1948,7 @@
           <div class="job-req-id" id="rcReqId"></div>
         </div>
         <span class="job-count" id="rcJobCount"></span>
+        <span class="job-count" id="rcShortlistCount" style="display:none"></span>
       </div>
       <hr class="job-divider" style="margin-bottom:0">
     </div>
@@ -1933,17 +1960,17 @@
           <div class="rc-filter-group">
             <span class="rc-filter-label">Sort</span>
             <select class="form-select rc-filter-select" id="rcSortSelect">
-              <option value="all">All</option>
-              <option value="shortlist">Shortlist</option>
-              <option value="skilled">Skilled</option>
+              <option value="match">Match</option>
+              <option value="name">Name</option>
+              <option value="status">Status</option>
             </select>
           </div>
           <div class="rc-filter-group">
             <span class="rc-filter-label">Filter</span>
             <select class="form-select rc-filter-select" id="rcFilterSelect">
-              <option value="match">Match</option>
-              <option value="name">Name</option>
-              <option value="status">Status</option>
+              <option value="all">All</option>
+              <option value="shortlisted">Shortlisted</option>
+              <option value="skipped">Skipped</option>
             </select>
           </div>
         </div>
@@ -1961,7 +1988,7 @@
           </div>
           <div class="job-action" id="rcFindMore">
             <span class="action-icon"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"></circle><line x1="16" y1="16" x2="21" y2="21"></line></svg></span>
-            Find Candidates
+            Find Matches
           </div>
           <div class="job-action all-jobs-btn">
             <span class="action-icon"><svg viewBox="0 0 24 24"><line x1="18" y1="18" x2="6" y2="6"></line><polyline points="6 15 6 6 15 6"></polyline></svg></span>
@@ -2676,7 +2703,7 @@
   document.querySelectorAll('.tile:not(.disabled):not(.tile-new)').forEach(tile => {
     tile.addEventListener('click', (e) => {
       const ctaLabel = tile.querySelector('.mini-stat-cta-label');
-      const goToReview = ctaLabel && ctaLabel.textContent === 'Review Candidates';
+      const goToReview = ctaLabel && ctaLabel.textContent === 'Review Matches';
       openJobDetail(tile, e, goToReview);
     });
   });
@@ -3006,6 +3033,29 @@
       </div>`;
   }
 
+  function updateShortlistCount() {
+    const count = document.querySelectorAll('.rc-card.rc-shortlisted').length;
+    const jobEl = document.getElementById('jobShortlistCount');
+    const rcEl = document.getElementById('rcShortlistCount');
+    if (count > 0) {
+      const html = count + ' <span class="job-count-label">Shortlisted</span>';
+      jobEl.innerHTML = html;
+      rcEl.innerHTML = html;
+      jobEl.style.display = '';
+      rcEl.style.display = '';
+    } else {
+      jobEl.style.display = 'none';
+      rcEl.style.display = 'none';
+    }
+    // Update tile shortlist stat
+    if (currentTile) {
+      const statNums = currentTile.querySelectorAll('.mini-stat-num');
+      if (statNums.length >= 2) {
+        statNums[1].textContent = count;
+      }
+    }
+  }
+
   function populateReviewCandidates(title) {
     const data = jobData[title];
     const cardList = document.getElementById('rcCardList');
@@ -3097,8 +3147,40 @@
         setTimeout(() => card.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 50);
       });
 
-      card.querySelectorAll('button').forEach(btn => {
-        btn.addEventListener('click', (e) => e.stopPropagation());
+      const shortlistBtn = card.querySelector('.rc-card-actions button:first-child');
+      const skipBtn = card.querySelector('.rc-card-actions button:last-child');
+
+      shortlistBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (card.classList.contains('rc-shortlisted')) {
+          card.classList.remove('rc-shortlisted');
+          shortlistBtn.classList.remove('shortlisted');
+          shortlistBtn.textContent = 'Shortlist';
+          skipBtn.style.display = '';
+        } else {
+          card.classList.remove('rc-skipped');
+          card.classList.add('rc-shortlisted');
+          shortlistBtn.classList.add('shortlisted');
+          shortlistBtn.textContent = 'Shortlisted';
+          skipBtn.style.display = '';
+          skipBtn.textContent = 'Skip';
+        }
+        updateShortlistCount();
+      });
+
+      skipBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (card.classList.contains('rc-skipped')) {
+          card.classList.remove('rc-skipped');
+          skipBtn.textContent = 'Skip';
+        } else {
+          card.classList.remove('rc-shortlisted');
+          shortlistBtn.classList.remove('shortlisted');
+          shortlistBtn.textContent = 'Shortlist';
+          card.classList.add('rc-skipped');
+          skipBtn.textContent = 'Skipped';
+        }
+        updateShortlistCount();
       });
 
       cardList.appendChild(card);
@@ -3314,7 +3396,7 @@
           <div class="mini-stat-row">
             <span class="mini-stat-num">0</span>
             <span class="mini-stat-divider"></span>
-            <span class="mini-stat-label">Candidates</span>
+            <span class="mini-stat-label">Matches</span>
           </div>
           <div class="mini-stat-row">
             <span class="mini-stat-num">0</span>
@@ -3322,7 +3404,7 @@
             <span class="mini-stat-label">Shortlist</span>
           </div>
         <div class="mini-stat-cta-spacer"></div>
-        <div class="mini-stat-cta">&rarr;&nbsp; <span class="mini-stat-cta-label">Find Candidates</span></div>
+        <div class="mini-stat-cta">&rarr;&nbsp; <span class="mini-stat-cta-label">Find Matches</span></div>
         </div>
       </div>
       <div class="tile-label">${labelHTML}</div>
@@ -3535,15 +3617,9 @@
     animateCount(pick, bump);
   }, 3000);
 
-  // Logo click resets counts to defaults
+  // Logo click returns to all jobs grid
   document.getElementById('headerLogo').addEventListener('click', () => {
-    activeTiles.forEach(t => {
-      t.current = t.defaultCount;
-      t.numberEl.textContent = t.defaultCount;
-      if (t.candidateStat) t.candidateStat.textContent = t.defaultCount;
-      const title = getTileTitle(t.tile);
-      if (jobData[title]) jobData[title].count = t.defaultCount;
-    });
+    navigateToJobs();
   });
 
   // ========== STARFIELD ==========
