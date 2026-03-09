@@ -3104,11 +3104,13 @@
   function updateRcSidebar(candidate) {
     document.getElementById('rcMatchSummary').textContent = candidate.matchSummary;
     const metaList = document.getElementById('rcMetaList');
+    const title = rcJobTitle.textContent;
+    const jobCommute = jobData[title] ? jobData[title].commute : '';
     metaList.innerHTML = [
       candidate.candidateLocation,
-      candidate.openTo,
+      jobCommute,
       candidate.salaryMatch,
-      candidate.availability
+      'Available'
     ].map(v => `<li class="rc-meta-item"><span class="rc-meta-check">&#10003;</span>${v}</li>`).join('');
   }
 
