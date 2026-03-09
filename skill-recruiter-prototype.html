@@ -78,6 +78,33 @@
     letter-spacing: 0.5px;
   }
 
+  /* ========== HERO LOGO ========== */
+  .hero-logo {
+    width: 100%;
+    padding: 15vh 0 10vh;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 17px;
+    pointer-events: none;
+  }
+
+  .hero-diamond {
+    width: 38px;
+    height: 58px;
+    background: #f0f;
+    clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+  }
+
+  .hero-text {
+    font-family: 'Skill Sans', 'IBM Plex Sans', sans-serif;
+    font-size: 77px;
+    font-weight: 400;
+    letter-spacing: 1px;
+    color: rgba(255, 255, 255, 0.85);
+  }
+
   .header-nav {
     display: flex;
     gap: 4px;
@@ -147,7 +174,7 @@
     display: grid;
     grid-template-columns: repeat(5, 1fr);
     gap: 0;
-    padding: 74px 240px 60px;
+    padding: 0 240px 60px;
     margin: 0 auto;
     transition: transform 0.9s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.9s cubic-bezier(0.4, 0, 0.2, 1);
   }
@@ -654,8 +681,8 @@
 
   .search-console.open {
     padding: 24px;
-    min-height: 280px;
-    max-height: 280px;
+    min-height: 400px;
+    max-height: 400px;
   }
 
   .search-cursor {
@@ -845,7 +872,7 @@
 
   .rc-card {
     border: 1px solid rgba(255, 255, 255, 0.35);
-    padding: 18px 24px;
+    padding: 18px;
     display: flex;
     align-items: center;
     cursor: pointer;
@@ -902,25 +929,28 @@
   .rc-card-actions {
     flex-shrink: 0;
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     gap: 6px;
+    align-self: center;
   }
 
   .rc-card-actions button {
-    font-family: 'IBM Plex Sans', sans-serif;
-    font-size: 12px;
-    font-weight: 500;
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     color: rgba(255, 255, 255, 0.85);
     background: transparent;
     border: 1px solid rgba(255, 255, 255, 0.4);
-    padding: 5px 18px;
+    padding: 0;
     cursor: pointer;
     transition: border-color 0.2s ease, background 0.2s ease;
-    text-align: center;
   }
 
   .rc-card-actions button:hover {
     border-color: #f0f;
+    color: #f0f;
     background: rgba(255, 0, 255, 0.08);
   }
 
@@ -928,7 +958,6 @@
     background: #f0f;
     border-color: #f0f;
     color: #000;
-    font-weight: 600;
   }
 
   /* Shortlisted card */
@@ -1127,7 +1156,7 @@
   }
 
   .job-title-input {
-    font-family: 'Skill Sans', 'IBM Plex Sans', sans-serif;
+    font-family: 'IBM Plex Sans', sans-serif;
     font-size: 32px;
     font-weight: 400;
     color: rgba(255, 255, 255, 0.85);
@@ -1146,6 +1175,7 @@
   }
 
   .job-desc-input {
+    min-height: 300px;
     overflow-y: auto;
     font-size: 16px;
     line-height: 1.7;
@@ -1350,12 +1380,17 @@
 
 <div class="starfield" id="starfield"></div>
 
-<div class="header">
-  <div class="header-dot"></div>
-  <div class="header-title" id="headerLogo" style="cursor: pointer;">Skill Recruiter</div>
+<div class="header" id="headerBar">
+  <div class="header-dot" id="headerDot" style="opacity: 0;"></div>
+  <div class="header-title" id="headerLogo" style="cursor: pointer; opacity: 0;">Skill Recruiter</div>
 </div>
 
 <div class="grid">
+
+  <div class="hero-logo" id="heroLogo" style="grid-column: 1 / -1;">
+    <div class="hero-diamond"></div>
+    <div class="hero-text">Skill Recruiter</div>
+  </div>
 
   <!-- Row 1 -->
 
@@ -2647,7 +2682,7 @@
   }
 
   // Shared function: open job detail from a tile
-  function openJobDetail(tile, e, goToReview) {
+  function openJobDetail(tile, e, goToReview, goToSearch) {
     if (isAnimating) return;
     isAnimating = true;
 
@@ -2686,6 +2721,11 @@
     const tileRect = tile.getBoundingClientRect();
     const tileCx = tileRect.left + tileRect.width / 2;
     const tileCy = tileRect.top + tileRect.height / 2;
+
+    // Fade out hero logo quickly
+    heroLogo.style.transition = 'opacity 0.25s ease';
+    heroLogo.style.opacity = '0';
+    showCornerLogo();
 
     // Scatter stars
     scatterStars();
@@ -2757,6 +2797,7 @@
         reviewCandidatesScreen.classList.add('active');
       } else {
         jobDetail.classList.add('active');
+        if (goToSearch) showConsoleComplete();
       }
 
       setTimeout(() => {
@@ -2776,7 +2817,6 @@
         tile.style.pointerEvents = '';
         window.scrollTo(0, 0);
         isAnimating = false;
-        if (!goToReview && hasDiamonds) showConsoleComplete();
       }, 400);
     }, 400);
   }
@@ -2786,7 +2826,8 @@
     tile.addEventListener('click', (e) => {
       const ctaLabel = tile.querySelector('.mini-stat-cta-label');
       const goToReview = ctaLabel && ctaLabel.textContent === 'Review Matches';
-      openJobDetail(tile, e, goToReview);
+      const goToSearch = !!tile.querySelector('.tile-diamonds');
+      openJobDetail(tile, e, goToReview, goToSearch);
     });
   });
 
@@ -2894,6 +2935,11 @@
       grid.classList.remove('zoomed');
       grid.classList.remove('zooming-out');
       window.scrollTo(0, savedScrollY);
+
+      // Restore hero if scroll is near top
+      hideCornerLogo();
+      heroLogo.style.transition = 'opacity 0.4s ease';
+      heroLogo.style.opacity = '1';
 
       // Force reflow so tile rects are accurate
       document.body.offsetHeight;
@@ -3163,8 +3209,8 @@
           <div class="rc-card-location">${c.location}</div>
         </div>
         <div class="rc-card-actions">
-          <button>Shortlist</button>
-          <button>Skip</button>
+          <button title="Shortlist"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 12 10 18 20 6"/></svg></button>
+          <button title="Skip"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg></button>
         </div>`;
 
       card.addEventListener('mouseenter', () => {
@@ -3173,8 +3219,14 @@
         updateRcSidebar(c);
       });
 
-      card.addEventListener('click', () => {
-        if (card.classList.contains('rc-expanded')) return;
+      card.addEventListener('click', (e) => {
+        if (card.classList.contains('rc-expanded')) {
+          if (e.target.closest('.rc-card-expand-body')) return;
+          card.classList.remove('rc-expanded');
+          const body = card.querySelector('.rc-card-expand-body');
+          if (body) body.remove();
+          return;
+        }
         // Collapse any other expanded card
         cardList.querySelectorAll('.rc-card.rc-expanded').forEach(el => {
           el.classList.remove('rc-expanded');
@@ -3237,15 +3289,10 @@
         if (card.classList.contains('rc-shortlisted')) {
           card.classList.remove('rc-shortlisted');
           shortlistBtn.classList.remove('shortlisted');
-          shortlistBtn.textContent = 'Shortlist';
-          skipBtn.style.display = '';
         } else {
           card.classList.remove('rc-skipped');
           card.classList.add('rc-shortlisted');
           shortlistBtn.classList.add('shortlisted');
-          shortlistBtn.textContent = 'Shortlisted';
-          skipBtn.style.display = '';
-          skipBtn.textContent = 'Skip';
         }
         updateShortlistCount();
       });
@@ -3254,13 +3301,10 @@
         e.stopPropagation();
         if (card.classList.contains('rc-skipped')) {
           card.classList.remove('rc-skipped');
-          skipBtn.textContent = 'Skip';
         } else {
           card.classList.remove('rc-shortlisted');
           shortlistBtn.classList.remove('shortlisted');
-          shortlistBtn.textContent = 'Shortlist';
           card.classList.add('rc-skipped');
-          skipBtn.textContent = 'Skipped';
         }
         updateShortlistCount();
       });
@@ -3330,6 +3374,9 @@
     const tileCx = tileRect.left + tileRect.width / 2;
     const tileCy = tileRect.top + tileRect.height / 2;
 
+    heroLogo.style.transition = 'opacity 0.25s ease';
+    heroLogo.style.opacity = '0';
+    showCornerLogo();
     scatterStars();
 
     // Kill hover state and fade out tile content
@@ -3666,6 +3713,25 @@
     editingTitle = null;
   });
 
+  // ========== HERO LOGO ==========
+  const heroLogo = document.getElementById('heroLogo');
+  const headerDot = document.getElementById('headerDot');
+  const headerLogoEl = document.getElementById('headerLogo');
+
+  function showCornerLogo() {
+    headerDot.style.transition = 'opacity 0.4s ease';
+    headerLogoEl.style.transition = 'opacity 0.4s ease';
+    headerDot.style.opacity = '1';
+    headerLogoEl.style.opacity = '1';
+  }
+
+  function hideCornerLogo() {
+    headerDot.style.transition = 'opacity 0.4s ease';
+    headerLogoEl.style.transition = 'opacity 0.4s ease';
+    headerDot.style.opacity = '0';
+    headerLogoEl.style.opacity = '0';
+  }
+
   // ========== CANDIDATE COUNT TICK-UP ==========
   const diamondTiles = document.querySelectorAll('.tile-diamonds');
   const activeTiles = [];
@@ -3712,6 +3778,10 @@
 
   // Logo click returns to all jobs grid
   document.getElementById('headerLogo').addEventListener('click', () => {
+    headerDot.style.transition = 'opacity 0.15s ease';
+    headerLogoEl.style.transition = 'opacity 0.15s ease';
+    headerDot.style.opacity = '0';
+    headerLogoEl.style.opacity = '0';
     navigateToJobs();
   });
 
