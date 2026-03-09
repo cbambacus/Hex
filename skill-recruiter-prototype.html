@@ -521,27 +521,41 @@
     color: #f0f;
   }
 
+  .job-title-block {
+    width: 600px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+  }
+
   .job-title {
     font-family: 'Skill Sans', 'IBM Plex Sans', sans-serif;
     font-size: 32px;
     font-weight: 400;
     color: rgba(255, 255, 255, 0.85);
-    width: 680px;
-    flex-shrink: 0;
   }
 
   .job-count {
+    font-family: 'Skill Sans', 'IBM Plex Sans', sans-serif;
     font-size: 32px;
-    font-weight: 300;
+    font-weight: 400;
     color: rgba(255, 255, 255, 0.85);
     margin-left: 40px;
+    white-space: nowrap;
+  }
+
+  .job-count-label {
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 15px;
+    font-weight: 400;
   }
 
   .job-req-id {
     font-size: 15px;
     font-weight: 400;
     color: rgba(255, 255, 255, 0.85);
-    margin-top: 8px;
+    margin-left: auto;
   }
 
   .job-divider {
@@ -556,7 +570,7 @@
   }
 
   .job-body-left {
-    width: 680px;
+    width: 600px;
     flex-shrink: 0;
   }
 
@@ -601,28 +615,6 @@
     line-height: 1.7;
     color: rgba(255, 255, 255, 0.65);
     margin-bottom: 16px;
-  }
-
-  .job-description strong {
-    color: rgba(255, 255, 255, 0.85);
-    font-weight: 500;
-    display: block;
-    margin-top: 20px;
-    margin-bottom: 4px;
-  }
-
-  .job-description strong:first-child {
-    margin-top: 0;
-  }
-
-  .job-description ul {
-    list-style: disc;
-    padding-left: 20px;
-    margin: 0;
-  }
-
-  .job-description li {
-    margin-bottom: 2px;
   }
 
   /* ========== SEARCH CONSOLE ========== */
@@ -794,32 +786,11 @@
     gap: 40px;
   }
 
-  .review-candidates .job-req-id {
-    color: rgba(255, 255, 255, 0.85);
-  }
-
-  .rc-req-row {
-    display: flex;
-    align-items: baseline;
-    gap: 20px;
-  }
-
-  .rc-show-summary {
-    font-size: 15px;
-    font-weight: 400;
-    color: rgba(255, 255, 255, 0.85);
-    text-decoration: underline;
-    cursor: pointer;
-    transition: color 0.2s ease;
-  }
-
-  .rc-show-summary:hover {
-    color: #f0f;
-  }
 
   /* ========== REVIEW CANDIDATES CARDS ========== */
   .rc-card-list {
-    flex: 1;
+    width: 680px;
+    flex-shrink: 0;
     display: flex;
     flex-direction: column;
     gap: 16px;
@@ -902,8 +873,7 @@
   }
 
   .rc-sidebar {
-    width: 260px;
-    flex-shrink: 0;
+    flex: 1;
     position: sticky;
     top: 28px;
     align-self: flex-start;
@@ -1010,28 +980,6 @@
     content: attr(data-placeholder);
     color: #888;
     font-style: italic;
-  }
-
-  .job-desc-input strong {
-    color: rgba(255, 255, 255, 0.85);
-    font-weight: 500;
-    display: block;
-    margin-top: 20px;
-    margin-bottom: 4px;
-  }
-
-  .job-desc-input strong:first-child {
-    margin-top: 0;
-  }
-
-  .job-desc-input ul {
-    list-style: disc;
-    padding-left: 20px;
-    margin: 0;
-  }
-
-  .job-desc-input li {
-    margin-bottom: 2px;
   }
 
   .form-cols {
@@ -1676,11 +1624,11 @@
 <div class="job-detail" id="jobDetail">
   <div class="job-detail-inner">
     <div class="job-header-row">
-      <h1 class="job-title" id="jobTitle"></h1>
+      <div class="job-title-block">
+        <h1 class="job-title" id="jobTitle"></h1>
+        <div class="job-req-id" id="jobReqId"></div>
+      </div>
       <span class="job-count" id="jobCount"></span>
-    </div>
-    <div class="rc-req-row">
-      <div class="job-req-id" id="jobReqId"></div>
     </div>
     <hr class="job-divider">
     <div class="job-body-cols">
@@ -1804,13 +1752,11 @@
   <div class="rc-fixed-header">
     <div class="rc-fixed-header-inner">
       <div class="job-header-row">
-        <h1 class="job-title" id="rcJobTitle"></h1>
+        <div class="job-title-block">
+          <h1 class="job-title" id="rcJobTitle"></h1>
+          <div class="job-req-id" id="rcReqId"></div>
+        </div>
         <span class="job-count" id="rcJobCount"></span>
-      </div>
-      <div class="rc-req-row">
-        <div class="job-req-id" id="rcReqId"></div>
-        <a class="rc-show-summary" id="rcShowSummary">Show Job Summary</a>
-        <a class="rc-show-summary" id="rcFindMore">Find More Candidates</a>
       </div>
       <hr class="job-divider" style="margin-bottom:0">
     </div>
@@ -1822,6 +1768,16 @@
         <ul class="rc-meta-list" id="rcMetaList"></ul>
         <div class="rc-sidebar-heading">Match Summary</div>
         <p class="rc-match-summary" id="rcMatchSummary"></p>
+        <div class="job-actions">
+          <div class="job-action" id="rcShowSummary">
+            <span class="action-icon"><svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="13 6 19 12 13 18"></polyline></svg></span>
+            Job Summary
+          </div>
+          <div class="job-action" id="rcFindMore">
+            <span class="action-icon"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"></circle><line x1="16" y1="16" x2="21" y2="21"></line></svg></span>
+            Find Candidates
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -1965,7 +1921,7 @@
       reqId: 'MKT-2026-0041',
       currency: 'USD',
       salary: '$130,000 \u2013 $150,000',
-      description: '<strong>Primary Role:</strong>The Senior Brand Strategist leads global brand positioning and long-term strategy across markets, defining brand architecture and messaging frameworks, translating research into actionable creative briefs.<strong>Required Skills:</strong><ul><li>Brand architecture and messaging framework development</li><li>Executive presentation and stakeholder communication</li><li>Research translation into creative briefs</li></ul><strong>Preferred Skills:</strong><ul><li>Multi-market or global brand strategy</li><li>Agency partnership management</li></ul><strong>Years of Experience:</strong><ul><li>8+ years of brand strategy experience</li></ul><strong>Industry Experience:</strong><ul><li>Multi-market or global environments preferred</li></ul><strong>Education Requirements:</strong><ul><li>Bachelor\u2019s degree in Marketing, Communications, or related field</li></ul><strong>Absolute Must-Haves:</strong><ul><li>Proven ability to shape compelling narratives that drive business growth</li><li>Strong executive presentation skills</li></ul>'
+      description: 'We are looking for a Senior Brand Strategist to lead global brand positioning and long-term strategy across markets. This role defines brand architecture and messaging frameworks, translating consumer research into actionable creative briefs that drive business growth.<br><br>The ideal candidate brings 8+ years of brand strategy experience with a proven ability to shape compelling narratives. Strong executive presentation skills and experience managing agency partnerships in multi-market environments are essential.'
     },
     'Marketing Analytics Manager': {
       count: 35,
@@ -1977,7 +1933,7 @@
       reqId: 'MKT-2026-0038',
       currency: 'USD',
       salary: '$115,000 \u2013 $135,000',
-      description: '<strong>Primary Role:</strong>The Marketing Analytics Manager owns the measurement framework across all digital and offline marketing channels, building dashboards, designing attribution models, and translating campaign performance data into strategic recommendations.<strong>Required Skills:</strong><ul><li>Strong SQL proficiency</li><li>Dashboard and attribution model design</li><li>Data storytelling for non-technical stakeholders</li></ul><strong>Preferred Skills:</strong><ul><li>Experience with Tableau or Looker</li><li>Marketing mix modeling</li></ul><strong>Years of Experience:</strong><ul><li>5+ years in a marketing analytics function</li></ul><strong>Industry Experience:</strong><ul><li>Digital and offline marketing channels</li></ul><strong>Education Requirements:</strong><ul><li>Bachelor\u2019s degree in Statistics, Math, or related quantitative field</li></ul><strong>Absolute Must-Haves:</strong><ul><li>Strong SQL skills</li><li>Ability to influence non-technical stakeholders with data</li></ul>'
+      description: 'We are seeking a Marketing Analytics Manager to own the measurement framework across all digital and offline marketing channels. This role builds dashboards, designs attribution models, and translates campaign performance data into strategic recommendations for leadership.<br><br>The ideal candidate brings 5+ years of marketing analytics experience with strong SQL proficiency and data storytelling skills. Experience with Tableau or Looker and a background in marketing mix modeling are highly valued.'
     },
     'Dev Team Lead': {
       count: 22,
@@ -1989,7 +1945,7 @@
       reqId: 'ENG-2026-0115',
       currency: 'USD',
       salary: '$155,000 \u2013 $180,000',
-      description: '<strong>Primary Role:</strong>The Dev Team Lead manages a squad of 6\u20138 engineers building core platform services, owning sprint planning, code review standards, and architectural decisions while remaining hands-on with the codebase.<strong>Required Skills:</strong><ul><li>Distributed systems expertise</li><li>Sprint planning and code review leadership</li><li>Hands-on software development</li></ul><strong>Preferred Skills:</strong><ul><li>Mentorship and team development</li><li>Architectural decision-making</li></ul><strong>Years of Experience:</strong><ul><li>7+ years of software development, 2+ years in leadership</li></ul><strong>Industry Experience:</strong><ul><li>Platform or infrastructure engineering</li></ul><strong>Education Requirements:</strong><ul><li>Bachelor\u2019s degree in Computer Science or equivalent</li></ul><strong>Absolute Must-Haves:</strong><ul><li>Strong mentorship skills</li><li>Track record of shipping high-quality software on schedule</li></ul>'
+      description: 'We are looking for a Dev Team Lead to manage a squad of 6–8 engineers building core platform services. This role owns sprint planning, code review standards, and architectural decisions while remaining hands-on with the codebase on a daily basis.<br><br>The ideal candidate brings 7+ years of software development experience with at least 2 years in a leadership role. Deep expertise in distributed systems, strong mentorship skills, and a track record of shipping high-quality software on schedule are essential.'
     },
     'Sr Product Manager': {
       count: 94,
@@ -2001,7 +1957,7 @@
       reqId: 'PRD-2026-0072',
       currency: 'USD',
       salary: '$145,000 \u2013 $170,000',
-      description: '<strong>Primary Role:</strong>The Sr Product Manager drives the product roadmap for our enterprise SaaS platform, balancing customer needs with business goals and technical feasibility.<strong>Required Skills:</strong><ul><li>User research and requirements definition</li><li>Cross-functional collaboration with engineering and design</li><li>Strong analytical skills</li></ul><strong>Preferred Skills:</strong><ul><li>B2B SaaS product experience</li><li>Agile methodologies</li></ul><strong>Years of Experience:</strong><ul><li>6+ years of product management experience</li></ul><strong>Industry Experience:</strong><ul><li>Enterprise SaaS preferred</li></ul><strong>Education Requirements:</strong><ul><li>Bachelor\u2019s degree in Business, Engineering, or related field</li></ul><strong>Absolute Must-Haves:</strong><ul><li>Strong analytical skills</li><li>Excellent cross-functional collaboration</li></ul>'
+      description: 'We are seeking a Senior Product Manager to drive the product roadmap for our enterprise SaaS platform. This role balances customer needs with business goals and technical feasibility, working cross-functionally with engineering and design teams.<br><br>The ideal candidate brings 6+ years of product management experience with strong analytical skills and a background in B2B SaaS. Excellent cross-functional collaboration and a data-driven approach to prioritization are essential.'
     },
     'VP, Corporate Communications': {
       count: 115,
@@ -2013,7 +1969,7 @@
       reqId: 'COM-2026-0009',
       currency: 'USD',
       salary: '$185,000 \u2013 $220,000',
-      description: '<strong>Primary Role:</strong>The VP of Corporate Communications shapes and protects the company\u2019s public narrative across media, investor relations, and internal channels, leading a team of communications professionals.<strong>Required Skills:</strong><ul><li>Crisis response protocol management</li><li>Executive thought leadership development</li><li>Exceptional writing and presentation skills</li></ul><strong>Preferred Skills:</strong><ul><li>Strong media network</li><li>Technology or financial services experience</li></ul><strong>Years of Experience:</strong><ul><li>12+ years in corporate communications or public relations</li></ul><strong>Industry Experience:</strong><ul><li>Technology or financial services preferred</li></ul><strong>Education Requirements:</strong><ul><li>Bachelor\u2019s degree in Communications, Journalism, or related field</li></ul><strong>Absolute Must-Haves:</strong><ul><li>Exceptional writing and presentation skills</li><li>Strong media network</li></ul>'
+      description: 'We are looking for a VP of Corporate Communications to shape and protect the company’s public narrative across media, investor relations, and internal channels. This executive role leads a team of communications professionals and serves as a key advisor to the C-suite.<br><br>The ideal candidate brings 12+ years of corporate communications experience with exceptional writing and presentation skills. A strong media network and experience in technology or financial services are highly valued.'
     },
     'UX Content Designer': {
       count: 64,
@@ -2025,7 +1981,7 @@
       reqId: 'DES-2026-0027',
       currency: 'USD',
       salary: '$100,000 \u2013 $120,000',
-      description: '<strong>Primary Role:</strong>The UX Content Designer crafts clear, concise microcopy and content strategy for product interfaces, partnering with UX designers and researchers to ensure every touchpoint communicates effectively.<strong>Required Skills:</strong><ul><li>UX writing and microcopy</li><li>Content strategy for product interfaces</li><li>Familiarity with Figma</li></ul><strong>Preferred Skills:</strong><ul><li>Background in linguistics, journalism, or technical writing</li><li>User research collaboration</li></ul><strong>Years of Experience:</strong><ul><li>4+ years of UX writing or content design experience</li></ul><strong>Industry Experience:</strong><ul><li>Product design and digital interfaces</li></ul><strong>Education Requirements:</strong><ul><li>Bachelor\u2019s degree in English, Linguistics, or related field</li></ul><strong>Absolute Must-Haves:</strong><ul><li>Portfolio demonstrating user-centered writing</li><li>Familiarity with design tools like Figma</li></ul>'
+      description: 'We are seeking a UX Content Designer to craft clear, concise microcopy and content strategy for product interfaces. This role partners with UX designers and researchers to ensure every touchpoint communicates effectively and supports the user journey.<br><br>The ideal candidate brings 4+ years of UX writing experience with a portfolio demonstrating user-centered writing. Familiarity with Figma, a background in linguistics or technical writing, and strong collaboration skills are essential.'
     },
     'Staff Software Engineer': {
       count: 48,
@@ -2037,7 +1993,7 @@
       reqId: 'ENG-2026-0118',
       currency: 'USD',
       salary: '$180,000 \u2013 $210,000',
-      description: '<strong>Primary Role:</strong>The Staff Software Engineer serves as a technical leader across multiple engineering teams, driving architecture decisions and establishing best practices for our cloud-native platform.<strong>Required Skills:</strong><ul><li>Deep expertise in Go or Java</li><li>Scalable system design</li><li>Cloud infrastructure (AWS or GCP)</li></ul><strong>Preferred Skills:</strong><ul><li>Mentoring senior engineers</li><li>Large-scale system design leadership</li></ul><strong>Years of Experience:</strong><ul><li>10+ years of professional software engineering</li></ul><strong>Industry Experience:</strong><ul><li>Cloud-native platform development</li></ul><strong>Education Requirements:</strong><ul><li>Bachelor\u2019s degree in Computer Science or equivalent</li></ul><strong>Absolute Must-Haves:</strong><ul><li>Deep expertise in Go or Java</li><li>Track record of leading large-scale system designs</li></ul>'
+      description: 'We are looking for a Staff Software Engineer to serve as a technical leader across multiple engineering teams. This role drives architecture decisions and establishes best practices for our cloud-native platform, mentoring senior engineers along the way.<br><br>The ideal candidate brings 10+ years of professional software engineering with deep expertise in Go or Java. Experience with scalable system design, cloud infrastructure on AWS or GCP, and a track record of leading large-scale projects are essential.'
     },
     'Head of People Ops': {
       count: 17,
@@ -2049,7 +2005,7 @@
       reqId: 'HR-2026-0006',
       currency: 'USD',
       salary: '$140,000 \u2013 $165,000',
-      description: '<strong>Primary Role:</strong>The Head of People Ops oversees all HR operations including benefits administration, compliance, HRIS management, and employee lifecycle programs for a rapidly growing organization.<strong>Required Skills:</strong><ul><li>Benefits administration and compliance</li><li>HRIS management (Workday or similar)</li><li>Employment law across multiple states</li></ul><strong>Preferred Skills:</strong><ul><li>Building scalable people processes</li><li>Data-driven approach to people decisions</li></ul><strong>Years of Experience:</strong><ul><li>8+ years of HR operations experience</li></ul><strong>Industry Experience:</strong><ul><li>High-growth technology organizations preferred</li></ul><strong>Education Requirements:</strong><ul><li>Bachelor\u2019s degree in Human Resources, Business, or related field</li></ul><strong>Absolute Must-Haves:</strong><ul><li>Deep knowledge of employment law across multiple states</li><li>Strong project management skills</li></ul>'
+      description: 'We are seeking a Head of People Ops to oversee all HR operations including benefits administration, compliance, HRIS management, and employee lifecycle programs. This role is critical to supporting a rapidly growing organization through scalable people processes.<br><br>The ideal candidate brings 8+ years of HR operations experience with deep knowledge of employment law across multiple states. Experience with Workday or similar HRIS platforms and a data-driven approach to people decisions are highly valued.'
     },
     'Data Science Lead': {
       count: 83,
@@ -2061,7 +2017,7 @@
       reqId: 'DAT-2026-0033',
       currency: 'USD',
       salary: '$160,000 \u2013 $190,000',
-      description: '<strong>Primary Role:</strong>The Data Science Lead manages a team of data scientists and ML engineers building predictive models that power core product features, defining the roadmap and deploying models at scale.<strong>Required Skills:</strong><ul><li>Python and SQL proficiency</li><li>ML frameworks (TensorFlow or PyTorch)</li><li>Predictive model development</li></ul><strong>Preferred Skills:</strong><ul><li>Team leadership and mentoring</li><li>Model deployment at scale</li></ul><strong>Years of Experience:</strong><ul><li>7+ years in data science</li></ul><strong>Industry Experience:</strong><ul><li>Product-driven ML and predictive modeling</li></ul><strong>Education Requirements:</strong><ul><li>PhD or Master\u2019s degree in a quantitative field preferred</li></ul><strong>Absolute Must-Haves:</strong><ul><li>Proficiency in Python and SQL</li><li>Hands-on experience with ML frameworks</li></ul>'
+      description: 'We are looking for a Data Science Lead to manage a team of data scientists and ML engineers building predictive models that power core product features. This role defines the data science roadmap, mentors team members, and ensures models are deployed and performing at scale.<br><br>The ideal candidate brings 7+ years of data science experience with proficiency in Python, SQL, and ML frameworks like TensorFlow or PyTorch. A PhD or Master’s degree in a quantitative field and experience productionizing models are preferred.'
     },
     'Growth Marketing Manager': {
       count: 29,
@@ -2073,7 +2029,7 @@
       reqId: 'MKT-2026-0045',
       currency: 'USD',
       salary: '$110,000 \u2013 $130,000',
-      description: '<strong>Primary Role:</strong>The Growth Marketing Manager owns user acquisition and retention funnels across paid and organic channels, designing experiments, optimizing conversion rates, and scaling campaigns.<strong>Required Skills:</strong><ul><li>Growth and performance marketing</li><li>Google Analytics and Mixpanel</li><li>Paid media platform management</li></ul><strong>Preferred Skills:</strong><ul><li>SaaS or marketplace business experience</li><li>Test-and-learn experimentation mindset</li></ul><strong>Years of Experience:</strong><ul><li>5+ years of growth or performance marketing</li></ul><strong>Industry Experience:</strong><ul><li>SaaS or marketplace businesses preferred</li></ul><strong>Education Requirements:</strong><ul><li>Bachelor\u2019s degree in Marketing, Business, or related field</li></ul><strong>Absolute Must-Haves:</strong><ul><li>Strong analytical skills</li><li>Proficiency with analytics and paid media platforms</li></ul>'
+      description: 'We are seeking a Growth Marketing Manager to own user acquisition and retention funnels across paid and organic channels. This role designs experiments, optimizes conversion rates, and scales campaigns that drive measurable business impact.<br><br>The ideal candidate brings 5+ years of growth or performance marketing experience with strong analytical skills. Proficiency with Google Analytics, Mixpanel, and paid media platforms, along with a test-and-learn mindset, are essential.'
     },
     'Principal Designer': {
       count: 41,
@@ -2085,7 +2041,7 @@
       reqId: 'DES-2026-0031',
       currency: 'USD',
       salary: '$165,000 \u2013 $195,000',
-      description: '<strong>Primary Role:</strong>The Principal Designer sets the creative vision and design standards for the entire product suite, leading design critiques and defining the design system as a senior individual contributor.<strong>Required Skills:</strong><ul><li>Interaction design and visual systems</li><li>Design system definition and governance</li><li>User research methods</li></ul><strong>Preferred Skills:</strong><ul><li>Executive-level product strategy influence</li><li>Mentoring designers at all levels</li></ul><strong>Years of Experience:</strong><ul><li>10+ years of product design experience</li></ul><strong>Industry Experience:</strong><ul><li>Product design for digital platforms</li></ul><strong>Education Requirements:</strong><ul><li>Bachelor\u2019s degree in Design, HCI, or related field</li></ul><strong>Absolute Must-Haves:</strong><ul><li>World-class portfolio</li><li>Deep expertise in interaction design and visual systems</li></ul>'
+      description: 'We are looking for a Principal Designer to set the creative vision and design standards for the entire product suite. As a senior individual contributor, this role leads design critiques, defines the design system, and influences product strategy at the executive level.<br><br>The ideal candidate brings 10+ years of product design experience with deep expertise in interaction design and visual systems. A world-class portfolio, strong user research skills, and the ability to mentor designers at all levels are essential.'
     },
     'DevOps Engineer II': {
       count: 156,
@@ -2097,7 +2053,7 @@
       reqId: 'ENG-2026-0122',
       currency: 'USD',
       salary: '$120,000 \u2013 $145,000',
-      description: '<strong>Primary Role:</strong>The DevOps Engineer II builds and maintains CI/CD pipelines, container orchestration, and cloud infrastructure, automating deployments and improving system reliability.<strong>Required Skills:</strong><ul><li>Kubernetes and Terraform</li><li>CI/CD pipeline management</li><li>AWS or GCP experience</li></ul><strong>Preferred Skills:</strong><ul><li>GitOps workflows</li><li>Infrastructure-as-code principles</li></ul><strong>Years of Experience:</strong><ul><li>3+ years of DevOps or SRE experience</li></ul><strong>Industry Experience:</strong><ul><li>Cloud infrastructure and platform engineering</li></ul><strong>Education Requirements:</strong><ul><li>Bachelor\u2019s degree in Computer Science or equivalent</li></ul><strong>Absolute Must-Haves:</strong><ul><li>Strong skills in Kubernetes and Terraform</li><li>Experience with AWS or GCP</li></ul>'
+      description: 'We are seeking a DevOps Engineer II to build and maintain CI/CD pipelines, container orchestration, and cloud infrastructure. This role automates deployments, improves system reliability, and partners with engineering teams to accelerate delivery.<br><br>The ideal candidate brings 3+ years of DevOps or SRE experience with strong skills in Kubernetes and Terraform. Experience with AWS or GCP, GitOps workflows, and infrastructure-as-code principles are highly valued.'
     },
     'Director of Sales': {
       count: 72,
@@ -2109,7 +2065,7 @@
       reqId: 'SAL-2026-0014',
       currency: 'USD',
       salary: '$160,000 \u2013 $200,000 + commission',
-      description: '<strong>Primary Role:</strong>The Director of Sales leads a team of enterprise account executives, owning the full sales cycle from prospecting to close, building the sales playbook, and developing strategic account plans.<strong>Required Skills:</strong><ul><li>Enterprise sales cycle management</li><li>Revenue forecasting and quota attainment</li><li>Strategic account planning</li></ul><strong>Preferred Skills:</strong><ul><li>Selling to C-suite buyers</li><li>Complex procurement navigation</li></ul><strong>Years of Experience:</strong><ul><li>8+ years of B2B SaaS sales, 3+ years in leadership</li></ul><strong>Industry Experience:</strong><ul><li>B2B SaaS, Fortune 500 accounts</li></ul><strong>Education Requirements:</strong><ul><li>Bachelor\u2019s degree in Business or related field</li></ul><strong>Absolute Must-Haves:</strong><ul><li>Consistent track record of exceeding quota</li><li>Experience selling to C-suite buyers</li></ul>'
+      description: 'We are looking for a Director of Sales to lead a team of enterprise account executives and own the full sales cycle from prospecting to close. This role builds the sales playbook, develops strategic account plans, and drives revenue growth across Fortune 500 accounts.<br><br>The ideal candidate brings 8+ years of B2B SaaS sales experience with at least 3 years in leadership. A consistent track record of exceeding quota and experience selling to C-suite buyers are essential.'
     },
     'Mobile Engineer (iOS)': {
       count: 38,
@@ -2121,7 +2077,7 @@
       reqId: 'ENG-2026-0125',
       currency: 'USD',
       salary: '$140,000 \u2013 $165,000',
-      description: '<strong>Primary Role:</strong>The Mobile Engineer (iOS) builds and ships features for our flagship iOS application, working in Swift and collaborating with designers on pixel-perfect UI implementations.<strong>Required Skills:</strong><ul><li>Swift development</li><li>UIKit and SwiftUI</li><li>CI/CD for mobile</li></ul><strong>Preferred Skills:</strong><ul><li>Reactive programming patterns</li><li>App performance optimization</li></ul><strong>Years of Experience:</strong><ul><li>5+ years of iOS development experience</li></ul><strong>Industry Experience:</strong><ul><li>Consumer-facing mobile applications</li></ul><strong>Education Requirements:</strong><ul><li>Bachelor\u2019s degree in Computer Science or equivalent</li></ul><strong>Absolute Must-Haves:</strong><ul><li>Deep knowledge of UIKit and SwiftUI</li><li>Experience with CI/CD for mobile</li></ul>'
+      description: 'We are seeking a Mobile Engineer to build and ship features for our flagship iOS application. This role works in Swift, collaborates with designers on pixel-perfect UI implementations, and ensures a high-quality user experience across devices.<br><br>The ideal candidate brings 5+ years of iOS development experience with deep knowledge of UIKit and SwiftUI. Experience with CI/CD for mobile, reactive programming patterns, and app performance optimization are highly valued.'
     },
     'Content Strategy Lead': {
       count: 19,
@@ -2133,7 +2089,7 @@
       reqId: 'MKT-2026-0049',
       currency: 'USD',
       salary: '$105,000 \u2013 $125,000',
-      description: '<strong>Primary Role:</strong>The Content Strategy Lead defines and executes the content roadmap across blog, email, social, and thought leadership channels, developing editorial calendars and measuring performance against KPIs.<strong>Required Skills:</strong><ul><li>Content strategy and editorial planning</li><li>SEO knowledge</li><li>Freelance writer management</li></ul><strong>Preferred Skills:</strong><ul><li>Building content programs from the ground up</li><li>Content performance analytics</li></ul><strong>Years of Experience:</strong><ul><li>6+ years of content strategy or content marketing</li></ul><strong>Industry Experience:</strong><ul><li>B2B or technology content marketing</li></ul><strong>Education Requirements:</strong><ul><li>Bachelor\u2019s degree in English, Journalism, or related field</li></ul><strong>Absolute Must-Haves:</strong><ul><li>Excellent editorial judgment</li><li>Portfolio of published work</li></ul>'
+      description: 'We are looking for a Content Strategy Lead to define and execute the content roadmap across blog, email, social, and thought leadership channels. This role develops editorial calendars, manages freelance writers, and measures content performance against KPIs.<br><br>The ideal candidate brings 6+ years of content strategy or content marketing experience with excellent editorial judgment. A portfolio of published work and experience building content programs from the ground up are essential.'
     },
     'Security Architect': {
       count: 8,
@@ -2145,7 +2101,7 @@
       reqId: 'SEC-2026-0003',
       currency: 'USD',
       salary: '$170,000 \u2013 $200,000',
-      description: '<strong>Primary Role:</strong>The Security Architect designs and implements security architecture across cloud infrastructure, application layer, and data platforms, conducting threat modeling and leading incident response planning.<strong>Required Skills:</strong><ul><li>Cloud security (AWS/GCP)</li><li>Threat modeling and security standards</li><li>Incident response planning</li></ul><strong>Preferred Skills:</strong><ul><li>Zero-trust architectures</li><li>SOC 2 and FedRAMP compliance</li></ul><strong>Years of Experience:</strong><ul><li>8+ years of information security experience</li></ul><strong>Industry Experience:</strong><ul><li>Cloud infrastructure security</li></ul><strong>Education Requirements:</strong><ul><li>CISSP, CCSP, or equivalent certification</li></ul><strong>Absolute Must-Haves:</strong><ul><li>Deep expertise in cloud security</li><li>Relevant security certifications</li></ul>'
+      description: 'We are seeking a Security Architect to design and implement security architecture across cloud infrastructure, application layer, and data platforms. This role conducts threat modeling, leads incident response planning, and ensures compliance with industry standards.<br><br>The ideal candidate brings 8+ years of information security experience with deep expertise in cloud security on AWS or GCP. CISSP or CCSP certification and experience with zero-trust architectures and SOC 2 compliance are highly valued.'
     },
     'Research Scientist': {
       count: 53,
@@ -2157,7 +2113,7 @@
       reqId: 'RND-2026-0018',
       currency: 'USD',
       salary: '$150,000 \u2013 $180,000',
-      description: '<strong>Primary Role:</strong>The Research Scientist conducts applied research in NLP and machine learning to develop novel algorithms for core product features, publishing papers and collaborating with engineering to productionize findings.<strong>Required Skills:</strong><ul><li>Python programming</li><li>NLP and machine learning research</li><li>Algorithm prototyping and development</li></ul><strong>Preferred Skills:</strong><ul><li>Large language models and transformer architectures</li><li>Research productionization</li></ul><strong>Years of Experience:</strong><ul><li>3+ years of applied research experience</li></ul><strong>Industry Experience:</strong><ul><li>Applied ML research in product-driven environments</li></ul><strong>Education Requirements:</strong><ul><li>PhD in Computer Science, Machine Learning, or related field</li><li>Strong publication record</li></ul><strong>Absolute Must-Haves:</strong><ul><li>PhD in a relevant field</li><li>Hands-on Python programming skills</li></ul>'
+      description: 'We are looking for a Research Scientist to conduct applied research in NLP and machine learning, developing novel algorithms for core product features. This role publishes papers, collaborates with engineering to productionize findings, and pushes the boundaries of what our platform can do.<br><br>The ideal candidate holds a PhD in Computer Science or a related field with a strong publication record. Hands-on Python programming skills, experience with large language models, and a passion for applied research are essential.'
     },
     'Customer Success Manager': {
       count: 67,
@@ -2169,7 +2125,7 @@
       reqId: 'CX-2026-0021',
       currency: 'USD',
       salary: '$95,000 \u2013 $115,000',
-      description: '<strong>Primary Role:</strong>The Customer Success Manager owns a portfolio of enterprise accounts, driving adoption, retention, and expansion revenue through deep stakeholder relationships and quarterly business reviews.<strong>Required Skills:</strong><ul><li>Enterprise account management</li><li>Quarterly business review facilitation</li><li>Data-driven account health monitoring</li></ul><strong>Preferred Skills:</strong><ul><li>Gainsight or Totango experience</li><li>Upsell and expansion strategy</li></ul><strong>Years of Experience:</strong><ul><li>4+ years of customer success or account management in B2B SaaS</li></ul><strong>Industry Experience:</strong><ul><li>B2B SaaS</li></ul><strong>Education Requirements:</strong><ul><li>Bachelor\u2019s degree in Business or related field</li></ul><strong>Absolute Must-Haves:</strong><ul><li>Excellent communication skills</li><li>Data-driven approach to account health</li></ul>'
+      description: 'We are seeking a Customer Success Manager to own a portfolio of enterprise accounts, driving adoption, retention, and expansion revenue. This role builds deep stakeholder relationships, facilitates quarterly business reviews, and monitors account health through data-driven insights.<br><br>The ideal candidate brings 4+ years of customer success or account management experience in B2B SaaS. Excellent communication skills, experience with Gainsight or Totango, and a data-driven approach to account strategy are highly valued.'
     },
     'Frontend Engineer III': {
       count: 112,
@@ -2181,7 +2137,7 @@
       reqId: 'ENG-2026-0130',
       currency: 'USD',
       salary: '$145,000 \u2013 $170,000',
-      description: '<strong>Primary Role:</strong>The Frontend Engineer III builds performant, accessible web interfaces using React and TypeScript, owning major feature areas and driving frontend architecture decisions.<strong>Required Skills:</strong><ul><li>React and TypeScript</li><li>Frontend architecture</li><li>Accessibility standards (WCAG)</li></ul><strong>Preferred Skills:</strong><ul><li>Design systems and component libraries</li><li>Performance optimization</li></ul><strong>Years of Experience:</strong><ul><li>5+ years of frontend development</li></ul><strong>Industry Experience:</strong><ul><li>Product-driven web applications</li></ul><strong>Education Requirements:</strong><ul><li>Bachelor\u2019s degree in Computer Science or equivalent</li></ul><strong>Absolute Must-Haves:</strong><ul><li>Deep expertise in React and modern JavaScript</li><li>Strong eye for UI quality</li></ul>'
+      description: 'We are looking for a Frontend Engineer III to build performant, accessible web interfaces using React and TypeScript. This role owns major feature areas, drives frontend architecture decisions, and contributes to design systems and component libraries.<br><br>The ideal candidate brings 5+ years of frontend development experience with deep expertise in React and modern JavaScript. A strong eye for UI quality, knowledge of accessibility standards, and experience with performance optimization are essential.'
     },
     'Talent Acquisition Lead': {
       count: 26,
@@ -2193,7 +2149,7 @@
       reqId: 'HR-2026-0011',
       currency: 'USD',
       salary: '$110,000 \u2013 $130,000',
-      description: '<strong>Primary Role:</strong>The Talent Acquisition Lead manages a team of recruiters and owns end-to-end hiring strategy for engineering, product, and design roles, optimizing sourcing channels and building employer branding.<strong>Required Skills:</strong><ul><li>Full-cycle recruiting in tech</li><li>ATS platform expertise</li><li>Sourcing channel optimization</li></ul><strong>Preferred Skills:</strong><ul><li>Employer branding initiatives</li><li>Diversity hiring programs</li></ul><strong>Years of Experience:</strong><ul><li>6+ years of recruiting in tech, 2+ years leading a TA team</li></ul><strong>Industry Experience:</strong><ul><li>Technology recruiting</li></ul><strong>Education Requirements:</strong><ul><li>Bachelor\u2019s degree in Human Resources, Business, or related field</li></ul><strong>Absolute Must-Haves:</strong><ul><li>Data-driven approach to pipeline management</li><li>Passion for diversity hiring</li></ul>'
+      description: 'We are seeking a Talent Acquisition Lead to manage a team of recruiters and own end-to-end hiring strategy for engineering, product, and design roles. This role optimizes sourcing channels, builds employer branding, and drives diversity hiring initiatives.<br><br>The ideal candidate brings 6+ years of recruiting in tech with at least 2 years leading a TA team. A data-driven approach to pipeline management, ATS platform expertise, and a passion for building inclusive teams are essential.'
     },
     'Platform Engineer': {
       count: 44,
@@ -2205,7 +2161,7 @@
       reqId: 'ENG-2026-0134',
       currency: 'USD',
       salary: '$150,000 \u2013 $175,000',
-      description: '<strong>Primary Role:</strong>The Platform Engineer designs and builds the internal developer platform that accelerates engineering productivity, creating self-service tooling and defining platform APIs and abstractions.<strong>Required Skills:</strong><ul><li>Go or Python</li><li>Kubernetes and cloud-native technologies</li><li>Platform API design</li></ul><strong>Preferred Skills:</strong><ul><li>Internal platform development</li><li>Developer experience optimization</li></ul><strong>Years of Experience:</strong><ul><li>6+ years of software engineering</li></ul><strong>Industry Experience:</strong><ul><li>Platform or infrastructure engineering</li></ul><strong>Education Requirements:</strong><ul><li>Bachelor\u2019s degree in Computer Science or equivalent</li></ul><strong>Absolute Must-Haves:</strong><ul><li>Strong skills in Go or Python</li><li>Deep expertise with Kubernetes</li></ul>'
+      description: 'We are looking for a Platform Engineer to design and build the internal developer platform that accelerates engineering productivity. This role creates self-service tooling, defines platform APIs, and works closely with product teams to reduce friction in the development workflow.<br><br>The ideal candidate brings 6+ years of software engineering experience with strong skills in Go or Python. Deep expertise with Kubernetes, cloud-native technologies, and a passion for developer experience are essential.'
     },
     'Business Analyst Sr': {
       count: 31,
@@ -2217,7 +2173,7 @@
       reqId: 'OPS-2026-0008',
       currency: 'USD',
       salary: '$95,000 \u2013 $115,000',
-      description: '<strong>Primary Role:</strong>The Senior Business Analyst partners with cross-functional teams to translate business requirements into technical specifications and process improvements, conducting data analysis and presenting findings to leadership.<strong>Required Skills:</strong><ul><li>Advanced Excel and SQL</li><li>Business requirements analysis</li><li>Financial modeling</li></ul><strong>Preferred Skills:</strong><ul><li>Tableau or Power BI</li><li>Agile project management methodologies</li></ul><strong>Years of Experience:</strong><ul><li>5+ years of business analysis experience</li></ul><strong>Industry Experience:</strong><ul><li>Cross-functional business operations</li></ul><strong>Education Requirements:</strong><ul><li>Bachelor\u2019s degree in Business, Finance, or related field</li></ul><strong>Absolute Must-Haves:</strong><ul><li>Advanced Excel and SQL skills</li><li>Excellent communication abilities</li></ul>'
+      description: 'We are seeking a Senior Business Analyst to partner with cross-functional teams and translate business requirements into technical specifications and process improvements. This role conducts data analysis, builds financial models, and presents findings to leadership.<br><br>The ideal candidate brings 5+ years of business analysis experience with advanced Excel and SQL skills. Experience with Tableau or Power BI, strong communication abilities, and familiarity with Agile methodologies are highly valued.'
     }
   };
 
@@ -2404,7 +2360,7 @@
 
     // Populate job detail
     jobTitle.textContent = title;
-    jobCount.textContent = data.count + ' matches';
+    jobCount.innerHTML = data.count + ' <span class="job-count-label">Matches</span>';
     document.getElementById('jobReqId').textContent = data.reqId || '';
     const postingLink = document.getElementById('jobPostingLink');
     if (data.jobLink) {
@@ -2497,7 +2453,7 @@
       if (goToReview) {
         // Go directly to review candidates screen
         rcJobTitle.textContent = jobTitle.textContent;
-        rcJobCount.textContent = jobCount.textContent;
+        rcJobCount.innerHTML = jobCount.innerHTML;
         rcReqId.textContent = document.getElementById('jobReqId').textContent;
         populateReviewCandidates(jobTitle.textContent);
         reviewCandidatesScreen.classList.add('active');
@@ -2853,7 +2809,7 @@
     const title = jobTitle.textContent;
     const data = jobData[title];
     rcJobTitle.textContent = title;
-    rcJobCount.textContent = data ? data.count : jobCount.textContent;
+    rcJobCount.innerHTML = data ? data.count + ' <span class="job-count-label">Matches</span>' : jobCount.innerHTML;
     rcReqId.textContent = data ? (data.reqId || '') : '';
 
     populateReviewCandidates(title);
@@ -3073,7 +3029,7 @@
 
     // --- Snap from create form to job detail summary ---
     jobTitle.textContent = title;
-    jobCount.textContent = '0 matches';
+    jobCount.innerHTML = '0 <span class="job-count-label">Matches</span>';
     jobMeta.innerHTML = buildMetaHTML(newJob);
     jobDescription.innerHTML = newJob.description;
 
@@ -3221,7 +3177,7 @@
 
     // Update summary view
     jobTitle.textContent = newTitle;
-    jobCount.textContent = updatedJob.count + ' matches';
+    jobCount.innerHTML = updatedJob.count + ' <span class="job-count-label">Matches</span>';
     jobDescription.innerHTML = updatedJob.description;
     jobMeta.innerHTML = buildMetaHTML(updatedJob);
 
