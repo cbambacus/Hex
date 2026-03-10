@@ -172,7 +172,7 @@
   /* ========== GRID ========== */
   .grid {
     display: grid;
-    grid-template-columns: repeat(5, 242px);
+    grid-template-columns: repeat(5, 246px);
     gap: 0;
     justify-content: center;
     padding: 0 40px 60px;
@@ -559,14 +559,14 @@
 
   .job-title {
     font-family: 'Skill Sans', 'IBM Plex Sans', sans-serif;
-    font-size: 32px;
+    font-size: 34px;
     font-weight: 400;
     color: rgba(255, 255, 255, 0.85);
   }
 
   .job-count {
-    font-size: 32px;
-    font-weight: 300;
+    font-size: 34px;
+    font-weight: 400;
     color: rgba(255, 255, 255, 0.85);
     margin-left: 40px;
     white-space: nowrap;
@@ -655,7 +655,7 @@
   }
 
   .job-description {
-    font-size: 15px;
+    font-size: 17px;
     line-height: 1.7;
     color: rgba(255, 255, 255, 0.65);
     margin-bottom: 16px;
@@ -713,43 +713,49 @@
   .job-actions {
     display: flex;
     flex-direction: column;
+    align-items: flex-start;
     gap: 10px;
   }
 
   .job-action {
     display: inline-flex;
     align-items: center;
-    gap: 12px;
+    gap: 6px;
     font-size: 17px;
     font-weight: 400;
-    color: rgba(255, 255, 255, 0.85);
     cursor: pointer;
-    transition: color 0.2s ease;
+    transition: color 0.2s ease, background 0.2s ease;
     border: none;
-    padding: 4px 0;
+    border-radius: 0;
+    padding: 8px 16px 8px 8px;
+    background: rgba(255, 255, 255, 0.85);
+    color: #000;
   }
 
   .job-action:hover {
-    color: #f0f;
+    color: #000;
+    background: #f0f;
+  }
+
+  .job-action:hover svg {
+    stroke: #000;
   }
 
   .job-action.disabled {
-    color: #444242;
+    color: #000;
+    background: #333;
+    opacity: 1;
     cursor: default;
     pointer-events: none;
   }
 
-  .job-action.disabled .action-hex-border {
-    background: #444242;
-  }
-
   .job-action.disabled svg {
-    stroke: #444242;
+    stroke: #000;
   }
 
   .action-icon {
-    width: 26px;
-    height: 26px;
+    width: 18px;
+    height: 18px;
     position: relative;
     display: flex;
     align-items: center;
@@ -763,8 +769,8 @@
   }
 
   .action-icon svg {
-    width: 26px;
-    height: 26px;
+    width: 18px;
+    height: 18px;
     stroke: currentColor;
     fill: none;
     stroke-width: 2px;
@@ -1154,6 +1160,9 @@
   .form-reqid-input {
     width: 100%;
     box-sizing: border-box;
+    font-size: 32px;
+    font-weight: 400;
+    padding: 4px 12px;
   }
 
   .job-title-input {
@@ -1974,13 +1983,22 @@
     </div>
     <div id="jobEditForm" style="display:none">
       <div class="form-title-row">
-        <input type="text" class="job-title-input" id="editJobTitleInput" placeholder="Job Title" autocomplete="off">
-        <input type="text" class="form-input form-reqid-input" id="editReqIdInput" placeholder="Req ID">
+        <div class="form-group-stack" style="flex:1">
+          <span class="form-label">Job Title</span>
+          <input type="text" class="job-title-input" id="editJobTitleInput" placeholder="Job Title" autocomplete="off">
+        </div>
+        <div class="form-group-stack">
+          <span class="form-label">Req ID</span>
+          <input type="text" class="form-input form-reqid-input" id="editReqIdInput" placeholder="Req ID">
+        </div>
       </div>
       <hr class="job-divider" style="margin-top: 16px;">
       <div class="form-cols">
         <div class="form-col-left">
-          <div class="job-desc-input" id="editJobDescInput" contenteditable="true" data-placeholder="Enter Job Description..."></div>
+          <div class="form-group-stack" style="margin-bottom:0">
+            <span class="form-label">Job Target</span>
+            <div class="job-desc-input" id="editJobDescInput" contenteditable="true" data-placeholder="Enter Job Description..."></div>
+          </div>
           <div class="form-group-stack" style="margin-top: 20px;">
             <span class="form-label">Link</span>
             <input type="text" class="form-input" id="editJobLinkInput" placeholder="Job Posting Link" style="width: 100%;">
@@ -2119,13 +2137,22 @@
 <div class="job-create" id="jobCreate">
   <div class="job-detail-inner">
     <div class="form-title-row">
-      <input type="text" class="job-title-input" id="jobTitleInput" placeholder="Job Title" autocomplete="off">
-      <input type="text" class="form-input form-reqid-input" id="reqIdInput" placeholder="Req ID">
+      <div class="form-group-stack" style="flex:1">
+        <span class="form-label">Job Title</span>
+        <input type="text" class="job-title-input" id="jobTitleInput" placeholder="Job Title" autocomplete="off">
+      </div>
+      <div class="form-group-stack">
+        <span class="form-label">Req ID</span>
+        <input type="text" class="form-input form-reqid-input" id="reqIdInput" placeholder="Req ID">
+      </div>
     </div>
     <hr class="job-divider" style="margin-top: 16px;">
     <div class="form-cols">
       <div class="form-col-left">
-        <div class="job-desc-input" id="jobDescInput" contenteditable="true" data-placeholder="Enter Job Description..."></div>
+        <div class="form-group-stack" style="margin-bottom:0">
+          <span class="form-label">Job Description</span>
+          <div class="job-desc-input" id="jobDescInput" contenteditable="true" data-placeholder="Enter Job Description..."></div>
+        </div>
         <div class="form-group-stack" style="margin-top: 20px;">
           <span class="form-label">Link</span>
           <input type="text" class="form-input" id="jobLinkInput" placeholder="Job Posting Link" style="width: 100%;">
