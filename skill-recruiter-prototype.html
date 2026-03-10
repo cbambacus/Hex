@@ -88,6 +88,12 @@
     justify-content: center;
     gap: 17px;
     pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .hero-logo.visible {
+    opacity: 1;
   }
 
   .hero-diamond {
@@ -177,6 +183,9 @@
     justify-content: center;
     padding: 0 40px 60px;
     margin: 0 auto;
+  }
+
+  .grid.ready {
     transition: transform 0.9s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.9s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
@@ -643,6 +652,13 @@
     display: flex;
     flex-direction: column;
     gap: 6px;
+  }
+
+  .job-updated {
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.45);
+    margin-top: 16px;
+    margin-bottom: 16px;
   }
 
   .posting-link {
@@ -1160,20 +1176,17 @@
   .form-reqid-input {
     width: 100%;
     box-sizing: border-box;
-    font-size: 32px;
-    font-weight: 400;
-    padding: 4px 12px;
   }
 
   .job-title-input {
     font-family: 'IBM Plex Sans', sans-serif;
-    font-size: 32px;
+    font-size: 15px;
     font-weight: 400;
     color: rgba(255, 255, 255, 0.85);
     background: #000;
     border: var(--stroke-width) solid rgba(255, 255, 255, 0.4);
     outline: none;
-    padding: 4px 12px;
+    padding: 8px 12px;
     margin-top: 2px;
     box-sizing: border-box;
     min-width: 0;
@@ -1185,7 +1198,7 @@
   }
 
   .job-desc-input {
-    min-height: 300px;
+    min-height: 492px;
     overflow-y: auto;
     font-size: 16px;
     line-height: 1.7;
@@ -1228,6 +1241,16 @@
     flex-direction: column;
     gap: 6px;
     margin-bottom: 20px;
+  }
+
+  .form-radio-row {
+    display: flex;
+    gap: 32px;
+  }
+
+  .form-hint {
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.45);
   }
 
   .form-row {
@@ -1304,7 +1327,8 @@
 
   .radio-group {
     display: flex;
-    gap: 16px;
+    flex-direction: column;
+    gap: 4px;
   }
 
   .radio-option {
@@ -1431,11 +1455,6 @@
         <div class="mini-stat-row">
           <span class="mini-stat-num">0</span>
           <span class="mini-stat-divider"></span>
-          <span class="mini-stat-label">New</span>
-        </div>
-        <div class="mini-stat-row">
-          <span class="mini-stat-num">0</span>
-          <span class="mini-stat-divider"></span>
           <span class="mini-stat-label">Shortlist</span>
         </div>
         <div class="mini-stat-cta-spacer"></div>
@@ -1457,11 +1476,6 @@
           <span class="mini-stat-num">35</span>
           <span class="mini-stat-divider"></span>
           <span class="mini-stat-label">Matches</span>
-        </div>
-        <div class="mini-stat-row">
-          <span class="mini-stat-num">0</span>
-          <span class="mini-stat-divider"></span>
-          <span class="mini-stat-label">New</span>
         </div>
         <div class="mini-stat-row">
           <span class="mini-stat-num">8</span>
@@ -1497,11 +1511,6 @@
         <div class="mini-stat-row">
           <span class="mini-stat-num">0</span>
           <span class="mini-stat-divider"></span>
-          <span class="mini-stat-label">New</span>
-        </div>
-        <div class="mini-stat-row">
-          <span class="mini-stat-num">0</span>
-          <span class="mini-stat-divider"></span>
           <span class="mini-stat-label">Shortlist</span>
         </div>
         <div class="mini-stat-cta-spacer"></div>
@@ -1531,11 +1540,6 @@
           <span class="mini-stat-label">Matches</span>
         </div>
         <div class="mini-stat-row">
-          <span class="mini-stat-num">0</span>
-          <span class="mini-stat-divider"></span>
-          <span class="mini-stat-label">New</span>
-        </div>
-        <div class="mini-stat-row">
           <span class="mini-stat-num">12</span>
           <span class="mini-stat-divider"></span>
           <span class="mini-stat-label">Shortlist</span>
@@ -1561,11 +1565,6 @@
           <span class="mini-stat-num">115</span>
           <span class="mini-stat-divider"></span>
           <span class="mini-stat-label">Matches</span>
-        </div>
-        <div class="mini-stat-row">
-          <span class="mini-stat-num">0</span>
-          <span class="mini-stat-divider"></span>
-          <span class="mini-stat-label">New</span>
         </div>
         <div class="mini-stat-row">
           <span class="mini-stat-num">0</span>
@@ -1599,11 +1598,6 @@
           <span class="mini-stat-label">Matches</span>
         </div>
         <div class="mini-stat-row">
-          <span class="mini-stat-num">25</span>
-          <span class="mini-stat-divider"></span>
-          <span class="mini-stat-label">New</span>
-        </div>
-        <div class="mini-stat-row">
           <span class="mini-stat-num">4</span>
           <span class="mini-stat-divider"></span>
           <span class="mini-stat-label">Shortlist</span>
@@ -1627,11 +1621,6 @@
           <span class="mini-stat-num">48</span>
           <span class="mini-stat-divider"></span>
           <span class="mini-stat-label">Matches</span>
-        </div>
-        <div class="mini-stat-row">
-          <span class="mini-stat-num">20</span>
-          <span class="mini-stat-divider"></span>
-          <span class="mini-stat-label">New</span>
         </div>
         <div class="mini-stat-row">
           <span class="mini-stat-num">11</span>
@@ -1659,11 +1648,6 @@
           <span class="mini-stat-label">Matches</span>
         </div>
         <div class="mini-stat-row">
-          <span class="mini-stat-num">5</span>
-          <span class="mini-stat-divider"></span>
-          <span class="mini-stat-label">New</span>
-        </div>
-        <div class="mini-stat-row">
           <span class="mini-stat-num">0</span>
           <span class="mini-stat-divider"></span>
           <span class="mini-stat-label">Shortlist</span>
@@ -1687,11 +1671,6 @@
           <span class="mini-stat-num">83</span>
           <span class="mini-stat-divider"></span>
           <span class="mini-stat-label">Matches</span>
-        </div>
-        <div class="mini-stat-row">
-          <span class="mini-stat-num">34</span>
-          <span class="mini-stat-divider"></span>
-          <span class="mini-stat-label">New</span>
         </div>
         <div class="mini-stat-row">
           <span class="mini-stat-num">9</span>
@@ -1719,11 +1698,6 @@
           <span class="mini-stat-num">29</span>
           <span class="mini-stat-divider"></span>
           <span class="mini-stat-label">Matches</span>
-        </div>
-        <div class="mini-stat-row">
-          <span class="mini-stat-num">11</span>
-          <span class="mini-stat-divider"></span>
-          <span class="mini-stat-label">New</span>
         </div>
         <div class="mini-stat-row">
           <span class="mini-stat-num">0</span>
@@ -1757,11 +1731,6 @@
           <span class="mini-stat-label">Matches</span>
         </div>
         <div class="mini-stat-row">
-          <span class="mini-stat-num">15</span>
-          <span class="mini-stat-divider"></span>
-          <span class="mini-stat-label">New</span>
-        </div>
-        <div class="mini-stat-row">
           <span class="mini-stat-num">0</span>
           <span class="mini-stat-divider"></span>
           <span class="mini-stat-label">Shortlist</span>
@@ -1785,11 +1754,6 @@
           <span class="mini-stat-num">156</span>
           <span class="mini-stat-divider"></span>
           <span class="mini-stat-label">Matches</span>
-        </div>
-        <div class="mini-stat-row">
-          <span class="mini-stat-num">58</span>
-          <span class="mini-stat-divider"></span>
-          <span class="mini-stat-label">New</span>
         </div>
         <div class="mini-stat-row">
           <span class="mini-stat-num">14</span>
@@ -1817,11 +1781,6 @@
           <span class="mini-stat-label">Matches</span>
         </div>
         <div class="mini-stat-row">
-          <span class="mini-stat-num">28</span>
-          <span class="mini-stat-divider"></span>
-          <span class="mini-stat-label">New</span>
-        </div>
-        <div class="mini-stat-row">
           <span class="mini-stat-num">0</span>
           <span class="mini-stat-divider"></span>
           <span class="mini-stat-label">Shortlist</span>
@@ -1845,11 +1804,6 @@
           <span class="mini-stat-num">38</span>
           <span class="mini-stat-divider"></span>
           <span class="mini-stat-label">Matches</span>
-        </div>
-        <div class="mini-stat-row">
-          <span class="mini-stat-num">14</span>
-          <span class="mini-stat-divider"></span>
-          <span class="mini-stat-label">New</span>
         </div>
         <div class="mini-stat-row">
           <span class="mini-stat-num">10</span>
@@ -1879,11 +1833,6 @@
           <span class="mini-stat-label">Matches</span>
         </div>
         <div class="mini-stat-row">
-          <span class="mini-stat-num">7</span>
-          <span class="mini-stat-divider"></span>
-          <span class="mini-stat-label">New</span>
-        </div>
-        <div class="mini-stat-row">
           <span class="mini-stat-num">0</span>
           <span class="mini-stat-divider"></span>
           <span class="mini-stat-label">Shortlist</span>
@@ -1907,11 +1856,6 @@
           <span class="mini-stat-num">8</span>
           <span class="mini-stat-divider"></span>
           <span class="mini-stat-label">Matches</span>
-        </div>
-        <div class="mini-stat-row">
-          <span class="mini-stat-num">3</span>
-          <span class="mini-stat-divider"></span>
-          <span class="mini-stat-label">New</span>
         </div>
         <div class="mini-stat-row">
           <span class="mini-stat-num">2</span>
@@ -1941,6 +1885,7 @@
     <div class="job-body-cols">
       <div class="job-body-left">
         <p class="job-description" id="jobDescription"></p>
+        <p class="job-updated" id="jobUpdated"></p>
         <div class="job-body-links">
           <a class="posting-link" id="jobPostingLink" target="_blank" style="display:none">View Posting</a>
           <a class="posting-link" id="editJobBtn">Edit Job</a>
@@ -1999,17 +1944,23 @@
             <span class="form-label">Job Target</span>
             <div class="job-desc-input" id="editJobDescInput" contenteditable="true" data-placeholder="Enter Job Description..."></div>
           </div>
-          <div class="form-group-stack" style="margin-top: 20px;">
-            <span class="form-label">Link</span>
-            <input type="text" class="form-input" id="editJobLinkInput" placeholder="Job Posting Link" style="width: 100%;">
-          </div>
         </div>
         <div class="form-col-right">
-          <div class="form-group-stack">
-            <span class="form-label">Job Type</span>
-            <div class="radio-group">
-              <label class="radio-option"><input type="radio" name="editJobType" value="Perm" checked><span>Perm</span></label>
-              <label class="radio-option"><input type="radio" name="editJobType" value="Temp"><span>Temp</span></label>
+          <div class="form-radio-row">
+            <div class="form-group-stack">
+              <span class="form-label">Job Type</span>
+              <div class="radio-group">
+                <label class="radio-option"><input type="radio" name="editJobType" value="Perm" checked><span>Perm</span></label>
+                <label class="radio-option"><input type="radio" name="editJobType" value="Temp"><span>Temp</span></label>
+              </div>
+            </div>
+            <div class="form-group-stack">
+              <span class="form-label">Workplace Type</span>
+              <div class="radio-group">
+                <label class="radio-option"><input type="radio" name="editCommute" value="On Site" checked><span>On-site</span></label>
+                <label class="radio-option"><input type="radio" name="editCommute" value="Hybrid"><span>Hybrid</span></label>
+                <label class="radio-option"><input type="radio" name="editCommute" value="Remote"><span>Remote</span></label>
+              </div>
             </div>
           </div>
           <div class="form-group-stack">
@@ -2028,14 +1979,7 @@
           <div class="form-group-stack">
             <span class="form-label">Location</span>
             <input type="text" class="form-input" id="editLocationInput" placeholder="Los Angeles, CA">
-          </div>
-          <div class="form-group-stack">
-            <span class="form-label">Commute</span>
-            <div class="radio-group">
-              <label class="radio-option"><input type="radio" name="editCommute" value="On Site" checked><span>On Site</span></label>
-              <label class="radio-option"><input type="radio" name="editCommute" value="Remote"><span>Remote</span></label>
-              <label class="radio-option"><input type="radio" name="editCommute" value="Hybrid"><span>Hybrid</span></label>
-            </div>
+            <span class="form-hint">Postal code is preferred.</span>
           </div>
           <div class="form-group-stack">
             <span class="form-label">Currency</span>
@@ -2056,6 +2000,10 @@
               <span class="salary-to">to</span>
               <input type="text" class="salary-field" id="editSalaryMax" placeholder="$110,000">
             </div>
+          </div>
+          <div class="form-group-stack">
+            <span class="form-label">Link to Job Posting</span>
+            <input type="text" class="form-input" id="editJobLinkInput" placeholder="" style="width: 100%;">
           </div>
           <div class="job-actions" style="margin-top: 32px;">
             <div class="job-action" id="saveEditBtn">
@@ -2153,17 +2101,23 @@
           <span class="form-label">Job Description</span>
           <div class="job-desc-input" id="jobDescInput" contenteditable="true" data-placeholder="Enter Job Description..."></div>
         </div>
-        <div class="form-group-stack" style="margin-top: 20px;">
-          <span class="form-label">Link</span>
-          <input type="text" class="form-input" id="jobLinkInput" placeholder="Job Posting Link" style="width: 100%;">
-        </div>
       </div>
       <div class="form-col-right">
-        <div class="form-group-stack">
-          <span class="form-label">Job Type</span>
-          <div class="radio-group" id="jobTypeRadios">
-            <label class="radio-option"><input type="radio" name="jobType" value="Perm" checked><span>Perm</span></label>
-            <label class="radio-option"><input type="radio" name="jobType" value="Temp"><span>Temp</span></label>
+        <div class="form-radio-row">
+          <div class="form-group-stack">
+            <span class="form-label">Job Type</span>
+            <div class="radio-group" id="jobTypeRadios">
+              <label class="radio-option"><input type="radio" name="jobType" value="Perm" checked><span>Perm</span></label>
+              <label class="radio-option"><input type="radio" name="jobType" value="Temp"><span>Temp</span></label>
+            </div>
+          </div>
+          <div class="form-group-stack">
+            <span class="form-label">Workplace Type</span>
+            <div class="radio-group" id="commuteRadios">
+              <label class="radio-option"><input type="radio" name="commute" value="On Site" checked><span>On-site</span></label>
+              <label class="radio-option"><input type="radio" name="commute" value="Hybrid"><span>Hybrid</span></label>
+              <label class="radio-option"><input type="radio" name="commute" value="Remote"><span>Remote</span></label>
+            </div>
           </div>
         </div>
         <div class="form-group-stack">
@@ -2182,14 +2136,7 @@
         <div class="form-group-stack">
           <span class="form-label">Location</span>
           <input type="text" class="form-input" id="locationInput" placeholder="Los Angeles, CA">
-        </div>
-        <div class="form-group-stack">
-          <span class="form-label">Commute</span>
-          <div class="radio-group" id="commuteRadios">
-            <label class="radio-option"><input type="radio" name="commute" value="On Site" checked><span>On Site</span></label>
-            <label class="radio-option"><input type="radio" name="commute" value="Remote"><span>Remote</span></label>
-            <label class="radio-option"><input type="radio" name="commute" value="Hybrid"><span>Hybrid</span></label>
-          </div>
+          <span class="form-hint">Postal code is preferred.</span>
         </div>
         <div class="form-group-stack">
           <span class="form-label">Currency</span>
@@ -2210,6 +2157,10 @@
             <span class="salary-to">to</span>
             <input type="text" class="salary-field" id="salaryMax" placeholder="$110,000">
           </div>
+        </div>
+        <div class="form-group-stack">
+          <span class="form-label">Link to Job Posting</span>
+          <input type="text" class="form-input" id="jobLinkInput" placeholder="" style="width: 100%;">
         </div>
         <div class="job-actions" style="margin-top: 32px;">
           <div class="job-action" id="saveJobBtn">
@@ -2280,6 +2231,7 @@
       reqId: 'MKT-2026-0041',
       currency: 'USD',
       salary: '$130,000 \u2013 $150,000',
+      updated: 'Mar 10, 2026',
       description: 'We are looking for a Senior Brand Strategist to lead global brand positioning and long-term strategy across markets. This role defines brand architecture and messaging frameworks, translating consumer research into actionable creative briefs that drive business growth.<br><br>The ideal candidate brings 8+ years of brand strategy experience with a proven ability to shape compelling narratives. Strong executive presentation skills and experience managing agency partnerships in multi-market environments are essential.'
     },
     'Marketing Analytics Manager': {
@@ -2292,6 +2244,7 @@
       reqId: 'MKT-2026-0038',
       currency: 'USD',
       salary: '$115,000 \u2013 $135,000',
+      updated: 'Mar 10, 2026',
       description: 'We are seeking a Marketing Analytics Manager to own the measurement framework across all digital and offline marketing channels. This role builds dashboards, designs attribution models, and translates campaign performance data into strategic recommendations for leadership.<br><br>The ideal candidate brings 5+ years of marketing analytics experience with strong SQL proficiency and data storytelling skills. Experience with Tableau or Looker and a background in marketing mix modeling are highly valued.'
     },
     'Dev Team Lead': {
@@ -2304,6 +2257,7 @@
       reqId: 'ENG-2026-0115',
       currency: 'USD',
       salary: '$155,000 \u2013 $180,000',
+      updated: 'Mar 9, 2026',
       description: 'We are looking for a Dev Team Lead to manage a squad of 6–8 engineers building core platform services. This role owns sprint planning, code review standards, and architectural decisions while remaining hands-on with the codebase on a daily basis.<br><br>The ideal candidate brings 7+ years of software development experience with at least 2 years in a leadership role. Deep expertise in distributed systems, strong mentorship skills, and a track record of shipping high-quality software on schedule are essential.'
     },
     'Sr Product Manager': {
@@ -2316,6 +2270,7 @@
       reqId: 'PRD-2026-0072',
       currency: 'USD',
       salary: '$145,000 \u2013 $170,000',
+      updated: 'Mar 9, 2026',
       description: 'We are seeking a Senior Product Manager to drive the product roadmap for our enterprise SaaS platform. This role balances customer needs with business goals and technical feasibility, working cross-functionally with engineering and design teams.<br><br>The ideal candidate brings 6+ years of product management experience with strong analytical skills and a background in B2B SaaS. Excellent cross-functional collaboration and a data-driven approach to prioritization are essential.'
     },
     'VP, Corporate Communications': {
@@ -2328,6 +2283,7 @@
       reqId: 'COM-2026-0009',
       currency: 'USD',
       salary: '$185,000 \u2013 $220,000',
+      updated: 'Mar 8, 2026',
       description: 'We are looking for a VP of Corporate Communications to shape and protect the company’s public narrative across media, investor relations, and internal channels. This executive role leads a team of communications professionals and serves as a key advisor to the C-suite.<br><br>The ideal candidate brings 12+ years of corporate communications experience with exceptional writing and presentation skills. A strong media network and experience in technology or financial services are highly valued.'
     },
     'UX Content Designer': {
@@ -2340,6 +2296,7 @@
       reqId: 'DES-2026-0027',
       currency: 'USD',
       salary: '$100,000 \u2013 $120,000',
+      updated: 'Mar 8, 2026',
       description: 'We are seeking a UX Content Designer to craft clear, concise microcopy and content strategy for product interfaces. This role partners with UX designers and researchers to ensure every touchpoint communicates effectively and supports the user journey.<br><br>The ideal candidate brings 4+ years of UX writing experience with a portfolio demonstrating user-centered writing. Familiarity with Figma, a background in linguistics or technical writing, and strong collaboration skills are essential.'
     },
     'Staff Software Engineer': {
@@ -2352,6 +2309,7 @@
       reqId: 'ENG-2026-0118',
       currency: 'USD',
       salary: '$180,000 \u2013 $210,000',
+      updated: 'Mar 7, 2026',
       description: 'We are looking for a Staff Software Engineer to serve as a technical leader across multiple engineering teams. This role drives architecture decisions and establishes best practices for our cloud-native platform, mentoring senior engineers along the way.<br><br>The ideal candidate brings 10+ years of professional software engineering with deep expertise in Go or Java. Experience with scalable system design, cloud infrastructure on AWS or GCP, and a track record of leading large-scale projects are essential.'
     },
     'Head of People Ops': {
@@ -2364,6 +2322,7 @@
       reqId: 'HR-2026-0006',
       currency: 'USD',
       salary: '$140,000 \u2013 $165,000',
+      updated: 'Mar 7, 2026',
       description: 'We are seeking a Head of People Ops to oversee all HR operations including benefits administration, compliance, HRIS management, and employee lifecycle programs. This role is critical to supporting a rapidly growing organization through scalable people processes.<br><br>The ideal candidate brings 8+ years of HR operations experience with deep knowledge of employment law across multiple states. Experience with Workday or similar HRIS platforms and a data-driven approach to people decisions are highly valued.'
     },
     'Data Science Lead': {
@@ -2376,6 +2335,7 @@
       reqId: 'DAT-2026-0033',
       currency: 'USD',
       salary: '$160,000 \u2013 $190,000',
+      updated: 'Mar 6, 2026',
       description: 'We are looking for a Data Science Lead to manage a team of data scientists and ML engineers building predictive models that power core product features. This role defines the data science roadmap, mentors team members, and ensures models are deployed and performing at scale.<br><br>The ideal candidate brings 7+ years of data science experience with proficiency in Python, SQL, and ML frameworks like TensorFlow or PyTorch. A PhD or Master’s degree in a quantitative field and experience productionizing models are preferred.'
     },
     'Growth Marketing Manager': {
@@ -2388,6 +2348,7 @@
       reqId: 'MKT-2026-0045',
       currency: 'USD',
       salary: '$110,000 \u2013 $130,000',
+      updated: 'Mar 6, 2026',
       description: 'We are seeking a Growth Marketing Manager to own user acquisition and retention funnels across paid and organic channels. This role designs experiments, optimizes conversion rates, and scales campaigns that drive measurable business impact.<br><br>The ideal candidate brings 5+ years of growth or performance marketing experience with strong analytical skills. Proficiency with Google Analytics, Mixpanel, and paid media platforms, along with a test-and-learn mindset, are essential.'
     },
     'Principal Designer': {
@@ -2400,6 +2361,7 @@
       reqId: 'DES-2026-0031',
       currency: 'USD',
       salary: '$165,000 \u2013 $195,000',
+      updated: 'Mar 5, 2026',
       description: 'We are looking for a Principal Designer to set the creative vision and design standards for the entire product suite. As a senior individual contributor, this role leads design critiques, defines the design system, and influences product strategy at the executive level.<br><br>The ideal candidate brings 10+ years of product design experience with deep expertise in interaction design and visual systems. A world-class portfolio, strong user research skills, and the ability to mentor designers at all levels are essential.'
     },
     'DevOps Engineer II': {
@@ -2412,6 +2374,7 @@
       reqId: 'ENG-2026-0122',
       currency: 'USD',
       salary: '$120,000 \u2013 $145,000',
+      updated: 'Mar 5, 2026',
       description: 'We are seeking a DevOps Engineer II to build and maintain CI/CD pipelines, container orchestration, and cloud infrastructure. This role automates deployments, improves system reliability, and partners with engineering teams to accelerate delivery.<br><br>The ideal candidate brings 3+ years of DevOps or SRE experience with strong skills in Kubernetes and Terraform. Experience with AWS or GCP, GitOps workflows, and infrastructure-as-code principles are highly valued.'
     },
     'Director of Sales': {
@@ -2424,6 +2387,7 @@
       reqId: 'SAL-2026-0014',
       currency: 'USD',
       salary: '$160,000 \u2013 $200,000 + commission',
+      updated: 'Mar 4, 2026',
       description: 'We are looking for a Director of Sales to lead a team of enterprise account executives and own the full sales cycle from prospecting to close. This role builds the sales playbook, develops strategic account plans, and drives revenue growth across Fortune 500 accounts.<br><br>The ideal candidate brings 8+ years of B2B SaaS sales experience with at least 3 years in leadership. A consistent track record of exceeding quota and experience selling to C-suite buyers are essential.'
     },
     'Mobile Engineer (iOS)': {
@@ -2436,6 +2400,7 @@
       reqId: 'ENG-2026-0125',
       currency: 'USD',
       salary: '$140,000 \u2013 $165,000',
+      updated: 'Mar 4, 2026',
       description: 'We are seeking a Mobile Engineer to build and ship features for our flagship iOS application. This role works in Swift, collaborates with designers on pixel-perfect UI implementations, and ensures a high-quality user experience across devices.<br><br>The ideal candidate brings 5+ years of iOS development experience with deep knowledge of UIKit and SwiftUI. Experience with CI/CD for mobile, reactive programming patterns, and app performance optimization are highly valued.'
     },
     'Content Strategy Lead': {
@@ -2448,6 +2413,7 @@
       reqId: 'MKT-2026-0049',
       currency: 'USD',
       salary: '$105,000 \u2013 $125,000',
+      updated: 'Mar 3, 2026',
       description: 'We are looking for a Content Strategy Lead to define and execute the content roadmap across blog, email, social, and thought leadership channels. This role develops editorial calendars, manages freelance writers, and measures content performance against KPIs.<br><br>The ideal candidate brings 6+ years of content strategy or content marketing experience with excellent editorial judgment. A portfolio of published work and experience building content programs from the ground up are essential.'
     },
     'Security Architect': {
@@ -2460,6 +2426,7 @@
       reqId: 'SEC-2026-0003',
       currency: 'USD',
       salary: '$170,000 \u2013 $200,000',
+      updated: 'Mar 3, 2026',
       description: 'We are seeking a Security Architect to design and implement security architecture across cloud infrastructure, application layer, and data platforms. This role conducts threat modeling, leads incident response planning, and ensures compliance with industry standards.<br><br>The ideal candidate brings 8+ years of information security experience with deep expertise in cloud security on AWS or GCP. CISSP or CCSP certification and experience with zero-trust architectures and SOC 2 compliance are highly valued.'
     },
     'Research Scientist': {
@@ -2472,6 +2439,7 @@
       reqId: 'RND-2026-0018',
       currency: 'USD',
       salary: '$150,000 \u2013 $180,000',
+      updated: 'Mar 3, 2026',
       description: 'We are looking for a Research Scientist to conduct applied research in NLP and machine learning, developing novel algorithms for core product features. This role publishes papers, collaborates with engineering to productionize findings, and pushes the boundaries of what our platform can do.<br><br>The ideal candidate holds a PhD in Computer Science or a related field with a strong publication record. Hands-on Python programming skills, experience with large language models, and a passion for applied research are essential.'
     },
     'Customer Success Manager': {
@@ -2484,6 +2452,7 @@
       reqId: 'CX-2026-0021',
       currency: 'USD',
       salary: '$95,000 \u2013 $115,000',
+      updated: 'Mar 3, 2026',
       description: 'We are seeking a Customer Success Manager to own a portfolio of enterprise accounts, driving adoption, retention, and expansion revenue. This role builds deep stakeholder relationships, facilitates quarterly business reviews, and monitors account health through data-driven insights.<br><br>The ideal candidate brings 4+ years of customer success or account management experience in B2B SaaS. Excellent communication skills, experience with Gainsight or Totango, and a data-driven approach to account strategy are highly valued.'
     },
     'Frontend Engineer III': {
@@ -2496,6 +2465,7 @@
       reqId: 'ENG-2026-0130',
       currency: 'USD',
       salary: '$145,000 \u2013 $170,000',
+      updated: 'Mar 3, 2026',
       description: 'We are looking for a Frontend Engineer III to build performant, accessible web interfaces using React and TypeScript. This role owns major feature areas, drives frontend architecture decisions, and contributes to design systems and component libraries.<br><br>The ideal candidate brings 5+ years of frontend development experience with deep expertise in React and modern JavaScript. A strong eye for UI quality, knowledge of accessibility standards, and experience with performance optimization are essential.'
     },
     'Talent Acquisition Lead': {
@@ -2508,6 +2478,7 @@
       reqId: 'HR-2026-0011',
       currency: 'USD',
       salary: '$110,000 \u2013 $130,000',
+      updated: 'Mar 3, 2026',
       description: 'We are seeking a Talent Acquisition Lead to manage a team of recruiters and own end-to-end hiring strategy for engineering, product, and design roles. This role optimizes sourcing channels, builds employer branding, and drives diversity hiring initiatives.<br><br>The ideal candidate brings 6+ years of recruiting in tech with at least 2 years leading a TA team. A data-driven approach to pipeline management, ATS platform expertise, and a passion for building inclusive teams are essential.'
     },
     'Platform Engineer': {
@@ -2520,6 +2491,7 @@
       reqId: 'ENG-2026-0134',
       currency: 'USD',
       salary: '$150,000 \u2013 $175,000',
+      updated: 'Mar 3, 2026',
       description: 'We are looking for a Platform Engineer to design and build the internal developer platform that accelerates engineering productivity. This role creates self-service tooling, defines platform APIs, and works closely with product teams to reduce friction in the development workflow.<br><br>The ideal candidate brings 6+ years of software engineering experience with strong skills in Go or Python. Deep expertise with Kubernetes, cloud-native technologies, and a passion for developer experience are essential.'
     },
     'Business Analyst Sr': {
@@ -2532,6 +2504,7 @@
       reqId: 'OPS-2026-0008',
       currency: 'USD',
       salary: '$95,000 \u2013 $115,000',
+      updated: 'Mar 3, 2026',
       description: 'We are seeking a Senior Business Analyst to partner with cross-functional teams and translate business requirements into technical specifications and process improvements. This role conducts data analysis, builds financial models, and presents findings to leadership.<br><br>The ideal candidate brings 5+ years of business analysis experience with advanced Excel and SQL skills. Experience with Tableau or Power BI, strong communication abilities, and familiarity with Agile methodologies are highly valued.'
     }
   };
@@ -2642,6 +2615,10 @@
 
   // ========== ZOOM TRANSITION LOGIC ==========
   const grid = document.querySelector('.grid');
+  document.fonts.ready.then(() => {
+    document.getElementById('heroLogo').classList.add('visible');
+    requestAnimationFrame(() => { grid.classList.add('ready'); });
+  });
   const jobDetail = document.getElementById('jobDetail');
   const jobTitle = document.getElementById('jobTitle');
   const jobCount = document.getElementById('jobCount');
@@ -2741,6 +2718,7 @@
     }
     jobMeta.innerHTML = buildMetaHTML(data);
     jobDescription.innerHTML = data.description;
+    document.getElementById('jobUpdated').textContent = data.updated ? 'Updated ' + data.updated : '';
 
     // Save scroll position
     savedScrollY = window.scrollY;
@@ -2871,6 +2849,7 @@
     jobDivider.style.display = '';
     jobMeta.style.display = '';
     jobDescription.style.display = '';
+    document.getElementById('jobUpdated').style.display = '';
     jobDetailActions.style.display = '';
     detailDivider.style.display = '';
     jobBodyLinks.style.display = '';
@@ -2894,6 +2873,7 @@
     jobDivider.style.display = 'none';
     jobMeta.style.display = 'none';
     jobDescription.style.display = 'none';
+    document.getElementById('jobUpdated').style.display = 'none';
     jobDetailActions.style.display = 'none';
     detailDivider.style.display = 'none';
     jobBodyLinks.style.display = 'none';
@@ -3067,6 +3047,7 @@
     jobDivider.style.display = 'none';
     jobMeta.style.display = 'none';
     jobDescription.style.display = 'none';
+    document.getElementById('jobUpdated').style.display = 'none';
     jobDetailActions.style.display = 'none';
     detailDivider.style.display = 'none';
     jobBodyLinks.style.display = 'none';
@@ -3560,11 +3541,6 @@
           <div class="mini-stat-row">
             <span class="mini-stat-num">0</span>
             <span class="mini-stat-divider"></span>
-            <span class="mini-stat-label">New</span>
-          </div>
-          <div class="mini-stat-row">
-            <span class="mini-stat-num">0</span>
-            <span class="mini-stat-divider"></span>
             <span class="mini-stat-label">Shortlist</span>
           </div>
         <div class="mini-stat-cta-spacer"></div>
@@ -3585,6 +3561,7 @@
     jobCount.innerHTML = '0 <span class="job-count-label">Matches</span>';
     jobMeta.innerHTML = buildMetaHTML(newJob);
     jobDescription.innerHTML = newJob.description;
+    document.getElementById('jobUpdated').textContent = newJob.updated ? 'Updated ' + newJob.updated : '';
 
     // Instant snap: disable transitions, swap panels
     jobCreate.style.transition = 'none';
@@ -3606,6 +3583,7 @@
     jobTitle.style.display = 'none';
     jobCount.style.display = 'none';
     jobDescription.style.display = 'none';
+    document.getElementById('jobUpdated').style.display = 'none';
     jobMeta.style.display = 'none';
     document.querySelector('#jobDetail .job-divider').style.display = 'none';
     document.getElementById('jobReqId').style.display = 'none';
@@ -3625,6 +3603,7 @@
     jobTitle.style.display = '';
     jobCount.style.display = '';
     jobDescription.style.display = '';
+    document.getElementById('jobUpdated').style.display = '';
     jobMeta.style.display = '';
     document.querySelector('#jobDetail .job-divider').style.display = '';
     document.getElementById('jobReqId').style.display = '';
@@ -3737,6 +3716,7 @@
     jobTitle.textContent = newTitle;
     jobCount.innerHTML = updatedJob.count + ' <span class="job-count-label">Matches</span>';
     jobDescription.innerHTML = updatedJob.description;
+    document.getElementById('jobUpdated').textContent = updatedJob.updated ? 'Updated ' + updatedJob.updated : '';
     jobMeta.innerHTML = buildMetaHTML(updatedJob);
 
     hideEditForm();
