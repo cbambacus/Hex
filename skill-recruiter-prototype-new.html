@@ -1,0 +1,3215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Skill Recruiter</title>
+<style>
+  @font-face {
+    font-family: 'IBM Plex Sans';
+    src: url('Fonts/IBMPlexSans-VariableFont_wdth,wght.ttf') format('truetype');
+    font-weight: 100 900;
+    font-style: normal;
+  }
+
+  @font-face {
+    font-family: 'IBM Plex Sans';
+    src: url('Fonts/IBMPlexSans-Italic-VariableFont_wdth,wght.ttf') format('truetype');
+    font-weight: 100 900;
+    font-style: italic;
+  }
+
+  @font-face {
+    font-family: 'IBM Plex Mono';
+    src: url('Fonts/IBMPlexMono-Medium.ttf') format('truetype');
+    font-weight: 500;
+    font-style: normal;
+  }
+
+  @font-face {
+    font-family: 'Skill Sans';
+    src: url('Fonts/SkillSans-Regular.otf') format('opentype');
+    font-weight: 400;
+    font-style: normal;
+  }
+
+  :root {
+    --stroke-width: 1.0px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #000;
+    min-height: 100vh;
+    font-family: 'IBM Plex Sans', sans-serif;
+    color: rgba(255, 255, 255, 0.85);
+  }
+
+  /* ========== HEADER ========== */
+  .header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    padding: 20px 32px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    z-index: 100;
+    pointer-events: none;
+  }
+
+  .header > * {
+    pointer-events: auto;
+  }
+
+  .header-dot {
+    width: 12px;
+    height: 18px;
+    background: #f0f;
+    clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+  }
+
+  .header-title {
+    font-family: 'Skill Sans', 'IBM Plex Sans', sans-serif;
+    font-size: 24px;
+    font-weight: 400;
+    letter-spacing: 0.5px;
+  }
+
+  /* ========== HERO LOGO ========== */
+  .hero-logo {
+    width: 100%;
+    padding: 15vh 0 10vh;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 17px;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .hero-logo.visible {
+    opacity: 1;
+  }
+
+  .hero-diamond {
+    width: 38px;
+    height: 58px;
+    background: #f0f;
+    clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+  }
+
+  .hero-text {
+    font-family: 'Skill Sans', 'IBM Plex Sans', sans-serif;
+    font-size: 77px;
+    font-weight: 400;
+    letter-spacing: 1px;
+    color: rgba(255, 255, 255, 0.85);
+  }
+
+  .header-nav {
+    display: flex;
+    gap: 4px;
+    margin-left: auto;
+  }
+
+  .header-nav-btn {
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 400;
+    color: rgba(255, 255, 255, 0.5);
+    background: transparent;
+    border: none;
+    padding: 6px 16px;
+    border-radius: 0;
+    cursor: pointer;
+    transition: color 0.2s ease, background 0.2s ease;
+  }
+
+  .header-nav-btn:hover {
+    color: rgba(255, 255, 255, 0.85);
+    background: rgba(255, 255, 255, 0.08);
+  }
+
+  .header-nav-btn.active {
+    color: #000;
+    background: #f0f;
+    font-weight: 500;
+  }
+
+  /* ========== STARFIELD ========== */
+  .starfield {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 0;
+    overflow: hidden;
+  }
+
+  .star {
+    position: absolute;
+    background: #fff;
+    opacity: 0.2;
+    clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+    transition: transform 0.9s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.9s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .star.scattered {
+    opacity: 0;
+  }
+
+  @keyframes drift-right {
+    from { transform: translateX(0); }
+    to { transform: translateX(60px); }
+  }
+
+  @keyframes drift-left {
+    from { transform: translateX(0); }
+    to { transform: translateX(-60px); }
+  }
+
+  /* ========== GRID ========== */
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(5, 246px);
+    gap: 0;
+    justify-content: center;
+    padding: 0 40px 60px;
+    margin: 0 auto;
+  }
+
+  .grid.ready {
+    transition: transform 0.9s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.9s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* ========== TILE CONTAINER ========== */
+  .tile {
+    position: relative;
+    width: 100%;
+    height: 302px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    cursor: pointer;
+  }
+
+  .tile:hover {
+    z-index: 10;
+  }
+
+  /* ========== SHAPE WRAPPER ========== */
+  .tile-shape {
+    position: absolute;
+    bottom: 56px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 182px;
+    height: 182px;
+  }
+
+  /* ========== CONTENT LAYER (doesn't rotate) ========== */
+  .tile-content {
+    position: absolute;
+    bottom: 56px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 182px;
+    height: 182px;
+    pointer-events: none;
+  }
+
+  /* ========== TILE BORDER & FILL ========== */
+  .hex-border {
+    position: absolute;
+    inset: 0;
+    background: transparent;
+    border-radius: 0;
+    transition: background 0.25s ease;
+  }
+
+  .hex-fill {
+    position: absolute;
+    inset: 0;
+    background: #000;
+    border-radius: 0;
+    box-shadow: inset 0 0 0 1px #fff;
+  }
+
+  /* ========== NUMBER ========== */
+  .tile-number {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 52px;
+    font-weight: 300;
+    color: rgba(255, 255, 255, 0.85);
+    z-index: 2;
+    transition: opacity 0.15s ease;
+    pointer-events: none;
+  }
+
+  /* ========== "+" icon for New Rec tile ========== */
+  .tile-icon {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+    pointer-events: none;
+  }
+
+  .tile-icon svg {
+    width: 74px;
+    height: 74px;
+    stroke: #fff;
+    stroke-width: var(--stroke-width);
+    transition: none;
+  }
+
+  /* ========== MINI STATS (in-hex hover content) ========== */
+  .mini-stats {
+    position: absolute;
+    inset: 0;
+    z-index: 3;
+    opacity: 0;
+    transition: opacity 0.15s ease;
+    pointer-events: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+    padding: 0 16px 32px 20px;
+  }
+
+  .mini-stat-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+  }
+
+  .mini-stat-num {
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 25px;
+    font-weight: 300;
+    color: #f0f;
+    width: 39px;
+    text-align: right;
+    flex-shrink: 0;
+  }
+
+  .mini-stat-divider {
+    width: var(--stroke-width);
+    height: 18px;
+    background: #f0f;
+    flex-shrink: 0;
+  }
+
+  .mini-stat-label {
+    font-size: 16px;
+    font-weight: 500;
+    color: #f0f;
+    text-align: left;
+    line-height: 1.2;
+    white-space: nowrap;
+  }
+
+  .mini-stat-cta-spacer {
+    display: none;
+  }
+
+  .mini-stat-cta {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f0f;
+    color: #000;
+    border-radius: 0;
+    padding: 8px 12px;
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 1.2;
+    white-space: nowrap;
+  }
+
+  .mini-stat-cta-arrow {
+    font-size: 15px;
+    font-weight: 400;
+    color: #000;
+  }
+
+  .mini-stat-cta-divider {
+    display: none;
+  }
+
+  .mini-stat-cta-label {
+    color: #000;
+    text-align: left;
+  }
+
+  /* ========== LABEL ========== */
+  .tile-label {
+    color: rgba(255, 255, 255, 0.85);
+    font-size: 15px;
+    font-weight: 500;
+    text-align: center;
+    line-height: 1.35;
+    height: 2.7em; /* reserve 2 lines */
+  }
+
+  /* ========================================
+     HOVER — active tiles only (no morph, no expand)
+     ======================================== */
+
+  .tile:not(.disabled):not(.tile-new):hover .hex-fill {
+    background: #000;
+    box-shadow: inset 0 0 0 1px #f0f;
+  }
+
+  .tile:not(.disabled):not(.tile-new):hover .tile-number {
+    opacity: 0;
+    transition: none;
+  }
+
+  .tile:not(.disabled):not(.tile-new):hover .tile-label {
+    color: #f0f;
+  }
+
+  .tile:not(.disabled):not(.tile-new):hover .mini-stats {
+    opacity: 1;
+    transition: none;
+    pointer-events: auto;
+  }
+
+  /* ========== NEW JOB — magenta highlight only, instant snap ========== */
+  .tile-new .hex-border {
+    transition: none;
+  }
+
+  .tile-new .tile-icon svg {
+    transition: none;
+  }
+
+  .tile-new .tile-label {
+    transition: none;
+  }
+
+  .tile-new:hover .hex-fill {
+    background: #000;
+    box-shadow: inset 0 0 0 1px #f0f;
+  }
+
+  .tile-new:hover .tile-icon svg {
+    stroke: #f0f;
+  }
+
+  .tile-new:hover .tile-label {
+    color: #f0f;
+  }
+
+  /* ========== REVERSE (mouse-out) ========== */
+  .tile .hex-border {
+    transition: background 0.3s ease 0.1s;
+  }
+
+  .tile .tile-number {
+    transition: none;
+  }
+
+  .tile .mini-stats {
+    transition: none;
+  }
+
+  /* ========== DISABLED TILES ========== */
+  .tile.disabled {
+    cursor: default;
+  }
+
+  .tile.disabled .hex-border {
+    background: #444;
+  }
+
+  .tile.disabled .hex-fill {
+    background: #444;
+  }
+
+  .tile.disabled .tile-number {
+    color: #000;
+  }
+
+  .tile.disabled .tile-label {
+    color: #444;
+  }
+
+  /* ========== ACTIVITY DIAMONDS ========== */
+  .tile-diamonds {
+    position: absolute;
+    top: 41px;
+    right: 44px;
+    width: 53px;
+    height: 62px;
+    z-index: 5;
+    pointer-events: none;
+  }
+
+  .diamond {
+    position: absolute;
+    background: #f0f;
+    clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+  }
+
+  @keyframes diamond-pulse {
+    0%, 100% { transform: scale(0.9); }
+    50% { transform: scale(1.1); }
+  }
+
+  /* ========== ZOOM TRANSITION ========== */
+  .tile {
+    transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .tile.fly-away {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .tile.selected-zoom {
+    z-index: 20;
+    pointer-events: none;
+  }
+
+  .grid.zooming-out {
+    pointer-events: none;
+  }
+
+  .grid.zoomed {
+    visibility: hidden;
+    pointer-events: none;
+  }
+
+  /* ========== JOB DETAIL SCREEN ========== */
+  .job-detail {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: #000;
+    z-index: 50;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow-y: auto;
+    padding: 64px 40px 0;
+  }
+
+  .job-detail.active {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .job-detail.zooming-out {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .job-detail-inner {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 60px 0 80px;
+  }
+
+  .job-header-row {
+    display: flex;
+    align-items: baseline;
+    position: relative;
+  }
+
+  .job-back {
+    position: absolute;
+    right: calc(100% + 20px);
+    top: 0.3em;
+    font-size: 28px;
+    color: rgba(255, 255, 255, 0.85);
+    cursor: pointer;
+    line-height: 1;
+    user-select: none;
+    transition: color 0.2s ease;
+  }
+
+  .job-back:hover {
+    color: #f0f;
+  }
+
+  .job-title-block {
+    width: 680px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+  }
+
+  .job-title {
+    font-family: 'Skill Sans', 'IBM Plex Sans', sans-serif;
+    font-size: 34px;
+    font-weight: 400;
+    color: rgba(255, 255, 255, 0.85);
+  }
+
+  .job-count {
+    font-size: 34px;
+    font-weight: 400;
+    color: rgba(255, 255, 255, 0.85);
+    margin-left: 40px;
+    white-space: nowrap;
+  }
+
+  .job-count-label {
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 15px;
+    font-weight: 400;
+  }
+
+  .job-count + .job-count {
+    margin-left: 24px;
+  }
+
+  .job-req-id {
+    font-size: 15px;
+    font-weight: 400;
+    color: rgba(255, 255, 255, 0.85);
+    margin-left: auto;
+  }
+
+  .job-divider {
+    border: none;
+    display: flex;
+    gap: 40px;
+    margin: 24px 0 28px;
+  }
+
+  .job-divider::before {
+    content: '';
+    width: 680px;
+    flex-shrink: 0;
+    border-top: var(--stroke-width) solid #fff;
+  }
+
+  .job-divider::after {
+    content: '';
+    flex: 1;
+    border-top: var(--stroke-width) solid #fff;
+  }
+
+  .job-body-cols {
+    display: flex;
+    gap: 0;
+  }
+
+  .job-body-left {
+    width: 680px;
+    flex-shrink: 0;
+  }
+
+  .job-body-right {
+    flex: 1;
+    padding-left: 40px;
+  }
+
+  .job-body-links {
+    display: flex;
+    gap: 20px;
+    margin-top: 8px;
+  }
+
+  .job-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    font-size: 15px;
+    font-weight: 400;
+    color: rgba(255, 255, 255, 0.85);
+  }
+
+  .meta-col {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .job-updated {
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.45);
+    margin-top: 16px;
+    margin-bottom: 16px;
+  }
+
+  .posting-link {
+    color: rgba(255, 255, 255, 0.85);
+    text-decoration: underline;
+  }
+
+  .posting-link:hover {
+    color: #f0f;
+  }
+
+  .job-description {
+    font-size: 17px;
+    line-height: 1.7;
+    color: rgba(255, 255, 255, 0.65);
+    margin-bottom: 16px;
+  }
+
+  /* ========== SEARCH CONSOLE ========== */
+  .search-console {
+    display: none;
+    font-family: 'IBM Plex Mono', monospace;
+    font-weight: 500;
+    font-size: 15px;
+    line-height: 1.8;
+    color: rgba(255, 255, 255, 0.85);
+    background: #000;
+    border: var(--stroke-width) solid #fff;
+    padding: 0 24px;
+    min-height: 0;
+    max-height: 0;
+    overflow: hidden;
+    margin-top: 24px;
+    margin-bottom: 48px;
+    transition: max-height 0.5s ease-in, min-height 0.5s ease-in, padding 0.5s ease-in;
+  }
+
+  .search-console.open {
+    padding: 24px;
+    min-height: 400px;
+    max-height: 400px;
+  }
+
+  .search-cursor {
+    display: inline-block;
+    width: 8px;
+    height: 22px;
+    margin-left: 2px;
+    vertical-align: text-bottom;
+    position: relative;
+    top: 2px;
+    animation: cursor-cycle 0.8s step-end infinite;
+  }
+
+  @keyframes cursor-cycle {
+    0%    { background: #FF004F; }
+    25%   { background: #00D900; }
+    50%   { background: #FFE600; }
+    75%   { background: #63A9FF; }
+  }
+
+  .actions-divider {
+    border: none;
+    border-top: var(--stroke-width) solid #fff;
+    margin: 24px 0 20px;
+  }
+
+  .job-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .job-action {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 17px;
+    font-weight: 400;
+    cursor: pointer;
+    transition: color 0.2s ease, background 0.2s ease;
+    border: none;
+    border-radius: 0;
+    padding: 8px 16px 8px 8px;
+    background: rgba(255, 255, 255, 0.85);
+    color: #000;
+  }
+
+  .job-action:hover {
+    color: #000;
+    background: #f0f;
+  }
+
+  .job-action:hover svg {
+    stroke: #000;
+  }
+
+  .job-action.disabled {
+    color: #000;
+    background: #333;
+    opacity: 1;
+    cursor: default;
+    pointer-events: none;
+  }
+
+  .job-action.disabled svg {
+    stroke: #000;
+  }
+
+  .action-icon {
+    width: 18px;
+    height: 18px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .action-hex-border,
+  .action-hex-fill {
+    display: none;
+  }
+
+  .action-icon svg {
+    width: 18px;
+    height: 18px;
+    stroke: currentColor;
+    fill: none;
+    stroke-width: 2px;
+    vector-effect: non-scaling-stroke;
+    position: relative;
+    z-index: 1;
+  }
+
+  .action-icon svg line,
+  .action-icon svg polyline {
+    vector-effect: non-scaling-stroke;
+  }
+
+  /* ========== REVIEW CANDIDATES SCREEN ========== */
+  .review-candidates {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: #000;
+    z-index: 50;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    padding-top: 64px;
+  }
+
+  .review-candidates.active {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .review-candidates.zooming-out {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .review-candidates {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .rc-fixed-header {
+    flex-shrink: 0;
+    background: #000;
+    z-index: 2;
+    padding: 60px 40px 0;
+  }
+
+  .rc-fixed-header-inner {
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+
+  .rc-scroll-area {
+    flex: 1;
+    overflow-y: auto;
+    position: relative;
+  }
+
+  .rc-scroll-inner {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 28px 0 80px;
+    display: flex;
+    gap: 40px;
+  }
+
+
+  /* ========== REVIEW CANDIDATES CARDS ========== */
+  .rc-cards-col {
+    width: 680px;
+    flex-shrink: 0;
+  }
+
+  .rc-filter-bar {
+    display: flex;
+    gap: 24px;
+    margin-bottom: 20px;
+  }
+
+  .rc-filter-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .rc-filter-label {
+    font-size: 14px;
+    font-weight: 400;
+    color: rgba(255, 255, 255, 0.55);
+    white-space: nowrap;
+  }
+
+  .rc-filter-select {
+    width: 140px;
+    flex: none;
+  }
+
+  .rc-card-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .rc-card {
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    padding: 18px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    transition: border-color 0.2s ease;
+    gap: 24px;
+  }
+
+  .rc-card:hover,
+  .rc-card.rc-active {
+    border-color: #f0f;
+  }
+
+  .rc-card-score {
+    flex-shrink: 0;
+    width: 80px;
+  }
+
+  .rc-card-match {
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 32px;
+    font-weight: 300;
+    color: rgba(255, 255, 255, 0.85);
+    line-height: 1;
+  }
+
+  .rc-card-status {
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    font-style: italic;
+    color: rgba(255, 255, 255, 0.55);
+    margin-top: 4px;
+    letter-spacing: 0.02em;
+  }
+
+  .rc-card-info {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .rc-card-name {
+    font-size: 22px;
+    font-weight: 400;
+    color: rgba(255, 255, 255, 0.85);
+    line-height: 1.2;
+  }
+
+  .rc-card-location {
+    font-size: 15px;
+    color: rgba(255, 255, 255, 0.50);
+    margin-top: 4px;
+  }
+
+  .rc-card-actions {
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: row;
+    gap: 6px;
+    align-self: center;
+  }
+
+  .rc-card-actions button {
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgba(255, 255, 255, 0.85);
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    padding: 0;
+    cursor: pointer;
+    transition: border-color 0.2s ease, background 0.2s ease;
+  }
+
+  .rc-card-actions button:hover {
+    border-color: #f0f;
+    color: #f0f;
+    background: rgba(255, 0, 255, 0.08);
+  }
+
+  .rc-card-actions button.shortlisted {
+    background: #f0f;
+    border-color: #f0f;
+    color: #000;
+  }
+
+  /* Shortlisted card */
+  .rc-card.rc-shortlisted {
+    box-shadow: inset 8px 0 0 #f0f;
+  }
+
+  /* Skipped card */
+  .rc-card.rc-skipped {
+    opacity: 0.35;
+  }
+
+  .rc-card.rc-skipped:hover {
+    opacity: 0.7;
+  }
+
+  .rc-sidebar {
+    flex: 1;
+    position: sticky;
+    top: 28px;
+    align-self: flex-start;
+  }
+
+  .rc-sidebar-heading {
+    font-size: 14px;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.85);
+    margin-bottom: 12px;
+  }
+
+  .rc-match-summary {
+    font-size: 14px;
+    font-weight: 400;
+    color: rgba(255, 255, 255, 0.85);
+    line-height: 1.7;
+    margin-bottom: 28px;
+  }
+
+  .rc-meta-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 28px;
+  }
+
+  .rc-meta-item {
+    font-size: 15px;
+    font-weight: 400;
+    color: rgba(255, 255, 255, 0.85);
+  }
+
+  .rc-meta-check {
+    color: rgba(255, 255, 255, 0.85);
+    margin-right: 10px;
+  }
+
+  /* ========== CANDIDATE CARD EXPANDED ========== */
+  .rc-card.rc-expanded {
+    flex-wrap: wrap;
+    border-color: #f0f;
+  }
+
+  .rc-card-expand-body {
+    width: 100%;
+    margin-top: 20px;
+    margin-bottom: -18px;
+    display: none;
+  }
+
+  .rc-card.rc-expanded .rc-card-expand-body {
+    display: block;
+  }
+
+  .rc-card-tabs {
+    display: flex;
+    gap: 0;
+    margin-bottom: -1px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .rc-card-tab {
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.55);
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    padding: 8px 20px;
+    cursor: pointer;
+    transition: color 0.2s ease, background 0.2s ease;
+  }
+
+  .rc-card-tab.active {
+    color: #000;
+    background: #f0f;
+    border-color: #f0f;
+  }
+
+  .rc-card-tab:not(.active):hover {
+    color: rgba(255, 255, 255, 0.85);
+  }
+
+  .rc-card-tab-panel {
+    background: #fff;
+    color: #222;
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 14px;
+    line-height: 1.7;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+  }
+
+  .rc-card-tab-panel.dark {
+    background: transparent;
+    color: rgba(255, 255, 255, 0.85);
+  }
+
+  .rc-card-tab-panel p {
+    margin: 0;
+    padding: 28px 32px;
+    color: #555;
+    font-size: 13px;
+  }
+
+  .rc-card-tab-panel.dark p {
+    color: rgba(255, 255, 255, 0.55);
+  }
+
+  .rc-card-collapse-btn {
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.55);
+    background: transparent;
+    border: none;
+    padding: 12px 24px 18px;
+    cursor: pointer;
+    transition: color 0.2s ease;
+  }
+
+  .rc-card-collapse-btn:hover {
+    color: rgba(255, 255, 255, 0.85);
+  }
+
+  /* ========== JOB CREATE SCREEN ========== */
+  .job-create {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: #000;
+    z-index: 50;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow-y: auto;
+    padding: 64px 40px 0;
+  }
+
+  .job-create.active {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .job-create.zooming-out {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .job-create .job-divider,
+  #jobEditForm .job-divider {
+    display: block;
+    border-top: var(--stroke-width) solid #fff;
+    margin: 24px 0 28px;
+  }
+
+  .job-create .job-divider::before,
+  .job-create .job-divider::after,
+  #jobEditForm .job-divider::before,
+  #jobEditForm .job-divider::after {
+    display: none;
+  }
+
+  .form-title-row {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 24px;
+    align-items: baseline;
+  }
+
+  .form-reqid-input {
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .job-title-input {
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 15px;
+    font-weight: 400;
+    color: rgba(255, 255, 255, 0.85);
+    background: #000;
+    border: var(--stroke-width) solid rgba(255, 255, 255, 0.4);
+    outline: none;
+    padding: 8px 12px;
+    margin-top: 2px;
+    box-sizing: border-box;
+    min-width: 0;
+  }
+
+  .job-title-input::placeholder {
+    color: #888;
+    font-style: italic;
+  }
+
+  .job-desc-input {
+    min-height: 492px;
+    overflow-y: auto;
+    font-size: 16px;
+    line-height: 1.7;
+    color: rgba(255, 255, 255, 0.85);
+    background: #000;
+    border: var(--stroke-width) solid rgba(255, 255, 255, 0.4);
+    border-radius: 0;
+    outline: none;
+    padding: 16px;
+    font-family: inherit;
+    box-sizing: border-box;
+  }
+
+  .job-desc-input:focus {
+    border-color: #f0f;
+  }
+
+  .job-desc-input:empty::before {
+    content: attr(data-placeholder);
+    color: #888;
+    font-style: italic;
+  }
+
+  .form-cols {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 24px;
+  }
+
+  .form-col-left {
+    min-width: 0;
+  }
+
+  .form-col-right {
+    min-width: 0;
+  }
+
+  .form-group-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 20px;
+  }
+
+  .form-radio-row {
+    display: flex;
+    gap: 32px;
+  }
+
+  .form-hint {
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.45);
+  }
+
+  .form-row {
+    display: flex;
+    align-items: center;
+    gap: 62px;
+    margin-bottom: 20px;
+  }
+
+  .form-group {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex: 1;
+    min-width: 0;
+  }
+
+  .form-label {
+    font-size: 14px;
+    font-weight: 400;
+    color: rgba(255, 255, 255, 0.85);
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .form-input {
+    font-size: 15px;
+    color: rgba(255, 255, 255, 0.85);
+    background: #000;
+    border: var(--stroke-width) solid rgba(255, 255, 255, 0.4);
+    outline: none;
+    padding: 8px 12px;
+    font-family: inherit;
+    border-radius: 0;
+    flex: 1;
+    min-width: 0;
+    box-sizing: border-box;
+  }
+
+  .form-input::placeholder {
+    color: #888;
+    font-style: italic;
+  }
+
+  .form-input:focus,
+  .form-select:focus {
+    border-color: #f0f;
+  }
+
+  .form-select {
+    font-size: 15px;
+    color: rgba(255, 255, 255, 0.85);
+    background: #000;
+    border: var(--stroke-width) solid rgba(255, 255, 255, 0.4);
+    outline: none;
+    padding: 8px 32px 8px 12px;
+    font-family: inherit;
+    border-radius: 0;
+    cursor: pointer;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='2.5'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    flex: 1;
+    min-width: 0;
+  }
+
+  .form-select option {
+    background: #000;
+    color: rgba(255, 255, 255, 0.85);
+  }
+
+  .radio-group {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .radio-option {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    font-size: 15px;
+    color: rgba(255, 255, 255, 0.85);
+  }
+
+  .radio-option input[type="radio"] {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    width: 14px;
+    height: 14px;
+    border: var(--stroke-width) solid rgba(255, 255, 255, 0.4);
+    border-radius: 50%;
+    background: #000;
+    cursor: pointer;
+    margin: 0;
+    position: relative;
+  }
+
+  .radio-option input[type="radio"]:checked {
+    border-color: #fff;
+  }
+
+  .radio-option input[type="radio"]:checked::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #fff;
+  }
+
+  .radio-option input[type="radio"]:focus {
+    border-color: #f0f;
+  }
+
+  .salary-inputs {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: 1;
+    min-width: 0;
+  }
+
+  .salary-field {
+    font-size: 15px;
+    color: rgba(255, 255, 255, 0.85);
+    background: #000;
+    border: var(--stroke-width) solid rgba(255, 255, 255, 0.4);
+    outline: none;
+    padding: 8px 12px;
+    font-family: inherit;
+    border-radius: 0;
+    flex: 1;
+    min-width: 0;
+  }
+
+  .salary-field:focus {
+    border-color: #f0f;
+  }
+
+  .salary-field::placeholder {
+    color: #666;
+    font-style: italic;
+  }
+
+  .salary-to {
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.5);
+  }
+</style>
+</head>
+<body>
+
+<div class="starfield" id="starfield"></div>
+
+<div class="header" id="headerBar">
+  <div class="header-dot" id="headerDot" style="opacity: 0;"></div>
+  <div class="header-title" id="headerLogo" style="cursor: pointer; opacity: 0;">Skill Recruiter</div>
+</div>
+
+<div class="grid">
+
+  <div class="hero-logo" id="heroLogo" style="grid-column: 1 / -1;">
+    <div class="hero-diamond"></div>
+    <div class="hero-text">Skill Recruiter</div>
+  </div>
+
+  <!-- Row 1 -->
+
+  <div class="tile tile-new">
+    <div class="tile-shape">
+      <div class="hex-border"></div>
+      <div class="hex-fill"></div>
+    </div>
+    <div class="tile-content">
+      <div class="tile-icon"><svg viewBox="0 0 40 40" fill="none"><path d="M15.7 2 L24.3 2 L24.3 15.7 L38 15.7 L38 24.3 L24.3 24.3 L24.3 38 L15.7 38 L15.7 24.3 L2 24.3 L2 15.7 L15.7 15.7 Z"/></svg></div>
+    </div>
+    <div class="tile-label">New Job</div>
+  </div>
+
+  <div class="tile">
+    <div class="tile-shape">
+      <div class="hex-border"></div>
+      <div class="hex-fill"></div>
+    </div>
+    <div class="tile-content">
+      <span class="tile-number">0</span>
+      <div class="mini-stats">
+        <div class="mini-stat-row">
+          <span class="mini-stat-num">0</span>
+          <span class="mini-stat-divider"></span>
+          <span class="mini-stat-label">Matches</span>
+        </div>
+        <div class="mini-stat-row">
+          <span class="mini-stat-num">0</span>
+          <span class="mini-stat-divider"></span>
+          <span class="mini-stat-label">Shortlist</span>
+        </div>
+        <div class="mini-stat-cta-spacer"></div>
+        <div class="mini-stat-cta"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><circle cx="10" cy="10" r="6"/><line x1="14.5" y1="14.5" x2="20" y2="20"/></svg>&nbsp; <span class="mini-stat-cta-label">Find Matches</span></div>
+      </div>
+    </div>
+    <div class="tile-label">Senior Brand<br>Strategist</div>
+  </div>
+
+</div>
+<div class="job-detail" id="jobDetail">
+  <div class="job-detail-inner">
+    <div class="job-header-row">
+      <div class="job-title-block">
+        <h1 class="job-title" id="jobTitle"></h1>
+        <div class="job-req-id" id="jobReqId"></div>
+      </div>
+      <span class="job-count" id="jobCount"></span>
+      <span class="job-count" id="jobShortlistCount" style="display:none"></span>
+    </div>
+    <hr class="job-divider">
+    <div class="job-body-cols">
+      <div class="job-body-left">
+        <p class="job-description" id="jobDescription"></p>
+        <p class="job-updated" id="jobUpdated"></p>
+        <div class="job-body-links">
+          <a class="posting-link" id="jobPostingLink" target="_blank" style="display:none">View Posting</a>
+          <a class="posting-link" id="editJobBtn">Edit Job</a>
+        </div>
+        <div class="search-console" id="searchConsole"></div>
+      </div>
+      <div class="job-body-right">
+        <div class="job-meta" id="jobMeta"></div>
+        <hr class="actions-divider" id="detailDivider">
+        <div class="job-actions" id="jobDetailActions">
+          <div class="job-action" id="findCandidatesBtn">
+            <span class="action-icon"><span class="action-hex-border"></span><span class="action-hex-fill"></span><svg viewBox="0 0 24 24"><circle cx="10" cy="10" r="5" fill="none"></circle><line x1="13.5" y1="13.5" x2="19" y2="19"></line></svg></span>
+            Find Matches
+          </div>
+          <div class="job-action" id="reviewCandidatesSummaryBtn">
+            <span class="action-icon"><span class="action-hex-border"></span><span class="action-hex-fill"></span><svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="13 6 19 12 13 18"></polyline></svg></span>
+            Review Matches
+          </div>
+          <div class="job-action all-jobs-btn">
+            <span class="action-icon"><svg viewBox="0 0 24 24"><line x1="18" y1="18" x2="6" y2="6"></line><polyline points="6 15 6 6 15 6"></polyline></svg></span>
+            All Jobs
+          </div>
+        </div>
+        <hr class="actions-divider" id="searchDivider" style="display: none;">
+        <div class="job-actions" id="searchActions" style="display: none;">
+          <div class="job-action" id="reviewCandidatesBtn">
+            <span class="action-icon"><span class="action-hex-border"></span><span class="action-hex-fill"></span><svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="13 6 19 12 13 18"></polyline></svg></span>
+            Review Matches
+          </div>
+          <div class="job-action" id="modifySearchBtn">
+            <span class="action-icon"><span class="action-hex-border"></span><span class="action-hex-fill"></span><svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="13 6 19 12 13 18"></polyline></svg></span>
+            Job Summary
+          </div>
+          <div class="job-action all-jobs-btn">
+            <span class="action-icon"><svg viewBox="0 0 24 24"><line x1="18" y1="18" x2="6" y2="6"></line><polyline points="6 15 6 6 15 6"></polyline></svg></span>
+            All Jobs
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="jobEditForm" style="display:none">
+      <div class="form-title-row">
+        <div class="form-group-stack" style="flex:1">
+          <span class="form-label">Job Title</span>
+          <input type="text" class="job-title-input" id="editJobTitleInput" placeholder="Job Title" autocomplete="off">
+        </div>
+        <div class="form-group-stack">
+          <span class="form-label">Req ID</span>
+          <input type="text" class="form-input form-reqid-input" id="editReqIdInput" placeholder="Req ID">
+        </div>
+      </div>
+      <hr class="job-divider" style="margin-top: 16px;">
+      <div class="form-cols">
+        <div class="form-col-left">
+          <div class="form-group-stack" style="margin-bottom:0">
+            <span class="form-label">Job Target</span>
+            <div class="job-desc-input" id="editJobDescInput" contenteditable="true" data-placeholder="Enter Job Description..."></div>
+          </div>
+        </div>
+        <div class="form-col-right">
+          <div class="form-radio-row">
+            <div class="form-group-stack">
+              <span class="form-label">Job Type</span>
+              <div class="radio-group">
+                <label class="radio-option"><input type="radio" name="editJobType" value="Perm" checked><span>Perm</span></label>
+                <label class="radio-option"><input type="radio" name="editJobType" value="Temp"><span>Temp</span></label>
+              </div>
+            </div>
+            <div class="form-group-stack">
+              <span class="form-label">Workplace Type</span>
+              <div class="radio-group">
+                <label class="radio-option"><input type="radio" name="editCommute" value="On Site" checked><span>On-site</span></label>
+                <label class="radio-option"><input type="radio" name="editCommute" value="Hybrid"><span>Hybrid</span></label>
+                <label class="radio-option"><input type="radio" name="editCommute" value="Remote"><span>Remote</span></label>
+              </div>
+            </div>
+          </div>
+          <div class="form-group-stack">
+            <span class="form-label">Country</span>
+            <select class="form-select" id="editCountryInput">
+              <option value="United States" selected>United States</option>
+              <option value="Canada">Canada</option>
+              <option value="United Kingdom">United Kingdom</option>
+              <option value="Germany">Germany</option>
+              <option value="France">France</option>
+              <option value="Australia">Australia</option>
+              <option value="Japan">Japan</option>
+              <option value="India">India</option>
+            </select>
+          </div>
+          <div class="form-group-stack">
+            <span class="form-label">Location</span>
+            <input type="text" class="form-input" id="editLocationInput" placeholder="Los Angeles, CA">
+            <span class="form-hint">Postal code is preferred.</span>
+          </div>
+          <div class="form-group-stack">
+            <span class="form-label">Currency</span>
+            <select class="form-select" id="editCurrencyInput">
+              <option value="USD" selected>USD</option>
+              <option value="CAD">CAD</option>
+              <option value="GBP">GBP</option>
+              <option value="EUR">EUR</option>
+              <option value="AUD">AUD</option>
+              <option value="JPY">JPY</option>
+              <option value="INR">INR</option>
+            </select>
+          </div>
+          <div class="form-group-stack">
+            <span class="form-label">Salary</span>
+            <div class="salary-inputs">
+              <input type="text" class="salary-field" id="editSalaryMin" placeholder="$100,000">
+              <span class="salary-to">to</span>
+              <input type="text" class="salary-field" id="editSalaryMax" placeholder="$110,000">
+            </div>
+          </div>
+          <div class="form-group-stack">
+            <span class="form-label">Link to Job Posting</span>
+            <input type="text" class="form-input" id="editJobLinkInput" placeholder="" style="width: 100%;">
+          </div>
+          <div class="job-actions" style="margin-top: 32px;">
+            <div class="job-action" id="saveEditBtn">
+              <span class="action-icon"><span class="action-hex-border"></span><span class="action-hex-fill"></span><svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="13 6 19 12 13 18"></polyline></svg></span>
+              Save Job
+            </div>
+            <div class="job-action" id="cancelEditBtn">
+              <span class="action-icon"><span class="action-hex-border"></span><span class="action-hex-fill"></span><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></span>
+              Cancel
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="review-candidates" id="reviewCandidates">
+  <div class="rc-fixed-header">
+    <div class="rc-fixed-header-inner">
+      <div class="job-header-row">
+        <div class="job-title-block">
+          <h1 class="job-title" id="rcJobTitle"></h1>
+          <div class="job-req-id" id="rcReqId"></div>
+        </div>
+        <span class="job-count" id="rcJobCount"></span>
+        <span class="job-count" id="rcShortlistCount" style="display:none"></span>
+      </div>
+      <hr class="job-divider" style="margin-bottom:0">
+    </div>
+  </div>
+  <div class="rc-scroll-area">
+    <div class="rc-scroll-inner">
+      <div class="rc-cards-col">
+        <div class="rc-filter-bar">
+          <div class="rc-filter-group">
+            <span class="rc-filter-label">Sort</span>
+            <select class="form-select rc-filter-select" id="rcSortSelect">
+              <option value="match">Match</option>
+              <option value="name">Name</option>
+              <option value="status">Status</option>
+            </select>
+          </div>
+          <div class="rc-filter-group">
+            <span class="rc-filter-label">Filter</span>
+            <select class="form-select rc-filter-select" id="rcFilterSelect">
+              <option value="all">All</option>
+              <option value="shortlisted">Shortlisted</option>
+              <option value="skipped">Skipped</option>
+            </select>
+          </div>
+        </div>
+        <div class="rc-card-list" id="rcCardList"></div>
+      </div>
+      <div class="rc-sidebar" id="rcSidebar">
+        <ul class="rc-meta-list" id="rcMetaList"></ul>
+        <div class="rc-sidebar-heading">Match Summary</div>
+        <p class="rc-match-summary" id="rcMatchSummary"></p>
+        <hr class="actions-divider">
+        <div class="job-actions">
+          <div class="job-action" id="rcShowSummary">
+            <span class="action-icon"><svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="13 6 19 12 13 18"></polyline></svg></span>
+            Job Summary
+          </div>
+          <div class="job-action" id="rcFindMore">
+            <span class="action-icon"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"></circle><line x1="16" y1="16" x2="21" y2="21"></line></svg></span>
+            Find Matches
+          </div>
+          <div class="job-action all-jobs-btn">
+            <span class="action-icon"><svg viewBox="0 0 24 24"><line x1="18" y1="18" x2="6" y2="6"></line><polyline points="6 15 6 6 15 6"></polyline></svg></span>
+            All Jobs
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="job-create" id="jobCreate">
+  <div class="job-detail-inner">
+    <div class="form-title-row">
+      <div class="form-group-stack" style="flex:1">
+        <span class="form-label">Job Title</span>
+        <input type="text" class="job-title-input" id="jobTitleInput" placeholder="Job Title" autocomplete="off">
+      </div>
+      <div class="form-group-stack">
+        <span class="form-label">Req ID</span>
+        <input type="text" class="form-input form-reqid-input" id="reqIdInput" placeholder="Req ID">
+      </div>
+    </div>
+    <hr class="job-divider" style="margin-top: 16px;">
+    <div class="form-cols">
+      <div class="form-col-left">
+        <div class="form-group-stack" style="margin-bottom:0">
+          <span class="form-label">Job Description</span>
+          <div class="job-desc-input" id="jobDescInput" contenteditable="true" data-placeholder="Enter Job Description..."></div>
+        </div>
+      </div>
+      <div class="form-col-right">
+        <div class="form-radio-row">
+          <div class="form-group-stack">
+            <span class="form-label">Job Type</span>
+            <div class="radio-group" id="jobTypeRadios">
+              <label class="radio-option"><input type="radio" name="jobType" value="Perm" checked><span>Perm</span></label>
+              <label class="radio-option"><input type="radio" name="jobType" value="Temp"><span>Temp</span></label>
+            </div>
+          </div>
+          <div class="form-group-stack">
+            <span class="form-label">Workplace Type</span>
+            <div class="radio-group" id="commuteRadios">
+              <label class="radio-option"><input type="radio" name="commute" value="On Site" checked><span>On-site</span></label>
+              <label class="radio-option"><input type="radio" name="commute" value="Hybrid"><span>Hybrid</span></label>
+              <label class="radio-option"><input type="radio" name="commute" value="Remote"><span>Remote</span></label>
+            </div>
+          </div>
+        </div>
+        <div class="form-group-stack">
+          <span class="form-label">Country</span>
+          <select class="form-select" id="countryInput">
+            <option value="United States" selected>United States</option>
+            <option value="Canada">Canada</option>
+            <option value="United Kingdom">United Kingdom</option>
+            <option value="Germany">Germany</option>
+            <option value="France">France</option>
+            <option value="Australia">Australia</option>
+            <option value="Japan">Japan</option>
+            <option value="India">India</option>
+          </select>
+        </div>
+        <div class="form-group-stack">
+          <span class="form-label">Location</span>
+          <input type="text" class="form-input" id="locationInput" placeholder="Los Angeles, CA">
+          <span class="form-hint">Postal code is preferred.</span>
+        </div>
+        <div class="form-group-stack">
+          <span class="form-label">Currency</span>
+          <select class="form-select" id="currencyInput">
+            <option value="USD" selected>USD</option>
+            <option value="CAD">CAD</option>
+            <option value="GBP">GBP</option>
+            <option value="EUR">EUR</option>
+            <option value="AUD">AUD</option>
+            <option value="JPY">JPY</option>
+            <option value="INR">INR</option>
+          </select>
+        </div>
+        <div class="form-group-stack">
+          <span class="form-label">Salary</span>
+          <div class="salary-inputs">
+            <input type="text" class="salary-field" id="salaryMin" placeholder="$100,000">
+            <span class="salary-to">to</span>
+            <input type="text" class="salary-field" id="salaryMax" placeholder="$110,000">
+          </div>
+        </div>
+        <div class="form-group-stack">
+          <span class="form-label">Link to Job Posting</span>
+          <input type="text" class="form-input" id="jobLinkInput" placeholder="" style="width: 100%;">
+        </div>
+        <div class="job-actions" style="margin-top: 32px;">
+          <div class="job-action" id="saveJobBtn">
+            <span class="action-icon"><span class="action-hex-border"></span><span class="action-hex-fill"></span><svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="13 6 19 12 13 18"></polyline></svg></span>
+            Create Job Target
+          </div>
+          <div class="job-action" id="deleteJobBtn">
+            <span class="action-icon"><span class="action-hex-border"></span><span class="action-hex-fill"></span><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></span>
+            Cancel
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // ========== DIAMOND RANDOMIZATION ==========
+  function rand(min, max) { return min + Math.random() * (max - min); }
+
+  function randomizeDiamonds(group) {
+    group.querySelectorAll('.diamond').forEach((d, i) => {
+      const quadTop = i < 2 ? rand(0, 24) : rand(26, 50);
+      const quadRight = i % 2 === 0 ? rand(0, 19) : rand(22, 41);
+      const size = rand(7, 17);
+      const height = size * 1.5;
+      const duration = rand(1.0, 1.5);
+      const delay = rand(-2, 0);
+      d.style.top = quadTop + 'px';
+      d.style.right = quadRight + 'px';
+      d.style.width = size + 'px';
+      d.style.height = Math.round(height) + 'px';
+      d.style.animation = `diamond-pulse ${duration.toFixed(2)}s ease-in-out ${delay.toFixed(2)}s infinite`;
+    });
+  }
+
+  function addDiamondsToTile(tile) {
+    if (tile.querySelector('.tile-diamonds')) return; // already has diamonds
+    const group = document.createElement('div');
+    group.className = 'tile-diamonds';
+    for (let i = 0; i < 4; i++) {
+      const d = document.createElement('div');
+      d.className = 'diamond diamond-' + (i + 1);
+      group.appendChild(d);
+    }
+    tile.insertBefore(group, tile.firstChild);
+    randomizeDiamonds(group);
+    // Register in tick-up system
+    const numberEl = tile.querySelector('.tile-number');
+    const candidateStat = tile.querySelector('.mini-stat-num');
+    const statNums = tile.querySelectorAll('.mini-stat-num');
+    const newStat = statNums.length >= 2 ? statNums[1] : null;
+    const currentCount = parseInt(numberEl.textContent, 10);
+    activeTiles.push({ tile, numberEl, candidateStat, newStat, defaultCount: currentCount, current: currentCount, currentNew: 0 });
+  }
+
+  document.querySelectorAll('.tile-diamonds').forEach(group => randomizeDiamonds(group));
+
+  // ========== JOB DATA (22 unique entries) ==========
+  const jobData = {
+    'Senior Brand Strategist': {
+      count: 0,
+      location: 'New York, NY',
+      country: 'United States',
+      commute: 'Hybrid',
+      jobType: 'Perm',
+      jobLink: 'https://careers.example.com/brand-strategist-4821',
+      reqId: 'MKT-2026-0041',
+      currency: 'USD',
+      salary: '$130,000 \u2013 $150,000',
+      updated: 'Mar 10, 2026',
+      description: 'We are looking for a Senior Brand Strategist to lead global brand positioning and long-term strategy across markets. This role defines brand architecture and messaging frameworks, translating consumer research into actionable creative briefs that drive business growth.<br><br>The ideal candidate brings 8+ years of brand strategy experience with a proven ability to shape compelling narratives. Strong executive presentation skills and experience managing agency partnerships in multi-market environments are essential.'
+    }
+  };
+
+
+  const candidatePool = [
+    { name: 'Elena Rodriguez', location: 'Boston, MA', matchPct: 99, matchSummary: 'Strong match with 10 years of experience across CPG and tech sectors. Led a global rebrand that increased brand equity scores by 34%. Portfolio demonstrates exceptional narrative-building skills and deep expertise in multi-market strategy.', candidateLocation: 'Boston, MA', openTo: 'Open to Remote', salaryMatch: 'Salary Match', availability: 'Available immediately' },
+    { name: 'Henry Clerval', location: 'New York, NY', matchPct: 98, matchSummary: 'Excellent fit with 9 years of experience at top agencies. Managed brand positioning for Fortune 500 clients with strong executive presentation skills. Experience spans consumer tech, fintech, and healthcare verticals.', candidateLocation: 'New York, NY', openTo: 'Open to Hybrid', salaryMatch: 'Salary Match', availability: 'Available in 2 weeks' },
+    { name: 'Elizabeth Lavenza', location: 'Brooklyn, NY', matchPct: 98, matchSummary: 'Highly qualified professional with 8 years at global agencies. Specializes in architecture and messaging frameworks for technology companies. Led strategy for three successful product launches.', candidateLocation: 'Brooklyn, NY', openTo: 'Open to Remote', salaryMatch: 'Salary Match', availability: 'Available in 30 days' },
+    { name: 'Robert Walton', location: 'Cambridge, MA', matchPct: 97, matchSummary: 'Strong background with 8 years at a leading consultancy. Deep expertise in competitive positioning and health measurement. Excels at building compelling narratives supported by quantitative research.', candidateLocation: 'Cambridge, MA', openTo: 'Open to Relocation', salaryMatch: 'Salary Match', availability: 'Available in 2 weeks' },
+    { name: 'Sarah Chen', location: 'Chicago, IL', matchPct: 97, matchSummary: 'Exceptional professional with 6 years of analytics experience. Built attribution modeling framework at current company, reducing CAC by 22%. Highly proficient in SQL, Python, Tableau, and Looker.', candidateLocation: 'Chicago, IL', openTo: 'Open to Hybrid', salaryMatch: 'Salary Match', availability: 'Available in 2 weeks' },
+    { name: 'Alex Petrov', location: 'Austin, TX', matchPct: 96, matchSummary: 'Excellent fit with 8 years of experience and 3 years leading a squad of 7. Deep expertise in distributed systems and microservices architecture with strong mentorship skills.', candidateLocation: 'Austin, TX', openTo: 'On Site', salaryMatch: 'Salary Match', availability: 'Available in 2 weeks' },
+    { name: 'David Okonkwo', location: 'Seattle, WA', matchPct: 96, matchSummary: 'Outstanding match with 12 years of experience and deep technical expertise. Led the architecture of two large-scale distributed systems handling 50K+ RPS. Serves as tech lead across three teams.', candidateLocation: 'Seattle, WA', openTo: 'Open to Hybrid', salaryMatch: 'Salary Match', availability: 'Available in 2 weeks' },
+    { name: 'Olivia Martinez', location: 'San Francisco, CA', matchPct: 96, matchSummary: 'Excellent leader with 7 years of experience in B2B SaaS. Driven roadmap strategy for enterprise platforms generating $50M+ ARR. Excels at research synthesis and cross-functional collaboration.', candidateLocation: 'San Francisco, CA', openTo: 'Open to Hybrid', salaryMatch: 'Salary Match', availability: 'Available in 2 weeks' },
+    { name: 'Marcus Thompson', location: 'Detroit, MI', matchPct: 95, matchSummary: 'Strong professional with 5 years building dashboards and multi-touch attribution models. Deep SQL expertise and experience leading a team of 3. Presented insights to C-suite stakeholders.', candidateLocation: 'Detroit, MI', openTo: 'Open to Remote', salaryMatch: 'Salary Match', availability: 'Available immediately' },
+    { name: 'Justine Moritz', location: 'Philadelphia, PA', matchPct: 95, matchSummary: 'Solid professional with 7 years in both agency and in-house roles. Experience developing guidelines, managing consistency across 12 markets, and conducting perception research.', candidateLocation: 'Philadelphia, PA', openTo: 'Open to Remote', salaryMatch: 'Salary Match', availability: 'Available immediately' },
+    { name: 'Catherine Zhao', location: 'San Francisco, CA', matchPct: 95, matchSummary: 'Highly experienced with 11 years building cloud-native platforms on AWS. Led design of several critical system components. Extensive Go and Java experience with focus on observability and reliability.', candidateLocation: 'San Francisco, CA', openTo: 'Open to Remote', salaryMatch: 'Salary Match', availability: 'Available in 30 days' },
+    { name: 'Maya Krishnan', location: 'Dallas, TX', matchPct: 94, matchSummary: 'Strong leader with 9 years of development experience and 2 years as tech lead. Shipped multiple high-quality features on schedule. Known for establishing effective code review standards.', candidateLocation: 'Dallas, TX', openTo: 'Open to Relocation', salaryMatch: 'Salary Match', availability: 'Available in 30 days' },
+    { name: 'Priya Sharma', location: 'Minneapolis, MN', matchPct: 94, matchSummary: 'Data-driven professional with 6 years of experience specializing in campaign performance optimization. Built comprehensive Tableau dashboards used across the organization. Strong statistical modeling skills.', candidateLocation: 'Minneapolis, MN', openTo: 'Open to Hybrid', salaryMatch: 'Salary Match', availability: 'Available in 30 days' },
+    { name: 'Ian McAllister', location: 'Portland, OR', matchPct: 94, matchSummary: 'Strong professional with 10 years of experience. Deep expertise in Java microservices and GCP infrastructure. Led multiple cross-team architecture initiatives with 3-5x performance improvements.', candidateLocation: 'Portland, OR', openTo: 'Open to Remote', salaryMatch: 'Salary Match', availability: 'Available immediately' },
+    { name: 'Jordan Williams', location: 'San Antonio, TX', matchPct: 93, matchSummary: 'Experienced professional with 7 years in backend systems and 2 years leading a small team. Strong distributed systems knowledge and mentored 4 junior engineers to senior promotions.', candidateLocation: 'San Antonio, TX', openTo: 'Open to Hybrid', salaryMatch: 'Salary Match', availability: 'Available immediately' },
+    { name: 'Nathan Brooks', location: 'Oakland, CA', matchPct: 93, matchSummary: 'Strong professional with 6 years focused on enterprise SaaS products. Led multiple feature launches with deep agile experience. Brings strong technical acumen and data-driven prioritization.', candidateLocation: 'Oakland, CA', openTo: 'Open to Hybrid', salaryMatch: 'Salary Match', availability: 'Available in 30 days' },
+    { name: 'Victor Frankenstein', location: 'Geneva, Switzerland', matchPct: 92, matchSummary: 'Experienced professional with 9 years across European and US markets. Unique global perspective with fluency in three languages. Sophisticated approach demonstrated at a luxury consultancy.', candidateLocation: 'Geneva, Switzerland', openTo: 'Open to Relocation', salaryMatch: 'Above Range', availability: 'Available in 60 days' },
+    { name: 'James O\'Brien', location: 'Milwaukee, WI', matchPct: 91, matchSummary: 'Solid professional with 5 years focused on digital measurement. Experience with Google Analytics, Looker, and custom SQL pipelines. Managed attribution projects for e-commerce and lead-gen businesses.', candidateLocation: 'Milwaukee, WI', openTo: 'Open to Remote', salaryMatch: 'Below Range', availability: 'Available in 2 weeks' },
+    { name: 'Amara Osei', location: 'Vancouver, BC', matchPct: 91, matchSummary: 'Talented professional with 10 years across backend and infrastructure. Strong Go skills and designed event-driven architectures at scale. Exceptional technical depth and cross-team collaboration.', candidateLocation: 'Vancouver, BC', openTo: 'Open to Relocation', salaryMatch: 'Above Range', availability: 'Available in 60 days' },
+    { name: 'Diana Walsh', location: 'Palo Alto, CA', matchPct: 91, matchSummary: 'Experienced professional with 6 years in B2B platforms. Engineering background gives strong technical credibility. Shipped several major features with full lifecycle management experience.', candidateLocation: 'Palo Alto, CA', openTo: 'Open to Remote', salaryMatch: 'Salary Match', availability: 'Available immediately' },
+    { name: 'Rachel Kim', location: 'Houston, TX', matchPct: 90, matchSummary: 'Solid professional with 8 years of experience and recent transition into leadership. Deep Java and cloud infrastructure expertise with a focus on reliability. Building people management experience.', candidateLocation: 'Houston, TX', openTo: 'Open to Relocation', salaryMatch: 'Below Range', availability: 'Available in 2 weeks' },
+    { name: 'Lisa Park', location: 'Indianapolis, IN', matchPct: 89, matchSummary: 'Growing talent with 4 years in analytics roles. Strong Tableau and SQL skills with several key dashboards built. Transitioning from analyst to management track with strong potential.', candidateLocation: 'Indianapolis, IN', openTo: 'Open to Relocation', salaryMatch: 'Salary Match', availability: 'Available immediately' },
+    { name: 'Ryan Hoffman', location: 'Seattle, WA', matchPct: 89, matchSummary: 'Solid professional with 9 years looking to step up. Strong AWS and Java expertise with experience contributing to large-scale system designs. Mentored junior engineers with growing leadership skills.', candidateLocation: 'Seattle, WA', openTo: 'Open to Hybrid', salaryMatch: 'Below Range', availability: 'Available in 2 weeks' },
+    { name: 'Thomas Ng', location: 'Denver, CO', matchPct: 88, matchSummary: 'Capable professional with 7 years of experience and 1 year as team lead. Experience with microservices and event-driven architectures. Leadership experience is growing but shows strong promise.', candidateLocation: 'Denver, CO', openTo: 'Open to Relocation', salaryMatch: 'Salary Match', availability: 'Available in 60 days' },
+    { name: 'Kevin Huang', location: 'Seattle, WA', matchPct: 88, matchSummary: 'Growing talent with 5 years of experience at a mid-stage startup. Strong user research skills and managed products through rapid growth phases. Consumer-oriented but interested in enterprise.', candidateLocation: 'Seattle, WA', openTo: 'Open to Relocation', salaryMatch: 'Below Range', availability: 'Available in 2 weeks' },
+    { name: 'Simone Abara', location: 'Atlanta, GA', matchPct: 87, matchSummary: 'Versatile professional with 6 years across operations and strategy. Simone has led cross-functional initiatives at a Fortune 500 company and excels at stakeholder alignment and process improvement.', candidateLocation: 'Atlanta, GA', openTo: 'Open to Remote', salaryMatch: 'Salary Match', availability: 'Available in 2 weeks' },
+    { name: 'Marco Bellini', location: 'Miami, FL', matchPct: 87, matchSummary: 'Bilingual professional with 7 years in client-facing roles. Marco brings strong relationship management skills and has expanded key accounts by 40% YoY. Known for creative problem-solving under pressure.', candidateLocation: 'Miami, FL', openTo: 'Open to Hybrid', salaryMatch: 'Salary Match', availability: 'Available immediately' },
+    { name: 'Tanya Gupta', location: 'Raleigh, NC', matchPct: 86, matchSummary: 'Detail-oriented professional with 5 years in program management. Tanya has coordinated multi-million dollar projects and maintains a 95% on-time delivery record. Strong risk assessment and mitigation skills.', candidateLocation: 'Raleigh, NC', openTo: 'Open to Remote', salaryMatch: 'Salary Match', availability: 'Available in 30 days' },
+    { name: 'Derek Lawson', location: 'Nashville, TN', matchPct: 86, matchSummary: 'Results-driven professional with 8 years in business development. Derek has closed deals worth $15M+ and built strategic partnerships with enterprise clients. Excellent negotiation and presentation skills.', candidateLocation: 'Nashville, TN', openTo: 'Open to Relocation', salaryMatch: 'Salary Match', availability: 'Available in 2 weeks' },
+    { name: 'Aisha Mbeki', location: 'Washington, DC', matchPct: 85, matchSummary: 'Policy-savvy professional with 6 years at the intersection of technology and government. Aisha understands regulatory landscapes and has led compliance initiatives. Strong communication skills.', candidateLocation: 'Washington, DC', openTo: 'Open to Hybrid', salaryMatch: 'Salary Match', availability: 'Available immediately' },
+    { name: 'Connor Walsh', location: 'Salt Lake City, UT', matchPct: 85, matchSummary: 'Analytical professional with 5 years in finance and operations. Connor brings strong modeling skills and has optimized budgets resulting in 12% cost savings. Detail-oriented with CPA certification.', candidateLocation: 'Salt Lake City, UT', openTo: 'Open to Remote', salaryMatch: 'Below Range', availability: 'Available in 2 weeks' },
+    { name: 'Yuki Tanaka', location: 'Los Angeles, CA', matchPct: 84, matchSummary: 'Creative professional with 7 years in design and brand development. Yuki has led visual identity projects for major consumer brands. Strong Figma skills and an eye for typography and layout.', candidateLocation: 'Los Angeles, CA', openTo: 'Open to Remote', salaryMatch: 'Salary Match', availability: 'Available in 30 days' },
+    { name: 'Patrick Oduya', location: 'Minneapolis, MN', matchPct: 84, matchSummary: 'Experienced professional with 6 years in supply chain and logistics. Patrick has implemented inventory management systems that reduced waste by 18%. Strong analytical and vendor management skills.', candidateLocation: 'Minneapolis, MN', openTo: 'Open to Hybrid', salaryMatch: 'Salary Match', availability: 'Available immediately' },
+    { name: 'Laura Mendez', location: 'Phoenix, AZ', matchPct: 83, matchSummary: 'Driven professional with 5 years in customer success and account management. Laura has maintained a 96% retention rate across her portfolio. Skilled at identifying upsell opportunities and building trust.', candidateLocation: 'Phoenix, AZ', openTo: 'Open to Remote', salaryMatch: 'Salary Match', availability: 'Available in 2 weeks' },
+    { name: 'Brian Fischer', location: 'Portland, OR', matchPct: 83, matchSummary: 'Technical professional with 8 years in DevOps and infrastructure. Brian has built CI/CD pipelines serving 200+ developers and reduced deployment times by 60%. Strong Kubernetes and Terraform expertise.', candidateLocation: 'Portland, OR', openTo: 'Open to Remote', salaryMatch: 'Salary Match', availability: 'Available in 30 days' },
+    { name: 'Nina Petrova', location: 'Charlotte, NC', matchPct: 82, matchSummary: 'Strategic thinker with 6 years in consulting and change management. Nina has guided organizations through digital transformations and restructuring. Excellent facilitation and executive coaching skills.', candidateLocation: 'Charlotte, NC', openTo: 'Open to Relocation', salaryMatch: 'Salary Match', availability: 'Available immediately' },
+    { name: 'Samuel Adeyemi', location: 'Dallas, TX', matchPct: 82, matchSummary: 'Resourceful professional with 7 years in talent acquisition. Samuel has built recruiting pipelines that reduced time-to-hire by 35%. Deep expertise in technical hiring and employer branding.', candidateLocation: 'Dallas, TX', openTo: 'Open to Hybrid', salaryMatch: 'Below Range', availability: 'Available in 2 weeks' },
+    { name: 'Grace Liu', location: 'San Jose, CA', matchPct: 81, matchSummary: 'Quantitative professional with 5 years in data science and machine learning. Grace has built prediction models improving conversion rates by 25%. Strong Python, TensorFlow, and statistical analysis skills.', candidateLocation: 'San Jose, CA', openTo: 'Open to Hybrid', salaryMatch: 'Salary Match', availability: 'Available in 30 days' },
+    { name: 'Ethan Park', location: 'Columbus, OH', matchPct: 81, matchSummary: 'Adaptable professional with 6 years in product marketing. Ethan has launched 8 products to market and developed positioning that increased pipeline by 45%. Strong cross-functional collaboration.', candidateLocation: 'Columbus, OH', openTo: 'Open to Remote', salaryMatch: 'Salary Match', availability: 'Available immediately' },
+    { name: 'Fatima Al-Hassan', location: 'Detroit, MI', matchPct: 80, matchSummary: 'Innovative professional with 7 years in UX research and design. Fatima has conducted 200+ user interviews and translated insights into product improvements that boosted NPS by 20 points.', candidateLocation: 'Detroit, MI', openTo: 'Open to Remote', salaryMatch: 'Salary Match', availability: 'Available in 2 weeks' },
+    { name: 'Carlos Reyes', location: 'San Diego, CA', matchPct: 80, matchSummary: 'Energetic professional with 5 years in sales engineering. Carlos bridges technical and business conversations, supporting deals that averaged $500K. Strong demo and presentation skills.', candidateLocation: 'San Diego, CA', openTo: 'Open to Hybrid', salaryMatch: 'Below Range', availability: 'Available in 30 days' },
+    { name: 'Hannah Morris', location: 'Denver, CO', matchPct: 79, matchSummary: 'Organized professional with 6 years in project management. Hannah has managed agile teams of 8-12 and delivered $5M+ in projects. PMP certified with strong Jira and Confluence expertise.', candidateLocation: 'Denver, CO', openTo: 'Open to Hybrid', salaryMatch: 'Salary Match', availability: 'Available immediately' },
+    { name: 'Raj Patel', location: 'Tampa, FL', matchPct: 79, matchSummary: 'Technical professional with 8 years in full-stack development. Raj has built customer-facing applications serving 1M+ users. Strong React, Node.js, and PostgreSQL skills with cloud deployment experience.', candidateLocation: 'Tampa, FL', openTo: 'Open to Remote', salaryMatch: 'Salary Match', availability: 'Available in 2 weeks' },
+    { name: 'Megan O\'Connor', location: 'Boston, MA', matchPct: 78, matchSummary: 'Strategic professional with 5 years in content marketing and SEO. Megan has grown organic traffic by 150% and built content teams from scratch. Strong editorial judgment and analytics skills.', candidateLocation: 'Boston, MA', openTo: 'Open to Remote', salaryMatch: 'Salary Match', availability: 'Available in 30 days' },
+    { name: 'André Dupont', location: 'Montreal, QC', matchPct: 78, matchSummary: 'Bilingual professional with 7 years in international operations. André has managed teams across 4 time zones and led office expansions into new markets. Strong cultural intelligence and logistics skills.', candidateLocation: 'Montreal, QC', openTo: 'Open to Relocation', salaryMatch: 'Salary Match', availability: 'Available in 60 days' },
+    { name: 'Stephanie Kim', location: 'San Francisco, CA', matchPct: 77, matchSummary: 'Creative professional with 6 years in social media and community management. Stephanie has grown brand communities to 500K+ followers and managed influencer partnerships generating $2M in revenue.', candidateLocation: 'San Francisco, CA', openTo: 'Open to Hybrid', salaryMatch: 'Below Range', availability: 'Available immediately' },
+    { name: 'Michael Osei', location: 'Chicago, IL', matchPct: 77, matchSummary: 'Experienced professional with 8 years in financial planning and analysis. Michael has built forecasting models for $200M+ revenue lines. Strong Excel modeling, SAP, and stakeholder communication skills.', candidateLocation: 'Chicago, IL', openTo: 'Open to Hybrid', salaryMatch: 'Salary Match', availability: 'Available in 2 weeks' },
+    { name: 'Julie Brennan', location: 'Austin, TX', matchPct: 76, matchSummary: 'Dynamic professional with 5 years in event marketing and experiential campaigns. Julie has produced 50+ events with budgets up to $1M. Strong vendor management and creative direction skills.', candidateLocation: 'Austin, TX', openTo: 'Open to Hybrid', salaryMatch: 'Salary Match', availability: 'Available in 30 days' },
+    { name: 'Wei Zhang', location: 'New York, NY', matchPct: 76, matchSummary: 'Analytical professional with 7 years in quantitative finance and risk management. Wei has developed pricing models and risk frameworks for derivatives portfolios. Strong Python and R skills.', candidateLocation: 'New York, NY', openTo: 'Open to Hybrid', salaryMatch: 'Above Range', availability: 'Available in 2 weeks' },
+    { name: 'Dominic Torres', location: 'Las Vegas, NV', matchPct: 75, matchSummary: 'Versatile professional with 6 years in hospitality and operations management. Dominic has overseen teams of 50+ and improved operational efficiency by 20%. Strong P&L management experience.', candidateLocation: 'Las Vegas, NV', openTo: 'Open to Relocation', salaryMatch: 'Salary Match', availability: 'Available immediately' },
+    { name: 'Ingrid Svensson', location: 'Seattle, WA', matchPct: 75, matchSummary: 'Technical professional with 5 years in QA engineering and test automation. Ingrid has built testing frameworks that reduced regression cycles from 3 days to 4 hours. Strong Selenium and Cypress skills.', candidateLocation: 'Seattle, WA', openTo: 'Open to Remote', salaryMatch: 'Salary Match', availability: 'Available in 2 weeks' },
+    { name: 'Omar Hassan', location: 'Irvine, CA', matchPct: 74, matchSummary: 'Dedicated professional with 6 years in cybersecurity and compliance. Omar has led SOC 2 audits and implemented zero-trust architectures. CISSP certified with strong incident response experience.', candidateLocation: 'Irvine, CA', openTo: 'Open to Hybrid', salaryMatch: 'Salary Match', availability: 'Available in 30 days' },
+    { name: 'Chloe Anderson', location: 'Portland, ME', matchPct: 74, matchSummary: 'Thoughtful professional with 5 years in HR business partnering. Chloe has supported organizations through rapid scaling and built performance management programs. Strong employment law knowledge.', candidateLocation: 'Portland, ME', openTo: 'Open to Remote', salaryMatch: 'Below Range', availability: 'Available immediately' },
+    { name: 'Benjamin Asante', location: 'Philadelphia, PA', matchPct: 73, matchSummary: 'Energetic professional with 7 years in e-commerce and digital strategy. Benjamin has optimized conversion funnels increasing revenue by 30%. Strong A/B testing and personalization expertise.', candidateLocation: 'Philadelphia, PA', openTo: 'Open to Hybrid', salaryMatch: 'Salary Match', availability: 'Available in 2 weeks' },
+    { name: 'Sofia Rossi', location: 'Miami, FL', matchPct: 73, matchSummary: 'Creative professional with 6 years in graphic design and brand identity. Sofia has designed visual systems for 20+ brands. Expert in Adobe Creative Suite, Figma, and motion graphics.', candidateLocation: 'Miami, FL', openTo: 'Open to Remote', salaryMatch: 'Salary Match', availability: 'Available in 30 days' },
+    { name: 'Jake Morrison', location: 'Boise, ID', matchPct: 72, matchSummary: 'Practical professional with 5 years in systems administration and cloud ops. Jake has migrated legacy systems to AWS, reducing infrastructure costs by 40%. Strong Linux and networking skills.', candidateLocation: 'Boise, ID', openTo: 'Open to Remote', salaryMatch: 'Salary Match', availability: 'Available immediately' },
+    { name: 'Ananya Reddy', location: 'Bangalore, India', matchPct: 72, matchSummary: 'Technical professional with 6 years in backend engineering. Ananya has built microservices handling 100K+ concurrent users. Strong Java, Spring Boot, and Kafka expertise with AWS deployment experience.', candidateLocation: 'Bangalore, India', openTo: 'Open to Relocation', salaryMatch: 'Below Range', availability: 'Available in 60 days' },
+    { name: 'Tyler Bennett', location: 'Kansas City, MO', matchPct: 71, matchSummary: 'Reliable professional with 5 years in technical writing and documentation. Tyler has authored API docs, user guides, and knowledge bases used by 10K+ users. Strong Markdown and docs-as-code experience.', candidateLocation: 'Kansas City, MO', openTo: 'Open to Remote', salaryMatch: 'Salary Match', availability: 'Available in 2 weeks' },
+    { name: 'Leah Goldstein', location: 'New York, NY', matchPct: 71, matchSummary: 'Strategic professional with 7 years in media planning and buying. Leah has managed $20M+ in annual ad spend and optimized campaigns across programmatic, social, and linear TV channels.', candidateLocation: 'New York, NY', openTo: 'Open to Hybrid', salaryMatch: 'Salary Match', availability: 'Available in 30 days' },
+    { name: 'Daniel Okoro', location: 'Houston, TX', matchPct: 70, matchSummary: 'Experienced professional with 8 years in mechanical engineering and product design. Daniel has led hardware development projects from concept to manufacturing. Strong CAD and prototyping skills.', candidateLocation: 'Houston, TX', openTo: 'Open to Hybrid', salaryMatch: 'Salary Match', availability: 'Available immediately' },
+    { name: 'Emma Johansson', location: 'Minneapolis, MN', matchPct: 70, matchSummary: 'People-focused professional with 6 years in learning and development. Emma has designed training programs that improved employee engagement scores by 15%. Strong instructional design skills.', candidateLocation: 'Minneapolis, MN', openTo: 'Open to Remote', salaryMatch: 'Below Range', availability: 'Available in 2 weeks' },
+    { name: 'Ricardo Silva', location: 'Austin, TX', matchPct: 69, matchSummary: 'Technical professional with 5 years in mobile development. Ricardo has shipped 6 iOS/Android apps with 4.5+ star ratings. Strong Swift, Kotlin, and React Native skills with CI/CD experience.', candidateLocation: 'Austin, TX', openTo: 'Open to Hybrid', salaryMatch: 'Salary Match', availability: 'Available in 30 days' },
+    { name: 'Natasha Ivanova', location: 'Chicago, IL', matchPct: 69, matchSummary: 'Analytical professional with 6 years in market research and competitive intelligence. Natasha has conducted studies that informed $50M+ in strategic investments. Strong survey design and analysis skills.', candidateLocation: 'Chicago, IL', openTo: 'Open to Remote', salaryMatch: 'Salary Match', availability: 'Available immediately' },
+    { name: 'Chris Nakamura', location: 'San Francisco, CA', matchPct: 68, matchSummary: 'Innovative professional with 7 years in growth marketing. Chris has built acquisition funnels that scaled startups from seed to Series B. Strong experimentation, SEO, and paid media expertise.', candidateLocation: 'San Francisco, CA', openTo: 'Open to Hybrid', salaryMatch: 'Salary Match', availability: 'Available in 2 weeks' },
+    { name: 'Alicia Vargas', location: 'Denver, CO', matchPct: 68, matchSummary: 'Collaborative professional with 5 years in partnerships and business development. Alicia has established 30+ strategic partnerships generating $8M in revenue. Strong negotiation and relationship skills.', candidateLocation: 'Denver, CO', openTo: 'Open to Remote', salaryMatch: 'Below Range', availability: 'Available in 30 days' },
+    { name: 'Jason Lee', location: 'Raleigh, NC', matchPct: 67, matchSummary: 'Focused professional with 6 years in frontend engineering. Jason has built accessible, performant web applications used by millions. Strong React, TypeScript, and CSS architecture skills.', candidateLocation: 'Raleigh, NC', openTo: 'Open to Remote', salaryMatch: 'Salary Match', availability: 'Available immediately' },
+    { name: 'Keira Blackwood', location: 'Toronto, ON', matchPct: 67, matchSummary: 'Creative professional with 5 years in video production and content creation. Keira has produced campaigns with 10M+ views. Strong storytelling, editing, and motion graphics abilities.', candidateLocation: 'Toronto, ON', openTo: 'Open to Relocation', salaryMatch: 'Salary Match', availability: 'Available in 60 days' },
+    { name: 'Aaron Mitchell', location: 'Atlanta, GA', matchPct: 66, matchSummary: 'Experienced professional with 7 years in IT infrastructure and cloud migration. Aaron has led 5 major cloud migrations and reduced downtime by 90%. Strong AWS, Azure, and networking expertise.', candidateLocation: 'Atlanta, GA', openTo: 'Open to Hybrid', salaryMatch: 'Salary Match', availability: 'Available in 2 weeks' },
+    { name: 'Mei-Ling Wu', location: 'Los Angeles, CA', matchPct: 66, matchSummary: 'Detail-oriented professional with 6 years in quality assurance. Mei-Ling has implemented testing strategies that caught 40% more defects pre-release. Strong automation and manual testing skills.', candidateLocation: 'Los Angeles, CA', openTo: 'Open to Hybrid', salaryMatch: 'Below Range', availability: 'Available in 30 days' },
+    { name: 'Kyle Bergstrom', location: 'Madison, WI', matchPct: 65, matchSummary: 'Analytical professional with 5 years in business intelligence. Kyle has built data warehouses and reporting systems serving 500+ users. Strong SQL, dbt, and Snowflake expertise.', candidateLocation: 'Madison, WI', openTo: 'Open to Remote', salaryMatch: 'Salary Match', availability: 'Available immediately' },
+    { name: 'Isabelle Fontaine', location: 'New Orleans, LA', matchPct: 65, matchSummary: 'Persuasive professional with 6 years in public relations and communications. Isabelle has secured coverage in Tier 1 publications and managed crisis communications. Strong media relationship skills.', candidateLocation: 'New Orleans, LA', openTo: 'Open to Remote', salaryMatch: 'Salary Match', availability: 'Available in 2 weeks' },
+    { name: 'Trevor Scott', location: 'Pittsburgh, PA', matchPct: 64, matchSummary: 'Technical professional with 7 years in data engineering. Trevor has built ETL pipelines processing 10TB+ daily. Strong Python, Spark, and Airflow skills with experience in real-time streaming.', candidateLocation: 'Pittsburgh, PA', openTo: 'Open to Hybrid', salaryMatch: 'Salary Match', availability: 'Available in 30 days' },
+    { name: 'Adaeze Eze', location: 'Baltimore, MD', matchPct: 64, matchSummary: 'Resourceful professional with 5 years in procurement and vendor management. Adaeze has negotiated contracts saving $3M+ annually. Strong analytical skills and supplier relationship expertise.', candidateLocation: 'Baltimore, MD', openTo: 'Open to Remote', salaryMatch: 'Below Range', availability: 'Available immediately' },
+    { name: 'Maxwell Grant', location: 'San Diego, CA', matchPct: 63, matchSummary: 'Technical professional with 6 years in embedded systems and IoT. Maxwell has designed firmware for devices deployed in 50+ countries. Strong C/C++ and RTOS experience with hardware debugging skills.', candidateLocation: 'San Diego, CA', openTo: 'Open to Hybrid', salaryMatch: 'Salary Match', availability: 'Available in 2 weeks' },
+    { name: 'Zara Khan', location: 'Houston, TX', matchPct: 63, matchSummary: 'Strategic professional with 5 years in corporate strategy and M&A. Zara has evaluated 20+ acquisition targets and supported due diligence on $100M+ deals. Strong financial modeling skills.', candidateLocation: 'Houston, TX', openTo: 'Open to Hybrid', salaryMatch: 'Salary Match', availability: 'Available in 30 days' },
+    { name: 'Luke Peterson', location: 'Omaha, NE', matchPct: 62, matchSummary: 'Dependable professional with 7 years in customer support and team leadership. Luke has managed support teams handling 5K+ tickets/month and improved CSAT from 78% to 92%. Strong systems thinker.', candidateLocation: 'Omaha, NE', openTo: 'Open to Remote', salaryMatch: 'Below Range', availability: 'Available immediately' },
+    { name: 'Rosa Delgado', location: 'Tucson, AZ', matchPct: 62, matchSummary: 'Organized professional with 5 years in executive assistance and operations. Rosa has supported C-suite executives and coordinated board meetings. Strong scheduling, travel logistics, and communication skills.', candidateLocation: 'Tucson, AZ', openTo: 'Open to Remote', salaryMatch: 'Salary Match', availability: 'Available in 2 weeks' },
+    { name: 'George Okafor', location: 'Newark, NJ', matchPct: 61, matchSummary: 'Technical professional with 6 years in network engineering. George has designed and maintained enterprise networks serving 10K+ users. Strong Cisco, Palo Alto, and SD-WAN expertise with CCNP certification.', candidateLocation: 'Newark, NJ', openTo: 'Open to Hybrid', salaryMatch: 'Salary Match', availability: 'Available in 30 days' },
+    { name: 'Amanda Stevens', location: 'Sacramento, CA', matchPct: 61, matchSummary: 'Creative professional with 5 years in email marketing and CRM. Amanda has built automation workflows that increased conversion by 35%. Strong Marketo, HubSpot, and segmentation expertise.', candidateLocation: 'Sacramento, CA', openTo: 'Open to Remote', salaryMatch: 'Salary Match', availability: 'Available immediately' },
+    { name: 'Takeshi Yamamoto', location: 'Honolulu, HI', matchPct: 60, matchSummary: 'Experienced professional with 7 years in environmental consulting and sustainability. Takeshi has led ESG reporting initiatives and carbon reduction programs. Strong analytical and regulatory knowledge.', candidateLocation: 'Honolulu, HI', openTo: 'Open to Relocation', salaryMatch: 'Below Range', availability: 'Available in 60 days' },
+    { name: 'Christina Mueller', location: 'Milwaukee, WI', matchPct: 60, matchSummary: 'Organized professional with 6 years in supply chain analytics. Christina has optimized inventory levels reducing carrying costs by 25%. Strong demand forecasting and SAP experience.', candidateLocation: 'Milwaukee, WI', openTo: 'Open to Hybrid', salaryMatch: 'Salary Match', availability: 'Available in 2 weeks' },
+    { name: 'Ahmad Nasser', location: 'Detroit, MI', matchPct: 59, matchSummary: 'Technical professional with 5 years in database administration. Ahmad has managed PostgreSQL and MongoDB clusters handling 500M+ records. Strong performance tuning and disaster recovery skills.', candidateLocation: 'Detroit, MI', openTo: 'Open to Remote', salaryMatch: 'Salary Match', availability: 'Available in 30 days' },
+    { name: 'Victoria Chang', location: 'Austin, TX', matchPct: 59, matchSummary: 'Creative professional with 6 years in interior design and space planning. Victoria has redesigned 30+ commercial spaces improving employee satisfaction scores. Strong AutoCAD and 3D rendering skills.', candidateLocation: 'Austin, TX', openTo: 'Open to Hybrid', salaryMatch: 'Below Range', availability: 'Available immediately' },
+    { name: 'Nolan Drake', location: 'Richmond, VA', matchPct: 58, matchSummary: 'Analytical professional with 5 years in insurance underwriting and risk assessment. Nolan has evaluated $200M+ in policies and developed pricing models. Strong actuarial knowledge and attention to detail.', candidateLocation: 'Richmond, VA', openTo: 'Open to Remote', salaryMatch: 'Salary Match', availability: 'Available in 2 weeks' },
+    { name: 'Bianca Torres', location: 'Orlando, FL', matchPct: 58, matchSummary: 'Personable professional with 6 years in real estate development and property management. Bianca has managed portfolios of 200+ units and overseen $10M+ in renovations. Strong tenant relations skills.', candidateLocation: 'Orlando, FL', openTo: 'Open to Hybrid', salaryMatch: 'Salary Match', availability: 'Available in 30 days' },
+    { name: 'Owen McCarthy', location: 'Providence, RI', matchPct: 57, matchSummary: 'Technical professional with 7 years in audiovisual engineering. Owen has designed AV systems for 100+ conference rooms and event spaces. Strong integration, troubleshooting, and project management skills.', candidateLocation: 'Providence, RI', openTo: 'Open to Remote', salaryMatch: 'Below Range', availability: 'Available immediately' },
+    { name: 'Priyanka Desai', location: 'San Jose, CA', matchPct: 57, matchSummary: 'Analytical professional with 5 years in product analytics. Priyanka has built experiment frameworks that accelerated feature iteration by 50%. Strong Amplitude, Mixpanel, and statistical analysis skills.', candidateLocation: 'San Jose, CA', openTo: 'Open to Hybrid', salaryMatch: 'Salary Match', availability: 'Available in 2 weeks' },
+    { name: 'Caleb Rhodes', location: 'Knoxville, TN', matchPct: 56, matchSummary: 'Practical professional with 6 years in facilities management and operations. Caleb has overseen 500K+ sq ft of commercial space and reduced maintenance costs by 18%. Strong vendor and budget management skills.', candidateLocation: 'Knoxville, TN', openTo: 'Open to Relocation', salaryMatch: 'Salary Match', availability: 'Available in 30 days' },
+    { name: 'Fiona Campbell', location: 'Edinburgh, UK', matchPct: 56, matchSummary: 'Strategic professional with 7 years in international marketing. Fiona has launched campaigns across 15 markets and managed localization workflows. Strong cultural awareness and project coordination skills.', candidateLocation: 'Edinburgh, UK', openTo: 'Open to Relocation', salaryMatch: 'Salary Match', availability: 'Available in 60 days' },
+    { name: 'Dante Marshall', location: 'Charlotte, NC', matchPct: 55, matchSummary: 'Focused professional with 5 years in technical sales. Dante has exceeded quota by 120% for 3 consecutive years. Strong consultative selling approach with deep product knowledge and demo skills.', candidateLocation: 'Charlotte, NC', openTo: 'Open to Hybrid', salaryMatch: 'Below Range', availability: 'Available immediately' },
+    { name: 'Eleanor Price', location: 'Portland, OR', matchPct: 55, matchSummary: 'Thoughtful professional with 6 years in nonprofit management. Eleanor has led fundraising campaigns raising $5M+ and managed teams of 15. Strong grant writing and community engagement skills.', candidateLocation: 'Portland, OR', openTo: 'Open to Remote', salaryMatch: 'Salary Match', availability: 'Available in 2 weeks' },
+    { name: 'Hassan Ali', location: 'Columbus, OH', matchPct: 54, matchSummary: 'Technical professional with 5 years in SRE and platform engineering. Hassan has improved system uptime to 99.99% and built self-healing infrastructure. Strong observability and incident management skills.', candidateLocation: 'Columbus, OH', openTo: 'Open to Remote', salaryMatch: 'Salary Match', availability: 'Available in 30 days' },
+    { name: 'Gabrielle Fournier', location: 'Denver, CO', matchPct: 54, matchSummary: 'Creative professional with 6 years in photography and visual content. Gabrielle has built content libraries for Fortune 500 brands. Strong art direction, editing, and brand storytelling skills.', candidateLocation: 'Denver, CO', openTo: 'Open to Hybrid', salaryMatch: 'Salary Match', availability: 'Available immediately' },
+    { name: 'Ivan Kozlov', location: 'San Francisco, CA', matchPct: 53, matchSummary: 'Technical professional with 7 years in machine learning engineering. Ivan has deployed ML models serving 5M+ predictions daily. Strong PyTorch, MLOps, and feature engineering expertise.', candidateLocation: 'San Francisco, CA', openTo: 'Open to Hybrid', salaryMatch: 'Above Range', availability: 'Available in 2 weeks' },
+    { name: 'Tamara Weston', location: 'Virginia Beach, VA', matchPct: 53, matchSummary: 'Organized professional with 5 years in compliance and regulatory affairs. Tamara has led audit preparations and maintained regulatory filings. Strong policy writing and risk assessment skills.', candidateLocation: 'Virginia Beach, VA', openTo: 'Open to Remote', salaryMatch: 'Below Range', availability: 'Available in 30 days' },
+    { name: 'Jerome Baptiste', location: 'New York, NY', matchPct: 52, matchSummary: 'Dynamic professional with 6 years in sports marketing and sponsorship. Jerome has managed $5M+ in sponsorship deals and created campaigns reaching 20M+ fans. Strong relationship and negotiation skills.', candidateLocation: 'New York, NY', openTo: 'Open to Hybrid', salaryMatch: 'Salary Match', availability: 'Available immediately' },
+    { name: 'Samantha Clarke', location: 'Seattle, WA', matchPct: 52, matchSummary: 'Methodical professional with 5 years in clinical research coordination. Samantha has managed 10+ clinical trials through all phases. Strong regulatory knowledge and patient coordination skills.', candidateLocation: 'Seattle, WA', openTo: 'Open to Hybrid', salaryMatch: 'Salary Match', availability: 'Available in 2 weeks' },
+    { name: 'Felix Andersen', location: 'Minneapolis, MN', matchPct: 51, matchSummary: 'Versatile professional with 5 years in logistics and warehouse operations. Felix has optimized fulfillment workflows reducing shipping times by 28%. Strong WMS and inventory management experience.', candidateLocation: 'Minneapolis, MN', openTo: 'Open to Remote', salaryMatch: 'Below Range', availability: 'Available in 30 days' },
+    { name: 'Monica Tran', location: 'San Jose, CA', matchPct: 51, matchSummary: 'Technical professional with 6 years in API design and developer experience. Monica has built developer portals serving 5K+ external developers. Strong documentation, SDK design, and community engagement skills.', candidateLocation: 'San Jose, CA', openTo: 'Open to Hybrid', salaryMatch: 'Salary Match', availability: 'Available immediately' },
+    { name: 'Elijah Washington', location: 'St. Louis, MO', matchPct: 50, matchSummary: 'Dedicated professional with 7 years in social work and community outreach. Elijah has managed programs serving 2K+ individuals annually. Strong grant management, advocacy, and partnership building skills.', candidateLocation: 'St. Louis, MO', openTo: 'Open to Remote', salaryMatch: 'Salary Match', availability: 'Available in 2 weeks' }
+  ];
+
+  // ========== ZOOM TRANSITION LOGIC ==========
+  const grid = document.querySelector('.grid');
+  document.fonts.ready.then(() => {
+    document.getElementById('heroLogo').classList.add('visible');
+    requestAnimationFrame(() => { grid.classList.add('ready'); });
+  });
+  const jobDetail = document.getElementById('jobDetail');
+  const jobTitle = document.getElementById('jobTitle');
+  const jobCount = document.getElementById('jobCount');
+  const jobMeta = document.getElementById('jobMeta');
+  const jobDescription = document.getElementById('jobDescription');
+  const jobDivider = jobDetail.querySelector('.job-divider');
+  const jobDetailActions = document.getElementById('jobDetailActions');
+  const searchConsole = document.getElementById('searchConsole');
+  const searchActions = document.getElementById('searchActions');
+  const searchDivider = document.getElementById('searchDivider');
+  const detailDivider = document.getElementById('detailDivider');
+  const jobBodyLinks = document.querySelector('.job-body-links');
+  const findCandidatesBtn = document.getElementById('findCandidatesBtn');
+  const reviewCandidatesBtn = document.getElementById('reviewCandidatesBtn');
+  const modifySearchBtn = document.getElementById('modifySearchBtn');
+  let searchInterval = null;
+  let searchTimeout = null;
+
+  // Job create form elements
+  const jobCreate = document.getElementById('jobCreate');
+  const jobTitleInput = document.getElementById('jobTitleInput');
+  const jobDescInput = document.getElementById('jobDescInput');
+  const salaryMin = document.getElementById('salaryMin');
+  const salaryMax = document.getElementById('salaryMax');
+  const commuteRadios = document.querySelectorAll('input[name="commute"]');
+  const locationInput = document.getElementById('locationInput');
+  const jobLinkInput = document.getElementById('jobLinkInput');
+  const reqIdInput = document.getElementById('reqIdInput');
+  const jobTypeRadios = document.querySelectorAll('input[name="jobType"]');
+  const saveJobBtn = document.getElementById('saveJobBtn');
+  const deleteJobBtn = document.getElementById('deleteJobBtn');
+  const tileNew = document.querySelector('.tile-new');
+
+  // Edit form elements
+  const editJobBtn = document.getElementById('editJobBtn');
+  const jobEditForm = document.getElementById('jobEditForm');
+  const editJobTitleInput = document.getElementById('editJobTitleInput');
+  const editJobDescInput = document.getElementById('editJobDescInput');
+  const editSalaryMin = document.getElementById('editSalaryMin');
+  const editSalaryMax = document.getElementById('editSalaryMax');
+  const editLocationInput = document.getElementById('editLocationInput');
+  const editJobLinkInput = document.getElementById('editJobLinkInput');
+  const editReqIdInput = document.getElementById('editReqIdInput');
+  const saveEditBtn = document.getElementById('saveEditBtn');
+  const cancelEditBtn = document.getElementById('cancelEditBtn');
+  let editingTitle = null; // track which job is being edited
+
+  let savedScrollY = 0;
+  let isAnimating = false;
+  let currentTile = null;
+
+  // Get clean title text from tile label (convert <br> to space)
+  function getTileTitle(tile) {
+    const label = tile.querySelector('.tile-label');
+    return label.innerHTML.replace(/<br\s*\/?>/gi, ' ').replace(/<[^>]*>/g, '').trim();
+  }
+
+  // Build meta HTML in two-column layout matching edit form
+  function buildMetaHTML(data) {
+    let html = '';
+    if (data.location) html += `<div>${data.location}</div>`;
+    if (data.commute) html += `<div>${data.commute}</div>`;
+    if (data.jobType) html += `<div>${data.jobType}</div>`;
+    if (data.salary) html += `<div>${data.salary}</div>`;
+    return html;
+  }
+
+  // Shared function: open job detail from a tile
+  function openJobDetail(tile, e, goToReview, goToSearch) {
+    if (isAnimating) return;
+    isAnimating = true;
+
+    currentTile = tile;
+    const title = getTileTitle(tile);
+    const data = jobData[title];
+    if (!data) { isAnimating = false; return; }
+
+    // Populate job detail
+    jobTitle.textContent = title;
+    jobCount.innerHTML = data.count + ' <span class="job-count-label">Matches</span>';
+    document.getElementById('jobReqId').textContent = data.reqId || '';
+    const postingLink = document.getElementById('jobPostingLink');
+    if (data.jobLink) {
+      postingLink.href = data.jobLink;
+      postingLink.style.display = '';
+    } else {
+      postingLink.style.display = 'none';
+    }
+    // Disable Review Candidates if count is 0
+    const rcSummaryBtn = document.getElementById('reviewCandidatesSummaryBtn');
+    if (data.count === 0) {
+      reviewCandidatesBtn.classList.add('disabled');
+      rcSummaryBtn.classList.add('disabled');
+    } else {
+      reviewCandidatesBtn.classList.remove('disabled');
+      rcSummaryBtn.classList.remove('disabled');
+    }
+    jobMeta.innerHTML = buildMetaHTML(data);
+    jobDescription.innerHTML = data.description;
+    document.getElementById('jobUpdated').textContent = data.updated ? 'Updated ' + data.updated : '';
+
+    // Save scroll position
+    savedScrollY = window.scrollY;
+
+    const hasDiamonds = !!tile.querySelector('.tile-diamonds');
+    const tileRect = tile.getBoundingClientRect();
+    const tileCx = tileRect.left + tileRect.width / 2;
+    const tileCy = tileRect.top + tileRect.height / 2;
+
+    // Fade out hero logo quickly
+    heroLogo.style.transition = 'opacity 0.25s ease';
+    heroLogo.style.opacity = '0';
+    showCornerLogo();
+
+    // Scatter stars
+    scatterStars();
+
+    // Kill hover state and fade out tile content
+    tile.style.pointerEvents = 'none';
+    const hexFill = tile.querySelector('.hex-fill');
+    if (hexFill) { hexFill.style.boxShadow = 'none'; hexFill.style.background = '#272525'; }
+    const miniStats = tile.querySelector('.mini-stats');
+    if (miniStats) miniStats.style.display = 'none';
+    const tileContent = tile.querySelector('.tile-content');
+    const tileLabel = tile.querySelector('.tile-label');
+    if (tileContent) { tileContent.style.transition = 'opacity 0.3s ease'; tileContent.style.opacity = '0'; }
+    if (tileLabel) { tileLabel.style.transition = 'opacity 0.3s ease'; tileLabel.style.opacity = '0'; }
+
+    // Create expanding overlay from tile position
+    const overlay = document.createElement('div');
+    overlay.style.cssText = `
+      position: fixed;
+      top: ${tileRect.top}px;
+      left: ${tileRect.left}px;
+      width: ${tileRect.width}px;
+      height: ${tileRect.height}px;
+      background: #000;
+      border-radius: 10px;
+      z-index: 45;
+      transition: top 0.6s cubic-bezier(0.4, 0, 0.2, 1), left 0.6s cubic-bezier(0.4, 0, 0.2, 1), width 0.6s cubic-bezier(0.4, 0, 0.2, 1), height 0.6s cubic-bezier(0.4, 0, 0.2, 1), border-radius 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    `;
+    document.body.appendChild(overlay);
+
+    // Fly other tiles away from clicked tile
+    const allTiles = grid.querySelectorAll('.tile');
+    allTiles.forEach(t => {
+      if (t === tile) {
+        t.classList.add('selected-zoom');
+        return;
+      }
+      const r = t.getBoundingClientRect();
+      const cx = r.left + r.width / 2;
+      const cy = r.top + r.height / 2;
+      let dx = cx - tileCx;
+      let dy = cy - tileCy;
+      const dist = Math.sqrt(dx * dx + dy * dy) || 1;
+      dx = (dx / dist) * Math.max(window.innerWidth, window.innerHeight);
+      dy = (dy / dist) * Math.max(window.innerWidth, window.innerHeight);
+      t.style.transform = `translate(${dx}px, ${dy}px)`;
+      t.classList.add('fly-away');
+    });
+
+    grid.classList.add('zooming-out');
+
+    // Expand overlay to fill screen
+    requestAnimationFrame(() => {
+      overlay.style.top = '0px';
+      overlay.style.left = '0px';
+      overlay.style.width = '100vw';
+      overlay.style.height = '100vh';
+      overlay.style.borderRadius = '0px';
+    });
+
+    // Show detail screen once overlay has expanded
+    setTimeout(() => {
+      if (goToReview) {
+        // Go directly to review candidates screen
+        rcJobTitle.textContent = jobTitle.textContent;
+        rcJobCount.innerHTML = jobCount.innerHTML;
+        rcReqId.textContent = document.getElementById('jobReqId').textContent;
+        populateReviewCandidates(jobTitle.textContent);
+        reviewCandidatesScreen.classList.add('active');
+      } else {
+        jobDetail.classList.add('active');
+        if (goToSearch) showConsoleComplete();
+      }
+
+      setTimeout(() => {
+        overlay.remove();
+        grid.classList.add('zoomed');
+        // Reset tile styles
+        allTiles.forEach(t => {
+          t.style.transform = '';
+          t.style.transition = '';
+          t.style.opacity = '';
+          t.classList.remove('fly-away', 'selected-zoom');
+        });
+        if (hexFill) { hexFill.style.boxShadow = ''; hexFill.style.background = ''; }
+        if (miniStats) miniStats.style.display = '';
+        if (tileContent) { tileContent.style.transition = ''; tileContent.style.opacity = ''; }
+        if (tileLabel) { tileLabel.style.transition = ''; tileLabel.style.opacity = ''; }
+        tile.style.pointerEvents = '';
+        window.scrollTo(0, 0);
+        isAnimating = false;
+      }, 400);
+    }, 400);
+  }
+
+  // Click handler for active tiles
+  document.querySelectorAll('.tile:not(.disabled):not(.tile-new)').forEach(tile => {
+    tile.addEventListener('click', (e) => {
+      const ctaLabel = tile.querySelector('.mini-stat-cta-label');
+      const goToReview = ctaLabel && ctaLabel.textContent === 'Review Matches';
+      const goToSearch = !!tile.querySelector('.tile-diamonds');
+      openJobDetail(tile, e, goToReview, goToSearch);
+    });
+  });
+
+  // Reset search console to default state
+  function resetSearchConsole() {
+    if (searchInterval) { clearInterval(searchInterval); searchInterval = null; }
+    if (searchTimeout) { clearTimeout(searchTimeout); searchTimeout = null; }
+    searchConsole.classList.remove('open');
+    searchConsole.style.display = 'none';
+    searchConsole.innerHTML = '';
+    searchActions.style.display = 'none';
+    searchDivider.style.display = 'none';
+    jobDivider.style.display = '';
+    jobMeta.style.display = '';
+    jobDescription.style.display = '';
+    document.getElementById('jobUpdated').style.display = '';
+    jobDetailActions.style.display = '';
+    detailDivider.style.display = '';
+    jobBodyLinks.style.display = '';
+    editJobBtn.style.display = '';
+  }
+
+  // Show search console in its already-completed state (no animation)
+  function showConsoleComplete() {
+    const title = jobTitle.textContent;
+    const lines = [
+      'Creating search strategy.',
+      `Finding candidates for ${title} role.`,
+      'Identifying candidate dimensions.',
+      "Searching Aquent\u2019s candidate database.",
+      'Found 14 potential matches.',
+      'Iterating.',
+      'Expanding the search.'
+    ];
+
+    // Snap-hide job detail content
+    jobDivider.style.display = 'none';
+    jobMeta.style.display = 'none';
+    jobDescription.style.display = 'none';
+    document.getElementById('jobUpdated').style.display = 'none';
+    jobDetailActions.style.display = 'none';
+    detailDivider.style.display = 'none';
+    jobBodyLinks.style.display = 'none';
+    searchActions.style.display = 'flex';
+    searchDivider.style.display = '';
+
+    // Build console with all lines already present
+    searchConsole.innerHTML = lines.join('<br>') + '<span class="search-cursor"></span>';
+    searchConsole.style.display = 'block';
+    // Skip the slide transition — force open immediately
+    searchConsole.style.transition = 'none';
+    searchConsole.classList.add('open');
+    searchConsole.offsetHeight;
+    searchConsole.style.transition = '';
+  }
+
+  // Jobs nav button — return to grid from any screen
+  function navigateToJobs() {
+    if (isAnimating) return;
+    isAnimating = true;
+
+    // Determine which screen is active and which tile to contract back to
+    let activeScreen = null;
+    let targetTile = null;
+    if (jobDetail.classList.contains('active')) {
+      activeScreen = jobDetail;
+      targetTile = currentTile;
+      resetSearchConsole();
+      if (jobEditForm.style.display !== 'none') {
+        hideEditForm();
+        editingTitle = null;
+      }
+    } else if (reviewCandidatesScreen.classList.contains('active')) {
+      activeScreen = reviewCandidatesScreen;
+      targetTile = currentTile;
+    } else if (jobCreate.classList.contains('active')) {
+      activeScreen = jobCreate;
+      targetTile = tileNew;
+    }
+
+    if (!activeScreen) { isAnimating = false; return; }
+
+    // Create fullscreen overlay FIRST (behind active screen) so there's no flash
+    const overlay = document.createElement('div');
+    overlay.style.cssText = `
+      position: fixed;
+      top: 0px;
+      left: 0px;
+      width: 100%;
+      height: 100%;
+      background: #000;
+      border-radius: 0px;
+      z-index: 49;
+    `;
+    document.body.appendChild(overlay);
+
+    // Now fade out the active screen (overlay is visible behind it)
+    activeScreen.style.transition = 'opacity 0.25s ease';
+    activeScreen.classList.add('zooming-out');
+    activeScreen.classList.remove('active');
+
+    setTimeout(() => {
+      activeScreen.classList.remove('zooming-out');
+      activeScreen.style.transition = '';
+
+      // Show grid and restore scroll
+      grid.classList.remove('zoomed');
+      grid.classList.remove('zooming-out');
+      window.scrollTo(0, savedScrollY);
+
+      // Restore hero if scroll is near top
+      hideCornerLogo();
+      heroLogo.style.transition = 'opacity 0.4s ease';
+      heroLogo.style.opacity = '1';
+
+      // Force reflow so tile rects are accurate
+      document.body.offsetHeight;
+
+      // Get target tile rect for contraction
+      const tileRect = targetTile.getBoundingClientRect();
+      const tileCx = tileRect.left + tileRect.width / 2;
+      const tileCy = tileRect.top + tileRect.height / 2;
+
+      // Position tiles at their fly-away locations (off-screen)
+      const allTiles = grid.querySelectorAll('.tile');
+      allTiles.forEach(t => {
+        if (t === targetTile) return;
+        const r = t.getBoundingClientRect();
+        const cx = r.left + r.width / 2;
+        const cy = r.top + r.height / 2;
+        let dx = cx - tileCx;
+        let dy = cy - tileCy;
+        const dist = Math.sqrt(dx * dx + dy * dy) || 1;
+        dx = (dx / dist) * Math.max(window.innerWidth, window.innerHeight);
+        dy = (dy / dist) * Math.max(window.innerWidth, window.innerHeight);
+        t.style.transition = 'none';
+        t.style.transform = `translate(${dx}px, ${dy}px)`;
+        t.style.opacity = '0';
+      });
+
+      // Hide target tile content (will fade in)
+      const tileContent = targetTile.querySelector('.tile-content');
+      const tileLabel = targetTile.querySelector('.tile-label');
+      if (tileContent) { tileContent.style.transition = 'none'; tileContent.style.opacity = '0'; }
+      if (tileLabel) { tileLabel.style.transition = 'none'; tileLabel.style.opacity = '0'; }
+
+      // Bump overlay above everything and start contraction
+      overlay.style.zIndex = '100';
+
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          overlay.style.transition = 'top 0.6s cubic-bezier(0.4, 0, 0.2, 1), left 0.6s cubic-bezier(0.4, 0, 0.2, 1), width 0.6s cubic-bezier(0.4, 0, 0.2, 1), height 0.6s cubic-bezier(0.4, 0, 0.2, 1), border-radius 0.6s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1)';
+          const halfW = tileRect.width * 0.5;
+          const halfH = tileRect.height * 0.5;
+          overlay.style.top = (tileRect.top + (tileRect.height - halfH) / 2) + 'px';
+          overlay.style.left = (tileRect.left + (tileRect.width - halfW) / 2) + 'px';
+          overlay.style.width = halfW + 'px';
+          overlay.style.height = halfH + 'px';
+          overlay.style.borderRadius = '10px';
+
+          // Fly tiles back in
+          allTiles.forEach(t => {
+            if (t === targetTile) return;
+            t.style.transition = '';
+            t.style.transform = '';
+            t.style.opacity = '';
+          });
+
+          // Gather stars
+          gatherStars();
+
+          // Fade in target tile content after overlay contracts
+          setTimeout(() => {
+            if (tileContent) { tileContent.style.transition = 'opacity 0.3s ease'; tileContent.style.opacity = ''; }
+            if (tileLabel) { tileLabel.style.transition = 'opacity 0.3s ease'; tileLabel.style.opacity = ''; }
+          }, 400);
+
+          // Cleanup
+          setTimeout(() => {
+            overlay.remove();
+            if (tileContent) tileContent.style.transition = '';
+            if (tileLabel) tileLabel.style.transition = '';
+            isAnimating = false;
+          }, 700);
+        });
+      });
+    }, 250);
+  }
+
+  document.querySelectorAll('.all-jobs-btn').forEach(btn => {
+    btn.addEventListener('click', navigateToJobs);
+  });
+
+  // ========== JOB COUNT ANIMATION ==========
+  function animateJobCount(from, to, duration) {
+    const title = jobTitle.textContent;
+    const startTime = performance.now();
+    function step(now) {
+      const t = Math.min((now - startTime) / duration, 1);
+      const eased = 1 - Math.pow(1 - t, 3);
+      const current = Math.round(from + (to - from) * eased);
+      jobCount.innerHTML = current + ' <span class="job-count-label">Matches</span>';
+      if (current > 0) {
+        const rcBtn = document.getElementById('reviewCandidatesBtn');
+        const rcSummaryBtn = document.getElementById('reviewCandidatesSummaryBtn');
+        if (rcBtn) rcBtn.classList.remove('disabled');
+        if (rcSummaryBtn) rcSummaryBtn.classList.remove('disabled');
+      }
+      if (t < 1) requestAnimationFrame(step);
+      else if (jobData[title]) jobData[title].count = to;
+    }
+    requestAnimationFrame(step);
+    // Also update the tile number
+    if (currentTile) {
+      const numEl = currentTile.querySelector('.tile-number');
+      const statNum = currentTile.querySelector('.mini-stat-num');
+      if (numEl) {
+        const startTime2 = performance.now();
+        function stepTile(now) {
+          const t = Math.min((now - startTime2) / duration, 1);
+          const eased = 1 - Math.pow(1 - t, 3);
+          const current = Math.round(from + (to - from) * eased);
+          numEl.textContent = current;
+          if (statNum) statNum.textContent = current;
+          if (t < 1) requestAnimationFrame(stepTile);
+        }
+        requestAnimationFrame(stepTile);
+      }
+    }
+  }
+
+  // ========== SEARCH CONSOLE LOGIC ==========
+  findCandidatesBtn.addEventListener('click', () => {
+    // Put current tile into searching state
+    if (currentTile) addDiamondsToTile(currentTile);
+
+    const title = jobTitle.textContent;
+    const lines = [
+      'Creating search strategy.',
+      `Finding candidates for ${title} role.`,
+      'Identifying candidate dimensions.',
+      "Searching Aquent\u2019s candidate database.",
+      'Found 14 potential matches.',
+      'Iterating.',
+      'Expanding the search.'
+    ];
+
+    // Snap-hide job detail content
+    jobDivider.style.display = 'none';
+    jobMeta.style.display = 'none';
+    jobDescription.style.display = 'none';
+    document.getElementById('jobUpdated').style.display = 'none';
+    jobDetailActions.style.display = 'none';
+    detailDivider.style.display = 'none';
+    jobBodyLinks.style.display = 'none';
+    editJobBtn.style.display = 'none';
+    searchActions.style.display = 'flex';
+    searchDivider.style.display = '';
+
+    // Reset console state fully before starting
+    searchConsole.classList.remove('open');
+    searchConsole.style.display = 'none';
+    searchConsole.innerHTML = '<span class="search-cursor" style="display:none"></span>';
+    // Show console and slide down, then start typing
+    searchConsole.style.display = 'block';
+    searchConsole.offsetHeight;
+    searchConsole.classList.add('open');
+
+    let lineIndex = 0;
+
+    searchConsole.addEventListener('transitionend', function onOpen(ev) {
+      if (ev.propertyName !== 'max-height') return;
+      searchConsole.removeEventListener('transitionend', onOpen);
+      const cursor = searchConsole.querySelector('.search-cursor');
+      if (cursor) cursor.style.display = '';
+      typeLine();
+    });
+    let charIndex = 0;
+    let currentTextNode = null;
+
+    function typeLine() {
+      const line = lines[lineIndex];
+      // Add line break before new lines (not the first)
+      if (lineIndex > 0) {
+        searchConsole.querySelector('.search-cursor')?.remove();
+        searchConsole.appendChild(document.createElement('br'));
+        searchConsole.appendChild(document.createElement('span'));
+        searchConsole.lastElementChild.className = 'search-cursor';
+      }
+      currentTextNode = document.createTextNode('');
+      searchConsole.insertBefore(currentTextNode, searchConsole.querySelector('.search-cursor'));
+      charIndex = 0;
+
+      searchInterval = setInterval(() => {
+        if (charIndex < line.length) {
+          currentTextNode.textContent += line[charIndex];
+          charIndex++;
+        } else {
+          clearInterval(searchInterval);
+          searchInterval = null;
+          // When "Found 14 potential matches." finishes, count up
+          if (lineIndex === 4) {
+            animateJobCount(0, 14, 1500);
+          }
+          lineIndex++;
+          if (lineIndex < lines.length) {
+            searchTimeout = setTimeout(typeLine, 5000);
+          }
+        }
+      }, 35);
+    }
+  });
+
+  const reviewCandidatesScreen = document.getElementById('reviewCandidates');
+  const rcJobTitle = document.getElementById('rcJobTitle');
+  const rcJobCount = document.getElementById('rcJobCount');
+  const rcReqId = document.getElementById('rcReqId');
+
+  function updateRcSidebar(candidate) {
+    document.getElementById('rcMatchSummary').textContent = candidate.matchSummary;
+    const metaList = document.getElementById('rcMetaList');
+    const title = rcJobTitle.textContent;
+    const jobCommute = jobData[title] ? jobData[title].commute : '';
+    metaList.innerHTML = [
+      candidate.candidateLocation,
+      jobCommute,
+      candidate.salaryMatch,
+      'Available'
+    ].map(v => `<li class="rc-meta-item"><span class="rc-meta-check">&#10003;</span>${v}</li>`).join('');
+  }
+
+  const resumeImages = ['Resume1.png', 'Resume2.png', 'Resume3.png'];
+
+  function generateResumeHTML(candidate) {
+    const img = resumeImages[Math.floor(Math.random() * resumeImages.length)];
+    return `<img src="${img}" alt="${candidate.name} Resume" style="width:100%; display:block;">`;
+  }
+
+  const candidateSources = ['Monster', 'LinkedIn', 'Indeed', 'Referral', 'Direct Apply'];
+
+  function generateDetailsHTML(candidate) {
+    const first = candidate.name.split(' ')[0].toLowerCase();
+    const last = candidate.name.split(' ').slice(-1)[0].toLowerCase();
+    const email = first + '.' + last + '@email.com';
+    const phone = '(' + (100 + Math.floor(Math.random() * 900)) + ') ' + (100 + Math.floor(Math.random() * 900)) + '-' + (1000 + Math.floor(Math.random() * 9000));
+    const source = candidateSources[Math.floor(Math.random() * candidateSources.length)];
+    const salary = '$' + (80 + Math.floor(Math.random() * 80)) + ',000';
+    return `
+      <div style="padding: 28px 32px;">
+            <div style="font-size: 13px; font-weight: 500; color: rgba(255,255,255,0.45); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 12px;">Contact</div>
+            <div style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 24px;">
+              <div style="display: flex; align-items: center; gap: 8px; font-size: 14px; color: rgba(255,255,255,0.85);">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.45)" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                ${email}
+              </div>
+              <div style="display: flex; align-items: center; gap: 8px; font-size: 14px; color: rgba(255,255,255,0.85);">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.45)" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.362 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.338 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                ${phone}
+              </div>
+              <div style="display: flex; align-items: center; gap: 8px; font-size: 14px; color: rgba(255,255,255,0.85);">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.45)" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                ${candidate.location}
+              </div>
+            </div>
+            <div style="font-size: 13px; font-weight: 500; color: rgba(255,255,255,0.45); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 12px;">Source</div>
+            <div style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 24px;">
+              <div style="display: flex; align-items: center; gap: 8px; font-size: 14px; color: rgba(255,255,255,0.85);">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.45)" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+                ${source}
+              </div>
+              <div style="display: flex; align-items: center; gap: 8px; font-size: 14px; color: rgba(255,255,255,0.85);">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.45)" stroke-width="2"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-4 0v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+                LinkedIn Profile
+              </div>
+            </div>
+            <div style="font-size: 13px; font-weight: 500; color: rgba(255,255,255,0.45); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 12px;">Compensation</div>
+            <div style="font-size: 14px; color: rgba(255,255,255,0.85);">${salary} &middot; ${candidate.salaryMatch}</div>
+      </div>`;
+  }
+
+  function updateShortlistCount() {
+    const count = document.querySelectorAll('.rc-card.rc-shortlisted').length;
+    const jobEl = document.getElementById('jobShortlistCount');
+    const rcEl = document.getElementById('rcShortlistCount');
+    if (count > 0) {
+      const html = count + ' <span class="job-count-label">Shortlisted</span>';
+      jobEl.innerHTML = html;
+      rcEl.innerHTML = html;
+      jobEl.style.display = '';
+      rcEl.style.display = '';
+    } else {
+      jobEl.style.display = 'none';
+      rcEl.style.display = 'none';
+    }
+    // Update tile shortlist stat
+    if (currentTile) {
+      const statNums = currentTile.querySelectorAll('.mini-stat-num');
+      if (statNums.length >= 3) {
+        statNums[2].textContent = count;
+      }
+    }
+  }
+
+  function populateReviewCandidates(title) {
+    const data = jobData[title];
+    const cardList = document.getElementById('rcCardList');
+    const count = data ? data.count : 0;
+    const candidates = [];
+    for (let i = 0; i < count; i++) {
+      candidates.push(candidatePool[i % candidatePool.length]);
+    }
+    cardList.innerHTML = '';
+
+    candidates.forEach((c, i) => {
+      const card = document.createElement('div');
+      card.className = 'rc-card' + (i === 0 ? ' rc-active' : '');
+      const statuses = ['Interested', 'Outreach Sent'];
+      const status = statuses[Math.floor(Math.random() * statuses.length)];
+      card.innerHTML = `
+        <div class="rc-card-score">
+          <div class="rc-card-match">${c.matchPct}%</div>
+          <div class="rc-card-status">${status}</div>
+        </div>
+        <div class="rc-card-info">
+          <div class="rc-card-name">${c.name}</div>
+          <div class="rc-card-location">${c.location}</div>
+        </div>
+        <div class="rc-card-actions">
+          <button title="Shortlist"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 12 10 18 20 6"/></svg></button>
+          <button title="Skip"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg></button>
+        </div>`;
+
+      card.addEventListener('mouseenter', () => {
+        cardList.querySelectorAll('.rc-card').forEach(el => el.classList.remove('rc-active'));
+        card.classList.add('rc-active');
+        updateRcSidebar(c);
+      });
+
+      card.addEventListener('click', (e) => {
+        if (card.classList.contains('rc-expanded')) {
+          if (e.target.closest('.rc-card-expand-body')) return;
+          card.classList.remove('rc-expanded');
+          const body = card.querySelector('.rc-card-expand-body');
+          if (body) body.remove();
+          return;
+        }
+        // Collapse any other expanded card
+        cardList.querySelectorAll('.rc-card.rc-expanded').forEach(el => {
+          el.classList.remove('rc-expanded');
+          const body = el.querySelector('.rc-card-expand-body');
+          if (body) body.remove();
+        });
+        // Expand this card
+        card.classList.add('rc-expanded');
+        const expandBody = document.createElement('div');
+        expandBody.className = 'rc-card-expand-body';
+        expandBody.style.display = 'block';
+        expandBody.innerHTML = `
+          <div class="rc-card-tabs">
+            <button class="rc-card-tab active" data-tab="resume">Resume</button>
+            <button class="rc-card-tab" data-tab="prescreen">Pre-Screen Questions</button>
+            <button class="rc-card-tab" data-tab="details">Additional Details</button>
+          </div>
+          <div class="rc-card-tab-panel" id="expandPanel">
+            ${generateResumeHTML(c)}
+          </div>
+          <button class="rc-card-collapse-btn"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: middle; margin-right: 4px;"><polyline points="18 15 12 9 6 15"></polyline></svg>Collapse</button>`;
+        card.appendChild(expandBody);
+
+        // Tab switching
+        expandBody.querySelectorAll('.rc-card-tab').forEach(tab => {
+          tab.addEventListener('click', (e) => {
+            e.stopPropagation();
+            expandBody.querySelectorAll('.rc-card-tab').forEach(t => t.classList.remove('active'));
+            tab.classList.add('active');
+            const panel = expandBody.querySelector('.rc-card-tab-panel');
+            if (tab.dataset.tab === 'resume') {
+              panel.classList.remove('dark');
+              panel.innerHTML = generateResumeHTML(c);
+            } else if (tab.dataset.tab === 'prescreen') {
+              panel.classList.add('dark');
+              panel.innerHTML = '<p>Pre-screening questions and responses will appear here.</p>';
+            } else if (tab.dataset.tab === 'details') {
+              panel.classList.add('dark');
+              panel.innerHTML = generateDetailsHTML(c);
+            }
+          });
+        });
+
+        // Collapse button
+        expandBody.querySelector('.rc-card-collapse-btn').addEventListener('click', (e) => {
+          e.stopPropagation();
+          card.classList.remove('rc-expanded');
+          expandBody.remove();
+        });
+
+        // Scroll expanded card into view
+        setTimeout(() => card.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 50);
+      });
+
+      const shortlistBtn = card.querySelector('.rc-card-actions button:first-child');
+      const skipBtn = card.querySelector('.rc-card-actions button:last-child');
+
+      shortlistBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (card.classList.contains('rc-shortlisted')) {
+          card.classList.remove('rc-shortlisted');
+          shortlistBtn.classList.remove('shortlisted');
+        } else {
+          card.classList.remove('rc-skipped');
+          card.classList.add('rc-shortlisted');
+          shortlistBtn.classList.add('shortlisted');
+        }
+        updateShortlistCount();
+      });
+
+      skipBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (card.classList.contains('rc-skipped')) {
+          card.classList.remove('rc-skipped');
+        } else {
+          card.classList.remove('rc-shortlisted');
+          shortlistBtn.classList.remove('shortlisted');
+          card.classList.add('rc-skipped');
+        }
+        updateShortlistCount();
+      });
+
+      cardList.appendChild(card);
+    });
+
+    if (candidates.length > 0) {
+      updateRcSidebar(candidates[0]);
+    } else {
+      document.getElementById('rcMatchSummary').textContent = 'No candidates found for this role.';
+      document.getElementById('rcMetaList').innerHTML = '';
+    }
+  }
+
+  function openReviewCandidates() {
+    const title = jobTitle.textContent;
+    const data = jobData[title];
+    rcJobTitle.textContent = title;
+    rcJobCount.innerHTML = data ? data.count + ' <span class="job-count-label">Matches</span>' : jobCount.innerHTML;
+    rcReqId.textContent = data ? (data.reqId || '') : '';
+
+    populateReviewCandidates(title);
+
+    resetSearchConsole();
+    jobDetail.classList.remove('active');
+    reviewCandidatesScreen.classList.add('active');
+  }
+
+  reviewCandidatesBtn.addEventListener('click', openReviewCandidates);
+  document.getElementById('reviewCandidatesSummaryBtn').addEventListener('click', openReviewCandidates);
+  document.getElementById('rcShowSummary').addEventListener('click', () => {
+    reviewCandidatesScreen.classList.remove('active');
+    jobDetail.classList.add('active');
+  });
+  document.getElementById('rcFindMore').addEventListener('click', () => {
+    reviewCandidatesScreen.classList.remove('active');
+    jobDetail.classList.add('active');
+    findCandidatesBtn.click();
+  });
+  modifySearchBtn.addEventListener('click', () => resetSearchConsole());
+
+  // ========== NEW JOB CREATE LOGIC ==========
+
+  // Click handler for + tile → zoom into create form
+  tileNew.addEventListener('click', (e) => {
+    if (isAnimating) return;
+    isAnimating = true;
+
+    // Reset form fields
+    jobTitleInput.value = '';
+    jobDescInput.innerHTML = '';
+    salaryMin.value = '';
+    salaryMax.value = '';
+    commuteRadios[0].checked = true;
+    document.getElementById('countryInput').value = 'United States';
+    locationInput.value = '';
+    document.getElementById('currencyInput').value = 'USD';
+    jobLinkInput.value = '';
+    reqIdInput.value = '';
+    jobTypeRadios[0].checked = true;
+
+    // Save scroll position
+    savedScrollY = window.scrollY;
+
+    const tileRect = tileNew.getBoundingClientRect();
+    const tileCx = tileRect.left + tileRect.width / 2;
+    const tileCy = tileRect.top + tileRect.height / 2;
+
+    heroLogo.style.transition = 'opacity 0.25s ease';
+    heroLogo.style.opacity = '0';
+    showCornerLogo();
+    scatterStars();
+
+    // Kill hover state and fade out tile content
+    tileNew.style.pointerEvents = 'none';
+    const newHexFill = tileNew.querySelector('.hex-fill');
+    if (newHexFill) { newHexFill.style.boxShadow = 'none'; newHexFill.style.background = '#272525'; }
+    const newTileContent = tileNew.querySelector('.tile-content');
+    const newLabel = tileNew.querySelector('.tile-label');
+    const newIcon = tileNew.querySelector('.tile-icon svg');
+    if (newTileContent) { newTileContent.style.transition = 'opacity 0.3s ease'; newTileContent.style.opacity = '0'; }
+    if (newLabel) { newLabel.style.transition = 'opacity 0.3s ease'; newLabel.style.opacity = '0'; }
+
+    // Create expanding overlay from tile position
+    const overlay = document.createElement('div');
+    overlay.style.cssText = `
+      position: fixed;
+      top: ${tileRect.top}px;
+      left: ${tileRect.left}px;
+      width: ${tileRect.width}px;
+      height: ${tileRect.height}px;
+      background: #000;
+      border-radius: 10px;
+      z-index: 45;
+      transition: top 0.6s cubic-bezier(0.4, 0, 0.2, 1), left 0.6s cubic-bezier(0.4, 0, 0.2, 1), width 0.6s cubic-bezier(0.4, 0, 0.2, 1), height 0.6s cubic-bezier(0.4, 0, 0.2, 1), border-radius 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    `;
+    document.body.appendChild(overlay);
+
+    // Fly other tiles away from clicked tile
+    const allTiles = grid.querySelectorAll('.tile');
+    allTiles.forEach(t => {
+      if (t === tileNew) {
+        t.classList.add('selected-zoom');
+        return;
+      }
+      const r = t.getBoundingClientRect();
+      const cx = r.left + r.width / 2;
+      const cy = r.top + r.height / 2;
+      let dx = cx - tileCx;
+      let dy = cy - tileCy;
+      const dist = Math.sqrt(dx * dx + dy * dy) || 1;
+      dx = (dx / dist) * Math.max(window.innerWidth, window.innerHeight);
+      dy = (dy / dist) * Math.max(window.innerWidth, window.innerHeight);
+      t.style.transform = `translate(${dx}px, ${dy}px)`;
+      t.classList.add('fly-away');
+    });
+
+    grid.classList.add('zooming-out');
+
+    // Expand overlay to fill screen
+    requestAnimationFrame(() => {
+      overlay.style.top = '0px';
+      overlay.style.left = '0px';
+      overlay.style.width = '100vw';
+      overlay.style.height = '100vh';
+      overlay.style.borderRadius = '0px';
+    });
+
+    // Show create screen once overlay has expanded
+    setTimeout(() => {
+      jobCreate.classList.add('active');
+
+      setTimeout(() => {
+        overlay.remove();
+        grid.classList.add('zoomed');
+        allTiles.forEach(t => {
+          t.style.transform = '';
+          t.style.transition = '';
+          t.style.opacity = '';
+          t.classList.remove('fly-away', 'selected-zoom');
+        });
+        if (newHexFill) { newHexFill.style.boxShadow = ''; newHexFill.style.background = ''; }
+        if (newTileContent) { newTileContent.style.transition = ''; newTileContent.style.opacity = ''; }
+        if (newLabel) { newLabel.style.transition = ''; newLabel.style.opacity = ''; }
+        tileNew.style.pointerEvents = '';
+        window.scrollTo(0, 0);
+        isAnimating = false;
+        jobTitleInput.focus();
+      }, 400);
+    }, 400);
+  });
+
+  // Cancel button → navigate back to jobs
+  deleteJobBtn.addEventListener('click', () => {
+    navigateToJobs();
+  });
+
+  // Create Job Target
+  saveJobBtn.addEventListener('click', () => {
+    const title = jobTitleInput.value.trim();
+    if (!title) {
+      jobTitleInput.style.borderBottomColor = '#f0f';
+      setTimeout(() => { jobTitleInput.style.borderBottomColor = ''; }, 1000);
+      jobTitleInput.focus();
+      return;
+    }
+
+    // Build display values
+    const commute = document.querySelector('input[name="commute"]:checked').value;
+    const loc = locationInput.value.trim();
+    const sMin = salaryMin.value.trim();
+    const sMax = salaryMax.value.trim();
+    let displaySalary = '';
+    if (sMin && sMax) {
+      displaySalary = `${sMin} \u2013 ${sMax}`;
+    } else if (sMin) {
+      displaySalary = `${sMin}+`;
+    } else if (sMax) {
+      displaySalary = `Up to ${sMax}`;
+    }
+
+    // Create jobData entry
+    const newJob = {
+      count: 0,
+      country: document.getElementById('countryInput').value,
+      location: loc,
+      currency: document.getElementById('currencyInput').value,
+      commute: commute,
+      jobType: document.querySelector('input[name="jobType"]:checked').value || '',
+      salary: displaySalary,
+      jobLink: jobLinkInput.value.trim(),
+      reqId: reqIdInput.value.trim(),
+      description: jobDescInput.innerHTML.trim()
+    };
+    jobData[title] = newJob;
+
+    // --- Create new tile DOM element ---
+    const newTile = document.createElement('div');
+    newTile.className = 'tile';
+
+    // Split long titles across two lines
+    let labelHTML = title;
+    if (title.length > 18) {
+      const words = title.split(' ');
+      const mid = Math.ceil(words.length / 2);
+      labelHTML = words.slice(0, mid).join(' ') + '<br>' + words.slice(mid).join(' ');
+    }
+
+    newTile.innerHTML = `
+      <div class="tile-shape">
+        <div class="hex-border"></div>
+        <div class="hex-fill"></div>
+      </div>
+      <div class="tile-content">
+        <span class="tile-number">0</span>
+        <div class="mini-stats">
+          <div class="mini-stat-row">
+            <span class="mini-stat-num">0</span>
+            <span class="mini-stat-divider"></span>
+            <span class="mini-stat-label">Matches</span>
+          </div>
+          <div class="mini-stat-row">
+            <span class="mini-stat-num">0</span>
+            <span class="mini-stat-divider"></span>
+            <span class="mini-stat-label">Shortlist</span>
+          </div>
+        <div class="mini-stat-cta-spacer"></div>
+        <div class="mini-stat-cta"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><circle cx="10" cy="10" r="6"/><line x1="14.5" y1="14.5" x2="20" y2="20"/></svg>&nbsp; <span class="mini-stat-cta-label">Find Matches</span></div>
+        </div>
+      </div>
+      <div class="tile-label">${labelHTML}</div>
+    `;
+
+    // Insert after + tile (position 2 in grid)
+    tileNew.after(newTile);
+
+    // Attach click handler to new tile
+    newTile.addEventListener('click', (e) => openJobDetail(newTile, e));
+
+    // --- Snap from create form to job detail summary ---
+    jobTitle.textContent = title;
+    jobCount.innerHTML = '0 <span class="job-count-label">Matches</span>';
+    jobMeta.innerHTML = buildMetaHTML(newJob);
+    jobDescription.innerHTML = newJob.description;
+    document.getElementById('jobUpdated').textContent = newJob.updated ? 'Updated ' + newJob.updated : '';
+
+    // Instant snap: disable transitions, swap panels
+    jobCreate.style.transition = 'none';
+    jobDetail.style.transition = 'none';
+
+    jobCreate.classList.remove('active');
+    jobDetail.classList.add('active');
+
+    // Force reflow then re-enable transitions and clear inline overrides
+    void jobDetail.offsetHeight;
+    requestAnimationFrame(() => {
+      jobCreate.style.transition = '';
+      jobDetail.style.transition = '';
+    });
+  });
+
+  // ========== EDIT JOB ==========
+  function showEditForm() {
+    jobTitle.style.display = 'none';
+    jobCount.style.display = 'none';
+    jobDescription.style.display = 'none';
+    document.getElementById('jobUpdated').style.display = 'none';
+    jobMeta.style.display = 'none';
+    document.querySelector('#jobDetail .job-divider').style.display = 'none';
+    document.getElementById('jobReqId').style.display = 'none';
+    document.getElementById('jobPostingLink').style.display = 'none';
+    editJobBtn.style.display = 'none';
+    document.getElementById('jobDetailActions').style.display = 'none';
+    document.getElementById('searchActions').style.display = 'none';
+    document.getElementById('searchConsole').style.display = 'none';
+    detailDivider.style.display = 'none';
+    searchDivider.style.display = 'none';
+    jobBodyLinks.style.display = 'none';
+    jobEditForm.style.display = '';
+  }
+
+  function hideEditForm() {
+    jobEditForm.style.display = 'none';
+    jobTitle.style.display = '';
+    jobCount.style.display = '';
+    jobDescription.style.display = '';
+    document.getElementById('jobUpdated').style.display = '';
+    jobMeta.style.display = '';
+    document.querySelector('#jobDetail .job-divider').style.display = '';
+    document.getElementById('jobReqId').style.display = '';
+    const data = jobData[jobTitle.textContent];
+    if (data && data.jobLink) document.getElementById('jobPostingLink').style.display = '';
+    editJobBtn.style.display = '';
+    document.getElementById('jobDetailActions').style.display = '';
+    detailDivider.style.display = '';
+    jobBodyLinks.style.display = '';
+  }
+
+  editJobBtn.addEventListener('click', () => {
+    editingTitle = jobTitle.textContent;
+    const data = jobData[editingTitle];
+    if (!data) return;
+
+    // Populate form fields
+    editJobTitleInput.value = editingTitle;
+    editJobDescInput.innerHTML = data.description || '';
+    editLocationInput.value = data.location || '';
+    editJobLinkInput.value = data.jobLink || '';
+    editReqIdInput.value = data.reqId || '';
+    document.getElementById('editCountryInput').value = data.country || 'United States';
+    document.getElementById('editCurrencyInput').value = data.currency || 'USD';
+
+    // Parse salary
+    const salaryStr = data.salary || '';
+    const salaryParts = salaryStr.split(/\s*\u2013\s*/);
+    editSalaryMin.value = salaryParts[0] || '';
+    editSalaryMax.value = salaryParts[1] || '';
+
+    // Set commute radio
+    const commuteVal = data.commute || 'On Site';
+    document.querySelectorAll('input[name="editCommute"]').forEach(r => {
+      r.checked = r.value === commuteVal;
+    });
+
+    // Set job type radio
+    const jobTypeVal = data.jobType || 'Perm';
+    document.querySelectorAll('input[name="editJobType"]').forEach(r => {
+      r.checked = r.value === jobTypeVal;
+    });
+
+    showEditForm();
+  });
+
+  cancelEditBtn.addEventListener('click', () => {
+    hideEditForm();
+    editingTitle = null;
+  });
+
+  saveEditBtn.addEventListener('click', () => {
+    const newTitle = editJobTitleInput.value.trim();
+    if (!newTitle) {
+      editJobTitleInput.style.borderBottomColor = '#f0f';
+      setTimeout(() => { editJobTitleInput.style.borderBottomColor = ''; }, 1000);
+      editJobTitleInput.focus();
+      return;
+    }
+
+    // Build salary display
+    const sMin = editSalaryMin.value.trim();
+    const sMax = editSalaryMax.value.trim();
+    let displaySalary = '';
+    if (sMin && sMax) {
+      displaySalary = `${sMin} \u2013 ${sMax}`;
+    } else if (sMin) {
+      displaySalary = `${sMin}+`;
+    } else if (sMax) {
+      displaySalary = `Up to ${sMax}`;
+    }
+
+    const commute = document.querySelector('input[name="editCommute"]:checked').value;
+    const jobType = document.querySelector('input[name="editJobType"]:checked').value;
+
+    // Update jobData
+    const updatedJob = {
+      count: jobData[editingTitle].count,
+      country: document.getElementById('editCountryInput').value,
+      location: editLocationInput.value.trim(),
+      currency: document.getElementById('editCurrencyInput').value,
+      commute: commute,
+      jobType: jobType,
+      salary: displaySalary,
+      jobLink: editJobLinkInput.value.trim(),
+      reqId: editReqIdInput.value.trim(),
+      description: editJobDescInput.innerHTML.trim()
+    };
+
+    // Handle title rename
+    if (newTitle !== editingTitle) {
+      delete jobData[editingTitle];
+      // Update tile label
+      if (currentTile) {
+        const label = currentTile.querySelector('.tile-label');
+        if (label) {
+          let labelHTML = newTitle;
+          if (newTitle.length > 18) {
+            const words = newTitle.split(' ');
+            const mid = Math.ceil(words.length / 2);
+            labelHTML = words.slice(0, mid).join(' ') + '<br>' + words.slice(mid).join(' ');
+          }
+          label.innerHTML = labelHTML;
+        }
+      }
+    }
+    jobData[newTitle] = updatedJob;
+
+    // Update summary view
+    jobTitle.textContent = newTitle;
+    jobCount.innerHTML = updatedJob.count + ' <span class="job-count-label">Matches</span>';
+    jobDescription.innerHTML = updatedJob.description;
+    document.getElementById('jobUpdated').textContent = updatedJob.updated ? 'Updated ' + updatedJob.updated : '';
+    jobMeta.innerHTML = buildMetaHTML(updatedJob);
+
+    hideEditForm();
+    editingTitle = null;
+  });
+
+  // ========== HERO LOGO ==========
+  const heroLogo = document.getElementById('heroLogo');
+  const headerDot = document.getElementById('headerDot');
+  const headerLogoEl = document.getElementById('headerLogo');
+
+  function showCornerLogo() {
+    headerDot.style.transition = 'opacity 0.4s ease';
+    headerLogoEl.style.transition = 'opacity 0.4s ease';
+    headerDot.style.opacity = '1';
+    headerLogoEl.style.opacity = '1';
+  }
+
+  function hideCornerLogo() {
+    headerDot.style.transition = 'opacity 0.4s ease';
+    headerLogoEl.style.transition = 'opacity 0.4s ease';
+    headerDot.style.opacity = '0';
+    headerLogoEl.style.opacity = '0';
+  }
+
+  // ========== CANDIDATE COUNT TICK-UP ==========
+  const diamondTiles = document.querySelectorAll('.tile-diamonds');
+  const activeTiles = [];
+  diamondTiles.forEach(group => {
+    const tile = group.closest('.tile');
+    const numberEl = tile.querySelector('.tile-number');
+    const candidateStat = tile.querySelector('.mini-stat-num');
+    const statNums = tile.querySelectorAll('.mini-stat-num');
+    const newStat = statNums.length >= 2 ? statNums[1] : null;
+    const defaultCount = parseInt(numberEl.textContent, 10);
+    const defaultNew = newStat ? parseInt(newStat.textContent, 10) : 0;
+    activeTiles.push({ tile, numberEl, candidateStat, newStat, defaultCount, current: defaultCount, currentNew: defaultNew });
+  });
+
+  function animateCount(pick, bump) {
+    const start = pick.current;
+    const target = start + bump;
+    pick.current = target;
+    const newStart = pick.currentNew;
+    const newTarget = newStart + bump;
+    pick.currentNew = newTarget;
+    const title = getTileTitle(pick.tile);
+    if (jobData[title]) jobData[title].count = target;
+    const duration = 1500;
+    const startTime = performance.now();
+    function step(now) {
+      const t = Math.min((now - startTime) / duration, 1);
+      const eased = 1 - Math.pow(1 - t, 3);
+      const display = Math.round(start + bump * eased);
+      pick.numberEl.textContent = display;
+      if (pick.candidateStat) pick.candidateStat.textContent = display;
+      if (pick.newStat) pick.newStat.textContent = Math.round(newStart + bump * eased);
+      if (t < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }
+
+
+  // Logo click returns to all jobs grid
+  document.getElementById('headerLogo').addEventListener('click', () => {
+    headerDot.style.transition = 'opacity 0.15s ease';
+    headerLogoEl.style.transition = 'opacity 0.15s ease';
+    headerDot.style.opacity = '0';
+    headerLogoEl.style.opacity = '0';
+    navigateToJobs();
+  });
+
+  // ========== STARFIELD ==========
+  function scatterStars() {
+    const stars = document.querySelectorAll('.star');
+    const cx = window.innerWidth / 2;
+    const cy = window.innerHeight / 2;
+    // Freeze current positions
+    stars.forEach(star => {
+      const computed = getComputedStyle(star).transform;
+      star.style.animation = 'none';
+      star.style.transform = computed === 'none' ? '' : computed;
+    });
+    // Force reflow so frozen position is applied
+    document.body.offsetHeight;
+    // Now scatter
+    stars.forEach(star => {
+      const rect = star.getBoundingClientRect();
+      const sx = rect.left + rect.width / 2;
+      const sy = rect.top + rect.height / 2;
+      const dx = (sx - cx) * 3;
+      const dy = (sy - cy) * 3;
+      star.style.transform = `translate(${dx}px, ${dy}px)`;
+      star.classList.add('scattered');
+    });
+  }
+
+  function gatherStars() {
+    const stars = document.querySelectorAll('.star');
+    stars.forEach(star => {
+      star.style.transform = '';
+      star.classList.remove('scattered');
+      // Restore drift animation after transition
+      setTimeout(() => {
+        const direction = Math.random() > 0.5 ? 'drift-right' : 'drift-left';
+        const duration = 20 + Math.random() * 40;
+        star.style.animation = direction + ' ' + duration + 's ease-in-out infinite alternate';
+      }, 950);
+    });
+  }
+
+  (function() {
+    const field = document.getElementById('starfield');
+    const count = 150;
+    for (let i = 0; i < count; i++) {
+      const star = document.createElement('div');
+      star.className = 'star';
+      const size = 2 + Math.random() * 5;
+      star.style.width = size + 'px';
+      star.style.height = size * 1.5 + 'px';
+      star.style.left = Math.random() * 100 + '%';
+      star.style.top = Math.random() * 100 + '%';
+      star.style.opacity = 0.1 + Math.random() * 0.3;
+      const direction = Math.random() > 0.5 ? 'drift-right' : 'drift-left';
+      const duration = 20 + Math.random() * 40;
+      star.style.animation = direction + ' ' + duration + 's ease-in-out infinite alternate';
+      field.appendChild(star);
+    }
+  })();
+</script>
+
+</body>
+</html>
