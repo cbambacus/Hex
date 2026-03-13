@@ -3027,6 +3027,44 @@
     btn.addEventListener('click', navigateToJobs);
   });
 
+  // ========== JOB COUNT ANIMATION ==========
+  function animateJobCount(from, to, duration) {
+    const title = jobTitle.textContent;
+    const startTime = performance.now();
+    function step(now) {
+      const t = Math.min((now - startTime) / duration, 1);
+      const eased = 1 - Math.pow(1 - t, 3);
+      const current = Math.round(from + (to - from) * eased);
+      jobCount.innerHTML = current + ' <span class="job-count-label">Matches</span>';
+      if (current > 0) {
+        const rcBtn = document.getElementById('reviewCandidatesBtn');
+        const rcSummaryBtn = document.getElementById('reviewCandidatesSummaryBtn');
+        if (rcBtn) rcBtn.classList.remove('disabled');
+        if (rcSummaryBtn) rcSummaryBtn.classList.remove('disabled');
+      }
+      if (t < 1) requestAnimationFrame(step);
+      else if (jobData[title]) jobData[title].count = to;
+    }
+    requestAnimationFrame(step);
+    // Also update the tile number
+    if (currentTile) {
+      const numEl = currentTile.querySelector('.tile-number');
+      const statNum = currentTile.querySelector('.mini-stat-num');
+      if (numEl) {
+        const startTime2 = performance.now();
+        function stepTile(now) {
+          const t = Math.min((now - startTime2) / duration, 1);
+          const eased = 1 - Math.pow(1 - t, 3);
+          const current = Math.round(from + (to - from) * eased);
+          numEl.textContent = current;
+          if (statNum) statNum.textContent = current;
+          if (t < 1) requestAnimationFrame(stepTile);
+        }
+        requestAnimationFrame(stepTile);
+      }
+    }
+  }
+
   // ========== SEARCH CONSOLE LOGIC ==========
   findCandidatesBtn.addEventListener('click', () => {
     // Put current tile into searching state
@@ -3096,6 +3134,10 @@
         } else {
           clearInterval(searchInterval);
           searchInterval = null;
+          // When "Found 14 potential matches." finishes, count up (Senior Brand Strategist only)
+          if (lineIndex === 4 && title === 'Senior Brand Strategist') {
+            animateJobCount(0, 14, 1500);
+          }
           lineIndex++;
           if (lineIndex < lines.length) {
             searchTimeout = setTimeout(typeLine, 5000);
